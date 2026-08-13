@@ -1,4 +1,4 @@
-import { Link, useLocation } from 'react-router-dom'
+import { Link, NavLink, useLocation } from 'react-router-dom'
 
 const sectionLink = (section: string) => `/#${section}`
 
@@ -19,7 +19,7 @@ export function SiteNav() {
         <div className="nav-links">
           <Link to={sectionLink('works')} onClick={(event) => scrollOnHomepage(event, 'works')}>Works</Link>
           <Link to={sectionLink('skills')} onClick={(event) => scrollOnHomepage(event, 'skills')}>Skills</Link>
-          <Link to="/me">ME</Link>
+          <NavLink to="/me">ME</NavLink>
           <Link to={sectionLink('contact')} onClick={(event) => scrollOnHomepage(event, 'contact')}>Contact</Link>
         </div>
       </nav>
