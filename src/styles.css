@@ -32,7 +32,7 @@ button { cursor: pointer; }
 .nav-links a:hover { color: var(--accent); }
 .nav-links a[aria-current='page'] { color: var(--accent); font-weight: 500; }
 
-.hero { min-height: 570px; padding-top: 168px; }
+.hero { min-height: 650px; padding-top: 248px; }
 .eyebrow { margin: 0; }
 .hero h1, .me-page h1 { margin: 18px 0 28px; color: var(--ink); font: 400 clamp(4rem, 8vw, 6.75rem)/.92 'DM Serif Display', Georgia, serif; letter-spacing: -.06em; }
 .hero-detail { display: flex; align-items: end; justify-content: space-between; gap: 48px; padding-top: 21px; }
@@ -101,7 +101,7 @@ section[id] { scroll-margin-top: 30px; }
   .site-header { height: auto; min-height: 68px; padding: 20px 0; }
   .site-nav { align-items: flex-start; gap: 22px; }
   .nav-links { flex-wrap: wrap; justify-content: flex-end; gap: 13px 20px; }
-  .hero { min-height: auto; padding: 92px 0 86px; }
+  .hero { min-height: auto; padding: 132px 0 96px; }
   .hero-detail { display: grid; gap: 20px; }
   .project-grid { grid-template-columns: 1fr; gap: 22px; }
   .project-card { min-height: 258px; }
