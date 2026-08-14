@@ -83,11 +83,17 @@ section[id] { scroll-margin-top: 30px; }
 .profile-copy p { margin: 0 0 20px; }
 
 .dialog-backdrop { position: fixed; z-index: 5; inset: 0; display: grid; place-items: center; background: rgb(9 9 26 / .58); padding: 24px; }
-.project-dialog { width: min(100%, 440px); background: white; padding: 36px; box-shadow: 0 18px 60px rgb(0 0 0 / .3); }
+.project-dialog { width: min(100%, 840px); background: white; padding: 36px; box-shadow: 0 18px 60px rgb(0 0 0 / .3); }
+.project-dialog__content { display: grid; grid-template-columns: minmax(0, 1fr) minmax(260px, 320px); gap: 36px; align-items: center; }
 .project-dialog h2 { margin: 10px 0 14px; font: 400 32px/1.1 'DM Serif Display', Georgia, serif; }
-.project-dialog > p:not(.eyebrow) { color: #4e5565; font-size: 14px; line-height: 1.65; }
+.project-dialog p:not(.eyebrow) { color: #4e5565; font-size: 14px; line-height: 1.65; }
 .dialog-close { border: 1px solid var(--ink); background: var(--ink); color: white; margin-top: 12px; padding: 12px 18px; font: 500 10px/1 'DM Mono', monospace; letter-spacing: .12em; text-transform: uppercase; }
 .dialog-close:hover { background: white; color: var(--ink); }
+.mobile-demo { min-width: 0; }
+.mobile-demo__frame { position: relative; aspect-ratio: 9 / 18.5; overflow: hidden; border: 8px solid #212121; border-radius: 28px; background: #212121; box-shadow: 0 16px 32px rgb(9 9 26 / .2); }
+.mobile-demo__iframe { width: 100%; height: 100%; border: 0; background: white; }
+.mobile-demo__status { position: absolute; z-index: 1; inset: 0; display: grid; place-items: center; margin: 0; padding: 24px; background: #212121; color: white; font: 400 10px/1.5 'DM Mono', monospace; letter-spacing: .1em; text-align: center; text-transform: uppercase; }
+.mobile-demo__link { display: flex; justify-content: space-between; margin-top: 12px; color: var(--accent); font: 500 10px/1.4 'DM Mono', monospace; letter-spacing: .1em; text-decoration: none; text-transform: uppercase; }
 
 :focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; }
 @media (max-width: 980px) {
@@ -114,6 +120,9 @@ section[id] { scroll-margin-top: 30px; }
   .me-page { padding-top: 76px; }
   .profile-layout { grid-template-columns: 1fr; gap: 26px; }
   .portrait { max-width: 250px; }
+  .project-dialog { padding: 24px; }
+  .project-dialog__content { grid-template-columns: 1fr; gap: 28px; }
+  .mobile-demo__frame { width: min(100%, 320px); margin-inline: auto; }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
