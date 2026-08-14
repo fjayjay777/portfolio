@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "prepare:claimly-demo": "node scripts/prepare-claimly-demo.mjs",
+    "build": "npm run prepare:claimly-demo && tsc -b && vite build",
     "test": "vitest",
     "typecheck": "tsc -b --pretty false",
     "lint": "eslint . --max-warnings=0"
