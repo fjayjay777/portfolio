@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "npm run prepare:claimly-demo && vite",
     "prepare:claimly-demo": "node scripts/prepare-claimly-demo.mjs",
     "build": "npm run prepare:claimly-demo && tsc -b && vite build",
     "test": "vitest",
