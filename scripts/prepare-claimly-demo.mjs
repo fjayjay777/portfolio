@@ -9,6 +9,8 @@ const execFile = promisify(execFileCallback)
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const destination = resolve(root, 'public/demos/claimly')
 const sourceCandidates = [
+  resolve(root, '../Claimly'),
+  resolve(root, '../../../Claimly'),
   resolve(root, '../Claimly/.worktrees/claimly-demo'),
   resolve(root, '../../../Claimly/.worktrees/claimly-demo'),
 ]
