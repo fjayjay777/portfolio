@@ -1,9 +1,11 @@
 import { useEffect, useRef } from 'react'
+import { MobileDemoFrame } from './MobileDemoFrame'
 
 export type Project = {
   name: string
   category: string
   summary: string
+  demo?: { url: string }
 }
 
 type ProjectDialogProps = {
@@ -38,10 +40,15 @@ export function ProjectDialog({ project, onClose, returnFocus }: ProjectDialogPr
         onMouseDown={(event) => event.stopPropagation()}
         role="dialog"
       >
-        <p className="eyebrow">{project.category}</p>
-        <h2 id="project-dialog-title">{project.name} project details</h2>
-        <p>{project.summary}</p>
-        <button className="dialog-close" ref={closeButtonRef} type="button" onClick={onClose}>Close</button>
+        <div className="project-dialog__content">
+          <div>
+            <p className="eyebrow">{project.category}</p>
+            <h2 id="project-dialog-title">{project.name} project details</h2>
+            <p>{project.summary}</p>
+            <button className="dialog-close" ref={closeButtonRef} type="button" onClick={onClose}>Close</button>
+          </div>
+          {project.demo && <MobileDemoFrame title={project.name} url={project.demo.url} />}
+        </div>
       </section>
     </div>
   )

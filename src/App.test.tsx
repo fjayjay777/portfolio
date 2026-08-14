@@ -55,6 +55,16 @@ test('opens Claimly project details and restores trigger focus after Escape', as
   expect(trigger).toHaveFocus()
 })
 
+test('embeds the Claimly prototype and provides a direct demo link', async () => {
+  const user = userEvent.setup()
+  renderAt('/')
+
+  await user.click(screen.getByRole('button', { name: /Claimly project/i }))
+
+  expect(screen.getByTitle('Claimly interactive prototype')).toHaveAttribute('src', '/demos/claimly/')
+  expect(screen.getByRole('link', { name: 'Open Claimly demo' })).toHaveAttribute('href', '/demos/claimly/')
+})
+
 test('renders the Me page profile and preserves Contact navigation', () => {
   renderAt('/me')
 

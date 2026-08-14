@@ -8,6 +8,7 @@ const projects: Project[] = [
     name: 'Claimly',
     category: 'Financial clarity',
     summary: 'A concept that helps people understand claims and make confident decisions with information that is easy to act on.',
+    demo: { url: '/demos/claimly/' },
   },
   {
     name: 'Medisync',
