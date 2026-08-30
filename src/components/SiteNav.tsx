@@ -18,7 +18,6 @@ export function SiteNav() {
         <Link className="wordmark" aria-label="Jiani Huang home" to="/">JH</Link>
         <div className="nav-links">
           <Link to={sectionLink('works')} onClick={(event) => scrollOnHomepage(event, 'works')}>Works</Link>
-          <Link to={sectionLink('skills')} onClick={(event) => scrollOnHomepage(event, 'skills')}>Skills</Link>
           <NavLink to="/me">ME</NavLink>
           <Link to={sectionLink('contact')} onClick={(event) => scrollOnHomepage(event, 'contact')}>Contact</Link>
         </div>

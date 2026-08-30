@@ -65,6 +65,23 @@ test('embeds the Claimly prototype and provides a direct demo link', async () =>
   expect(screen.getByRole('link', { name: 'Open Claimly demo' })).toHaveAttribute('href', '/demos/claimly/')
 })
 
+test('opens the Medisync case study from the work index', async () => {
+  const user = userEvent.setup()
+  renderAt('/')
+
+  await user.click(screen.getByRole('link', { name: /Medisync case study/i }))
+
+  expect(await screen.findByRole('heading', { level: 1, name: 'Medisync' })).toBeVisible()
+  expect(screen.getByRole('heading', { name: 'Product walkthrough' })).toBeVisible()
+})
+
+test('embeds the Medisync prototype on its case study page', () => {
+  renderAt('/work/medisync')
+
+  expect(screen.getByTitle('Medisync interactive prototype')).toHaveAttribute('src', '/demos/medisync/')
+  expect(screen.getByRole('link', { name: 'Open Medisync demo' })).toHaveAttribute('href', '/demos/medisync/')
+})
+
 test('renders the Me page profile and preserves Contact navigation', () => {
   renderAt('/me')
 

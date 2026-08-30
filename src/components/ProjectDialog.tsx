@@ -1,11 +1,13 @@
 import { useEffect, useRef } from 'react'
-import { MobileDemoFrame } from './MobileDemoFrame'
+import { MobileDemoFrame, type DemoViewport } from './MobileDemoFrame'
 
 export type Project = {
   name: string
   category: string
+  chip: string
   summary: string
-  demo?: { url: string }
+  caseStudy?: string
+  demo?: { url: string; canvas?: string; viewport?: DemoViewport }
 }
 
 type ProjectDialogProps = {
@@ -47,7 +49,9 @@ export function ProjectDialog({ project, onClose, returnFocus }: ProjectDialogPr
             <p>{project.summary}</p>
             <button className="dialog-close" ref={closeButtonRef} type="button" onClick={onClose}>Close</button>
           </div>
-          {project.demo && <MobileDemoFrame title={project.name} url={project.demo.url} />}
+          {project.demo && (
+            <MobileDemoFrame title={project.name} url={project.demo.url} canvas={project.demo.canvas} viewport={project.demo.viewport} />
+          )}
         </div>
       </section>
     </div>

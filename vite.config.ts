@@ -26,6 +26,45 @@ export default defineConfig({
         })
       },
     },
+    {
+      // Medisync is a client-routed SPA, so every non-asset path under its
+      // base has to fall back to the demo's own index.html.
+      name: 'serve-medisync-demo',
+      configureServer(server) {
+        const entry = resolve(root, 'public/demos/medisync/index.html')
+
+        server.middlewares.use('/demos/medisync', async (request, response, next) => {
+          const path = (request.url ?? '/').split('?')[0]
+          if (path.includes('.')) return next()
+
+          try {
+            response.setHeader('Content-Type', 'text/html')
+            response.end(await readFile(entry))
+          } catch {
+            next()
+          }
+        })
+      },
+    },
+    {
+      // Sizzle is client-routed too, so it needs the same fallback.
+      name: 'serve-sizzle-demo',
+      configureServer(server) {
+        const entry = resolve(root, 'public/demos/sizzle/index.html')
+
+        server.middlewares.use('/demos/sizzle', async (request, response, next) => {
+          const path = (request.url ?? '/').split('?')[0]
+          if (path.includes('.')) return next()
+
+          try {
+            response.setHeader('Content-Type', 'text/html')
+            response.end(await readFile(entry))
+          } catch {
+            next()
+          }
+        })
+      },
+    },
   ],
   test: { environment: 'jsdom', setupFiles: ['./src/test/setup.ts'] },
 })

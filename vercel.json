@@ -2,6 +2,10 @@
   "rewrites": [
     { "source": "/demos/claimly", "destination": "/demos/claimly/index.html" },
     { "source": "/demos/claimly/", "destination": "/demos/claimly/index.html" },
+    { "source": "/demos/medisync", "destination": "/demos/medisync/index.html" },
+    { "source": "/demos/medisync/:path*", "destination": "/demos/medisync/index.html" },
+    { "source": "/demos/sizzle", "destination": "/demos/sizzle/index.html" },
+    { "source": "/demos/sizzle/:path*", "destination": "/demos/sizzle/index.html" },
     { "source": "/(.*)", "destination": "/index.html" }
   ]
 }

@@ -4,9 +4,12 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "dev": "npm run prepare:claimly-demo && vite",
+    "dev": "npm run prepare:demos && vite",
+    "prepare:demos": "npm run prepare:claimly-demo && npm run prepare:medisync-demo && npm run prepare:sizzle-demo",
     "prepare:claimly-demo": "node scripts/prepare-claimly-demo.mjs",
-    "build": "npm run prepare:claimly-demo && tsc -b && vite build",
+    "prepare:medisync-demo": "node scripts/prepare-medisync-demo.mjs",
+    "prepare:sizzle-demo": "node scripts/prepare-sizzle-demo.mjs",
+    "build": "npm run prepare:demos && tsc -b && vite build",
     "test": "vitest",
     "typecheck": "tsc -b --pretty false",
     "lint": "eslint . --max-warnings=0"
