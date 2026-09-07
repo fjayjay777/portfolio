@@ -1,5 +1,9 @@
 import { Link } from 'react-router-dom'
+import intakeShot from '../assets/claimly/01-intake.png'
+import reportShot from '../assets/claimly/02-report.png'
+import appealShot from '../assets/claimly/03-appeal.png'
 import { MobileDemoFrame } from '../components/MobileDemoFrame'
+import { PhoneShot } from '../components/PhoneShot'
 import { CaseFooter } from '../components/CaseFooter'
 import { SiteNav } from '../components/SiteNav'
 
@@ -13,17 +17,20 @@ const facts = [
 const walkthrough = [
   {
     title: 'Get the bill in, however it arrived',
-    figure: 'Bill intake',
+    shot: intakeShot,
+    alt: 'Claimly home screen offering Upload PDF, Use Camera and Fill Information Manually as equal options',
     note: 'Photo, PDF, or manual entry sit as equal options on the home screen. Medical bills reach people in all three forms — a envelope, a patient-portal download, a number read over the phone — so none of them is the secondary path.',
   },
   {
     title: 'Read the line that is wrong',
-    figure: 'Claim report',
+    shot: reportShot,
+    alt: 'The expanded Chest X-ray row showing the insurance and patient split, a plain-English summary, and the decoded reason codes',
     note: 'The report opens with one flagged item and the rest collapsed. Expanding the Chest X-ray gives the split as a bar, a sentence in plain English — $120 billed, $45 covered, $75 left to you, 62.5% of the item — then the decoded reason codes and what specifically looks off.',
   },
   {
     title: 'Know what to say',
-    figure: 'Appeal solution',
+    shot: appealShot,
+    alt: 'The appeal script card with the claim number and EOB date filled in, above Re-generate and Copy buttons',
     note: 'The appeal screen produces a script with the claim number and EOB date already in it, a Re-generate for different wording, a copy button, and a checklist of documents to have ready. It also states the deadline, because appeal windows close in 60 to 180 days.',
   },
 ]
@@ -140,9 +147,12 @@ export function ClaimlyPage() {
                   <h3>{step.title}</h3>
                   <p>{step.note}</p>
                 </div>
-                <div className="step-figure placeholder-figure" aria-hidden="true">
-                  <span>{step.figure}</span>
-                </div>
+                <PhoneShot
+                  src={step.shot}
+                  alt={step.alt}
+                  canvas="#f4f4f4"
+                  viewport={{ width: 402, height: 874 }}
+                />
               </li>
             ))}
           </ol>

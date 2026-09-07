@@ -286,12 +286,6 @@ section[id] { scroll-margin-top: 72px; }
 /* Placeholders are deliberately visible so unfinished copy never ships silently. */
 .placeholder { color: #9a9186; font-style: italic; }
 .placeholder strong { font-style: normal; font-weight: 500; }
-.placeholder-figure {
-  display: grid; place-items: center;
-  border: 1px dashed #d3cabb; border-radius: var(--radius); background: var(--raised);
-  color: #a79d90; font: 400 10px/1 var(--mono); letter-spacing: .16em; text-transform: uppercase;
-}
-
 .case-demo { border-block: 1px solid var(--rule); background: var(--raised); padding: var(--gap) 0; }
 .case-demo-inner { display: grid; grid-template-columns: minmax(0, 1fr) minmax(240px, 300px); gap: 56px; align-items: center; }
 .case-demo-copy p { max-width: 44ch; margin: 0 0 14px; color: #35312b; font-size: 16px; line-height: 1.65; }
@@ -310,7 +304,15 @@ section[id] { scroll-margin-top: 72px; }
 .step-index { color: var(--accent); font: 400 11px/1 var(--mono); letter-spacing: .16em; }
 .step-copy h3 { margin: 12px 0 10px; font: 400 clamp(1.25rem, 2.2vw, 1.6rem)/1.2 var(--serif); letter-spacing: -.02em; }
 .step-copy p { max-width: 42ch; margin: 0; font-size: 15px; line-height: 1.65; }
-.step-figure { aspect-ratio: 4 / 3; }
+/* Walkthrough shots wear the same device chrome as the live prototype, so the
+   screen image sits exactly where the demo's iframe would. */
+/* Wider than the demo frame's 300px default would suggest: at 270px the 402pt
+   design was being shown at 63%, which no amount of resolution makes legible. */
+.phone-shot { margin: 0; justify-self: center; width: min(100%, 340px); }
+.mobile-demo__shot {
+  position: absolute; top: calc(var(--demo-status) * var(--demo-scale)); left: 0;
+  display: block; width: 100%; height: auto;
+}
 
 .decision-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
 .decision-card { border: 1px solid var(--rule); border-radius: var(--radius); padding: 22px; }

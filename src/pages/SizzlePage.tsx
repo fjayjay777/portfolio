@@ -1,6 +1,10 @@
 import { Link } from 'react-router-dom'
+import recommendShot from '../assets/sizzle/sz-01-recommend.jpg'
+import fridgeShot from '../assets/sizzle/sz-02-fridge.jpg'
+import mealplansShot from '../assets/sizzle/sz-03-mealplans.jpg'
 import { MobileDemoFrame } from '../components/MobileDemoFrame'
 import { CaseFooter } from '../components/CaseFooter'
+import { PhoneShot } from '../components/PhoneShot'
 import { SiteNav } from '../components/SiteNav'
 
 const facts = [
@@ -13,17 +17,20 @@ const facts = [
 const walkthrough = [
   {
     title: 'Swipe to find something to cook',
-    figure: 'Recommendation',
+    shot: recommendShot,
+    alt: 'The swipe-based recommendation home showing one recipe at a time',
     note: 'The home screen recommends by swipe rather than by list. It was the one interaction testers volunteered praise for in the first round — easy and creative, in their words — so it survived every later revision untouched.',
   },
   {
     title: 'Cook from what is already in the fridge',
-    figure: 'Fridge',
+    shot: fridgeShot,
+    alt: 'The fridge screen listing ingredients already on hand, grouped by category',
     note: 'The fridge holds what you actually have and matches recipes against it. Testers connected it to two different things I had treated separately: fitting recipes to a daily routine, and not wasting food. One tester also could not find it — placement, not concept, was the problem.',
   },
   {
     title: 'Keep meal plans apart from saved recipes',
-    figure: 'Meal plans',
+    shot: mealplansShot,
+    alt: 'The meal plans screen, kept separate from saved recipes',
     note: 'Saved recipes and meal plans live in separate places. A tester named this as the reason he did not mix them up, which settled a structure I had been unsure about — though the same round showed in-progress plans were still missing from the saved view.',
   },
 ]
@@ -143,9 +150,12 @@ export function SizzlePage() {
                   <h3>{step.title}</h3>
                   <p>{step.note}</p>
                 </div>
-                <div className="step-figure placeholder-figure" aria-hidden="true">
-                  <span>{step.figure}</span>
-                </div>
+                <PhoneShot
+                  src={step.shot}
+                  alt={step.alt}
+                  canvas="#fef9f0"
+                  viewport={{ width: 430, height: 932 }}
+                />
               </li>
             ))}
           </ol>
