@@ -5,7 +5,9 @@ import reactRefresh from 'eslint-plugin-react-refresh'
 import tseslint from 'typescript-eslint'
 
 export default tseslint.config(
-  { ignores: ['dist', 'node_modules'] },
+  // .worktrees holds other checkouts with their own tsconfig; linting them from
+  // here makes typescript-eslint ambiguous about which root to use.
+  { ignores: ['dist', 'node_modules', '.worktrees'] },
   {
     extends: [js.configs.recommended, ...tseslint.configs.recommended],
     files: ['**/*.{ts,tsx}'],
