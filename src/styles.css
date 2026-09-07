@@ -27,7 +27,10 @@ button, a { font: inherit; }
 a { color: inherit; }
 button { cursor: pointer; }
 
-.site-shell { display: flex; flex-direction: column; min-height: 100vh; overflow-x: hidden; }
+/* `clip` rather than `hidden`: hidden makes this a scroll container, which both
+   broke the sticky nav and swallowed scrollIntoView so in-page anchors did
+   nothing. `clip` still clips horizontal overflow without scrolling. */
+.site-shell { display: flex; flex-direction: column; min-height: 100vh; overflow-x: clip; }
 .section-shell { width: var(--content); margin-inline: auto; }
 main { flex: 1; }
 
@@ -41,12 +44,25 @@ main { flex: 1; }
   position: sticky; z-index: 4; top: 0;
   display: grid; place-items: center;
   height: 58px;
-  border-bottom: 1px solid transparent;
-  background: rgb(250 248 244 / .82);
-  backdrop-filter: saturate(1.4) blur(10px);
-  transition: border-color .3s var(--ease);
+  background: var(--ground);
 }
-.site-header:hover, .site-header:focus-within { border-bottom-color: var(--rule); }
+/* Case pages hide the bar until the pointer reaches the top edge. The ::after
+   strip is the catcher: while hidden it sits in the top 58px of the viewport,
+   and it collapses once revealed so it never blocks clicks on the page. */
+.site-header--auto-hide {
+  position: fixed; top: 0; right: 0; left: 0;
+  transform: translateY(-100%);
+  transition: transform .32s var(--ease);
+}
+.site-header--auto-hide::after {
+  position: absolute; top: 100%; right: 0; left: 0;
+  height: 58px;
+  content: '';
+}
+.site-header--auto-hide:hover,
+.site-header--auto-hide:focus-within { transform: none; }
+.site-header--auto-hide:hover::after,
+.site-header--auto-hide:focus-within::after { height: 0; }
 .site-nav { width: var(--content); display: flex; align-items: center; justify-content: space-between; gap: 20px; }
 .wordmark { color: var(--ink); font-weight: 500; letter-spacing: .1em; text-decoration: none; transition: color .2s var(--ease); }
 .wordmark:hover { color: var(--accent); }
@@ -67,11 +83,37 @@ main { flex: 1; }
    the free space collects above it instead of centering it. 58px is the nav.
    Bottom padding stays larger than --gap to hold Selected works off. */
 .hero {
+  position: relative;
   display: flex; flex-direction: column; justify-content: flex-end;
   min-height: calc(100vh - 58px);
   min-height: calc(100svh - 58px);
   padding: clamp(48px, 8vw, 96px) 0 clamp(88px, 11vw, 152px);
 }
+/* Hero figure ---------------------------------------------------------- */
+/* Absolute so the marks sit in the space the bottom-anchored copy leaves above
+   it, without ever joining the flex flow and shifting the type. */
+.hero-marks { position: absolute; z-index: 0; inset: 0; pointer-events: none; }
+.hero .eyebrow, .hero h1, .hero-lead, .hero-detail { position: relative; z-index: 1; }
+.hero-mark {
+  position: absolute; display: block; aspect-ratio: 1;
+  /* Steady linear spin — no easing, so it reads as mechanical rather than as a
+     transition that never lands. */
+  animation: hero-spin 46s linear infinite;
+}
+.asterisk { display: block; width: 100%; height: 100%; overflow: visible; }
+.asterisk line {
+  stroke: currentColor; stroke-linecap: round;
+  /* Device-pixel stroke, so shrinking a mark does not also thin its lines —
+     weight is set per mark below instead of scaling with the viewBox. */
+  vector-effect: non-scaling-stroke;
+}
+.hero-mark--lead { top: 11%; right: 1%; width: clamp(96px, 10.5vw, 142px); color: var(--ink); stroke-width: 5; }
+.hero-mark--echo {
+  top: 42%; right: 19%; width: clamp(44px, 4.8vw, 66px); color: #4a4741; stroke-width: 3.6;
+  animation-duration: 34s; animation-direction: reverse;
+}
+.hero-mark--accent { top: 62%; right: 4%; width: clamp(20px, 2.3vw, 32px); color: #a9a7a3; stroke-width: 2.6; animation-duration: 26s; }
+@keyframes hero-spin { to { transform: rotate(360deg); } }
 .eyebrow { display: flex; gap: 10px; align-items: center; margin: 0; color: var(--ink); }
 .eyebrow::before { width: 20px; height: 1px; background: var(--accent); content: ''; }
 .hero h1 {
@@ -84,7 +126,7 @@ main { flex: 1; }
 }
 .hero-detail {
   display: flex; flex-wrap: wrap; gap: 12px 32px; align-items: baseline; justify-content: space-between;
-  margin-top: clamp(34px, 5.5vw, 54px); border-top: 1px solid var(--rule); padding-top: 18px;
+  margin-top: clamp(46px, 6.5vw, 68px);
 }
 .meta-label { margin: 0; color: var(--soft); }
 .location { margin: 0; color: var(--accent); font: 400 11px/1.5 var(--mono); letter-spacing: .16em; text-transform: uppercase; }
@@ -96,7 +138,7 @@ section[id] { scroll-margin-top: 72px; }
 .section-label h2 { margin: 0; color: var(--ink); }
 .section-label > span:first-child { color: var(--accent); font: 400 11px/1.5 var(--mono); letter-spacing: .16em; }
 .section-label .count { margin-left: auto; color: var(--soft); font: 400 11px/1.5 var(--mono); letter-spacing: .16em; }
-.work-list { display: flex; flex-direction: column; border-bottom: 1px solid var(--rule); }
+.work-list { display: flex; flex-direction: column; }
 .work-row {
   display: grid; grid-template-columns: 26px 8px minmax(0, 1.15fr) minmax(0, 1fr) 22px;
   gap: 0 22px; align-items: center;
@@ -106,6 +148,7 @@ section[id] { scroll-margin-top: 72px; }
   padding: 18px 14px; text-align: left; text-decoration: none;
   transition: background .3s var(--ease);
 }
+.work-row:first-child { border-top: 0; }
 .work-row:hover { background: var(--raised); }
 .work-index { color: var(--soft); font: 400 11px/1 var(--mono); letter-spacing: .1em; transition: color .25s var(--ease); }
 .work-row:hover .work-index { color: var(--accent); }
@@ -126,26 +169,66 @@ section[id] { scroll-margin-top: 72px; }
 }
 
 /* Contact -------------------------------------------------------------- */
-.contact { background: var(--raised); padding: var(--gap) 0; }
+.contact {
+  display: flex; align-items: center;
+  min-height: calc(100vh - 58px);
+  min-height: calc(100svh - 58px);
+  position: relative; overflow: clip;
+  background: var(--raised); padding: var(--gap) 0;
+}
+.contact::before {
+  position: absolute; z-index: 0; inset: -45%;
+  background:
+    radial-gradient(closest-side at 32% 34%, #fbf8f3 0%, rgb(251 248 243 / 0) 70%),
+    radial-gradient(closest-side at 70% 66%, #e7dfd1 0%, rgb(231 223 209 / 0) 72%);
+  animation: contact-drift 32s ease-in-out infinite alternate;
+  will-change: transform;
+  content: '';
+}
+@keyframes contact-drift {
+  from { transform: translate3d(-3%, -2%, 0) scale(1); }
+  to { transform: translate3d(3%, 2%, 0) scale(1.14); }
+}
+.contact-inner { position: relative; z-index: 1; }
+/* Beats the generic section[id] offset so the section lands flush under the
+   58px nav and fills exactly the remaining viewport. */
+.contact[id] { scroll-margin-top: 58px; }
 .contact-inner { width: var(--content); margin-inline: auto; }
 .contact-head { display: flex; flex-wrap: wrap; gap: 10px 24px; align-items: baseline; justify-content: space-between; margin-bottom: 26px; }
 .contact h2 { max-width: 14ch; margin: 0; color: var(--ink); font: 400 clamp(2rem, 4.4vw, 3rem)/1.1 var(--serif); letter-spacing: -.03em; }
 .contact-list { display: flex; flex-direction: column; border-bottom: 1px solid var(--rule); }
 .contact-list a {
-  display: grid; grid-template-columns: 120px minmax(0, 1fr) 22px;
+  display: grid; grid-template-columns: 120px minmax(0, 1fr);
   gap: 0 22px; align-items: center;
   min-height: 74px;
   border-top: 1px solid var(--rule);
   padding: 16px 14px; color: var(--ink); text-decoration: none;
   transition: background .3s var(--ease);
 }
-.contact-list a:hover { background: var(--raised); }
+.contact-list a:first-child { border-top: 0; }
+.contact-list a:hover { background: rgb(255 255 255 / .3); }
 .contact-list span { color: var(--soft); font: 400 11px/1.5 var(--mono); letter-spacing: .16em; text-transform: uppercase; }
 .contact-list strong { font-size: 17px; font-weight: 400; letter-spacing: -.01em; overflow-wrap: anywhere; transition: color .25s var(--ease); }
 .contact-list a:hover strong { color: var(--accent); }
-.contact-list b { justify-self: end; color: var(--soft); font-size: 16px; font-weight: 400; transition: color .25s var(--ease), transform .25s var(--ease); }
-.contact-list a:hover b { color: var(--accent); transform: translate(3px, -3px); }
 .footer-note { margin: 24px 0 0; color: var(--soft); font: 400 10px/1.5 var(--mono); letter-spacing: .14em; }
+
+/* Contact reveal ------------------------------------------------------- */
+.contact-reveal .contact-head,
+.contact-reveal .contact-list a,
+.contact-reveal .footer-note {
+  opacity: 0; transform: translateY(18px);
+  transition: opacity .6s var(--ease), transform .6s var(--ease);
+}
+/* The list's closing rule fades with its rows so no stray line sits alone. */
+.contact-reveal .contact-list { border-bottom-color: transparent; transition: border-color .6s var(--ease) .24s; }
+.contact-reveal.is-visible .contact-head,
+.contact-reveal.is-visible .contact-list a,
+.contact-reveal.is-visible .footer-note { opacity: 1; transform: none; }
+.contact-reveal.is-visible .contact-list { border-bottom-color: var(--rule); }
+.contact-reveal.is-visible .contact-list a:nth-child(1) { transition-delay: .08s; }
+.contact-reveal.is-visible .contact-list a:nth-child(2) { transition-delay: .16s; }
+.contact-reveal.is-visible .contact-list a:nth-child(3) { transition-delay: .24s; }
+.contact-reveal.is-visible .footer-note { transition-delay: .34s; }
 
 /* Me page -------------------------------------------------------------- */
 .me-page { padding: clamp(52px, 8vw, 90px) 0 var(--gap); }
@@ -236,9 +319,25 @@ section[id] { scroll-margin-top: 72px; }
 .stat-row strong { display: block; font: 400 clamp(1.8rem, 3.4vw, 2.4rem)/1 var(--serif); letter-spacing: -.03em; }
 .stat-row span { display: block; margin-top: 8px; color: var(--soft); font: 400 10px/1.4 var(--mono); letter-spacing: .14em; text-transform: uppercase; }
 
-.case-footer {
+.case-end { margin-top: var(--gap); }
+.case-next {
+  display: block; border-top: 1px solid var(--rule);
+  padding: clamp(26px, 4vw, 44px) 0 clamp(24px, 3.5vw, 38px);
+  color: var(--ink); text-decoration: none;
+}
+.case-next__label { display: block; color: var(--soft); font: 400 11px/1.5 var(--mono); letter-spacing: .16em; text-transform: uppercase; }
+.case-next__row { display: flex; gap: 20px; align-items: baseline; justify-content: space-between; margin-top: 12px; }
+.case-next__name {
+  font: 400 clamp(2.2rem, 5.4vw, 3.6rem)/1 var(--serif); letter-spacing: -.035em;
+  transition: color .25s var(--ease), transform .25s var(--ease);
+}
+.case-next__arrow { color: var(--soft); font-size: 22px; transition: color .25s var(--ease), transform .25s var(--ease); }
+.case-next__category { display: block; margin-top: 10px; color: var(--soft); font: 400 11px/1.5 var(--mono); letter-spacing: .16em; text-transform: uppercase; }
+.case-next:hover .case-next__name { color: var(--accent); transform: translateX(6px); }
+.case-next:hover .case-next__arrow { color: var(--accent); transform: translate(4px, -4px); }
+.case-links {
   display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between;
-  margin-top: var(--gap); border-top: 1px solid var(--rule); padding-top: 22px;
+  border-top: 1px solid var(--rule); padding-top: 20px;
 }
 
 /* Project dialog ------------------------------------------------------- */
@@ -313,7 +412,7 @@ section[id] { scroll-margin-top: 72px; }
   .work-row { grid-template-columns: 24px 8px minmax(0, 1fr) 22px; gap: 0 18px; }
   .work-meta { grid-column: 3; margin-top: 8px; }
   .work-arrow { grid-row: 1; grid-column: 4; align-self: start; }
-  .contact-list a { grid-template-columns: 100px minmax(0, 1fr) 22px; }
+  .contact-list a { grid-template-columns: 100px minmax(0, 1fr); }
   .cv-row { grid-template-columns: minmax(0, 1fr) 150px; gap: 10px 24px; }
   .case-demo-inner { grid-template-columns: 1fr; gap: 36px; justify-items: center; }
   .case-demo-copy { justify-self: stretch; }
@@ -325,20 +424,29 @@ section[id] { scroll-margin-top: 72px; }
 }
 @media (max-width: 680px) {
   :root { --content: min(100% - 28px, 667px); }
+  /* Only the lead mark survives the narrow layout; the smaller two would sit
+     on top of the copy. */
+  .hero-mark--echo, .hero-mark--accent { display: none; }
+  .hero-mark--lead { top: 7%; right: 1%; width: 86px; }
   .nav-links { gap: 16px; }
   .nav-links a { letter-spacing: .1em; }
   .work-row { grid-template-columns: 22px 8px minmax(0, 1fr) 20px; min-height: 0; padding: 18px 8px; }
-  .contact-list a { grid-template-columns: minmax(0, 1fr) 20px; gap: 6px 14px; padding: 16px 8px; }
-  .contact-list span, .contact-list strong { grid-column: 1; }
-  .contact-list b { grid-column: 2; grid-row: 1 / span 2; align-self: center; }
+  .contact-list a { grid-template-columns: minmax(0, 1fr); gap: 6px; padding: 16px 8px; }
   .cv-row { grid-template-columns: 1fr; gap: 6px; }
   .cv-when { justify-self: start; order: -1; text-align: left; }
   .stat-row { grid-template-columns: 1fr; gap: 12px; }
-  .case-footer { gap: 12px; }
+  .case-links { gap: 12px; }
   .project-dialog { padding: 22px; }
   .project-dialog__content { grid-template-columns: 1fr; gap: 26px; }
   .mobile-demo__frame { width: min(100%, 270px); margin-inline: auto; }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
+  /* The figure stays as a composed still rather than disappearing. */
+  .hero-mark { animation: none; }
+  .contact::before { animation: none; }
+  .contact-reveal .contact-head,
+  .contact-reveal .contact-list a,
+  .contact-reveal .footer-note { opacity: 1; transform: none; }
+  .contact-reveal .contact-list { border-bottom-color: var(--rule); }
 }

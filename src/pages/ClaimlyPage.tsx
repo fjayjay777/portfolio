@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { MobileDemoFrame } from '../components/MobileDemoFrame'
+import { CaseFooter } from '../components/CaseFooter'
 import { SiteNav } from '../components/SiteNav'
 
 const facts = [
@@ -45,7 +46,7 @@ const decisions = [
 export function ClaimlyPage() {
   return (
     <div className="site-shell">
-      <SiteNav />
+      <SiteNav autoHide />
       <main className="case-page">
         <header className="case-hero section-shell">
           <Link className="back-link" to="/#works">← Selected works</Link>
@@ -199,10 +200,7 @@ export function ClaimlyPage() {
           </div>
         </section>
 
-        <nav className="case-footer section-shell" aria-label="Project navigation">
-          <Link className="back-link" to="/#works">← Selected works</Link>
-          <Link className="back-link" to="/#contact">Get in touch →</Link>
-        </nav>
+        <CaseFooter current="Claimly" />
       </main>
     </div>
   )

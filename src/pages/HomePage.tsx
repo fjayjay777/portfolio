@@ -1,8 +1,10 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { HeroFigure } from '../components/HeroFigure'
 import { ProjectDialog, type Project } from '../components/ProjectDialog'
 import { SiteNav } from '../components/SiteNav'
 import { useHashScroll } from '../hooks/useHashScroll'
+import { useInView } from '../hooks/useInView'
 
 const projects: Project[] = [
   {
@@ -37,6 +39,7 @@ const projects: Project[] = [
 export function HomePage() {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null)
   const [lastTrigger, setLastTrigger] = useState<HTMLButtonElement | null>(null)
+  const [contactRef, contactInView] = useInView<HTMLElement>()
   useHashScroll()
 
   function openProject(project: Project, trigger: HTMLButtonElement) {
@@ -49,6 +52,7 @@ export function HomePage() {
       <SiteNav />
       <main>
         <section className="hero section-shell" aria-labelledby="home-title">
+          <HeroFigure />
           <p className="eyebrow">Designer &amp; Researcher</p>
           <h1 id="home-title">Jiani Huang</h1>
           <p className="hero-lead">I design human-centered products that bridge user needs, intelligent technology, and thoughtful interaction.</p>
@@ -102,16 +106,20 @@ export function HomePage() {
           </div>
         </section>
 
-        <section className="contact" id="contact" aria-labelledby="contact-title">
+        <section
+          className={`contact contact-reveal${contactInView ? ' is-visible' : ''}`}
+          ref={contactRef}
+          id="contact"
+          aria-labelledby="contact-title"
+        >
           <div className="contact-inner">
             <div className="contact-head">
               <h2 id="contact-title">Let’s Talk</h2>
-              <p className="eyebrow">Contact</p>
             </div>
             <div className="contact-list">
-              <a href="mailto:huangjn35@gmail.com"><span>Email</span><strong>Huangjn35@gmail.com</strong><b aria-hidden="true">→</b></a>
-              <a href="tel:+13855384176"><span>Phone</span><strong>385-528-4176</strong><b aria-hidden="true">→</b></a>
-              <a href="https://www.linkedin.com" target="_blank" rel="noreferrer"><span>LinkedIn</span><strong>Jiani Huang</strong><b aria-hidden="true">→</b></a>
+              <a href="mailto:huangjn35@gmail.com"><span>Email</span><strong>Huangjn35@gmail.com</strong></a>
+              <a href="tel:+13855384176"><span>Phone</span><strong>385-528-4176</strong></a>
+              <a href="https://www.linkedin.com" target="_blank" rel="noreferrer"><span>LinkedIn</span><strong>Jiani Huang</strong></a>
             </div>
             <p className="footer-note">Design and built by Jiani @2026</p>
           </div>

@@ -2,7 +2,7 @@ import { Link, NavLink, useLocation } from 'react-router-dom'
 
 const sectionLink = (section: string) => `/#${section}`
 
-export function SiteNav() {
+export function SiteNav({ autoHide = false }: { autoHide?: boolean }) {
   const location = useLocation()
 
   function scrollOnHomepage(event: React.MouseEvent<HTMLAnchorElement>, section: string) {
@@ -13,7 +13,7 @@ export function SiteNav() {
   }
 
   return (
-    <header className="site-header">
+    <header className={autoHide ? 'site-header site-header--auto-hide' : 'site-header'}>
       <nav className="site-nav" aria-label="Primary navigation">
         <Link className="wordmark" aria-label="Jiani Huang home" to="/">JH</Link>
         <div className="nav-links">
