@@ -7,6 +7,9 @@
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   --content: min(100% - 48px, 1080px);
+  /* Overridden in the ultrawide layer; everything measuring against the nav
+     reads this so the two never drift apart. */
+  --nav-height: 58px;
   --ground: #faf8f4;
   --raised: #f3efe8;
   --ink: #1a1815;
@@ -43,11 +46,11 @@ main { flex: 1; }
 .site-header {
   position: sticky; z-index: 4; top: 0;
   display: grid; place-items: center;
-  height: 58px;
+  height: var(--nav-height);
   background: var(--ground);
 }
 /* Case pages hide the bar until the pointer reaches the top edge. The ::after
-   strip is the catcher: while hidden it sits in the top 58px of the viewport,
+   strip is the catcher: while hidden it covers the nav strip at the top of
    and it collapses once revealed so it never blocks clicks on the page. */
 .site-header--auto-hide {
   position: fixed; top: 0; right: 0; left: 0;
@@ -56,7 +59,7 @@ main { flex: 1; }
 }
 .site-header--auto-hide::after {
   position: absolute; top: 100%; right: 0; left: 0;
-  height: 58px;
+  height: var(--nav-height);
   content: '';
 }
 .site-header--auto-hide:hover,
@@ -80,13 +83,13 @@ main { flex: 1; }
 
 /* Hero ----------------------------------------------------------------- */
 /* The banner fills the first screen with its content anchored to the bottom, so
-   the free space collects above it instead of centering it. 58px is the nav.
+   the free space collects above it instead of centering it.
    Bottom padding stays larger than --gap to hold Selected works off. */
 .hero {
   position: relative;
   display: flex; flex-direction: column; justify-content: flex-end;
-  min-height: calc(100vh - 58px);
-  min-height: calc(100svh - 58px);
+  min-height: calc(100vh - var(--nav-height));
+  min-height: calc(100svh - var(--nav-height));
   padding: clamp(48px, 8vw, 96px) 0 clamp(88px, 11vw, 152px);
 }
 /* Hero figure ---------------------------------------------------------- */
@@ -171,8 +174,8 @@ section[id] { scroll-margin-top: 72px; }
 /* Contact -------------------------------------------------------------- */
 .contact {
   display: flex; align-items: center;
-  min-height: calc(100vh - 58px);
-  min-height: calc(100svh - 58px);
+  min-height: calc(100vh - var(--nav-height));
+  min-height: calc(100svh - var(--nav-height));
   position: relative; overflow: clip;
   background: var(--raised); padding: var(--gap) 0;
 }
@@ -191,8 +194,8 @@ section[id] { scroll-margin-top: 72px; }
 }
 .contact-inner { position: relative; z-index: 1; }
 /* Beats the generic section[id] offset so the section lands flush under the
-   58px nav and fills exactly the remaining viewport. */
-.contact[id] { scroll-margin-top: 58px; }
+   nav and fills exactly the remaining viewport. */
+.contact[id] { scroll-margin-top: var(--nav-height); }
 .contact-inner { width: var(--content); margin-inline: auto; }
 .contact-head { display: flex; flex-wrap: wrap; gap: 10px 24px; align-items: baseline; justify-content: space-between; margin-bottom: 26px; }
 .contact h2 { max-width: 14ch; margin: 0; color: var(--ink); font: 400 clamp(2rem, 4.4vw, 3rem)/1.1 var(--serif); letter-spacing: -.03em; }
@@ -449,7 +452,7 @@ section[id] { scroll-margin-top: 72px; }
   .contact-head { margin-bottom: clamp(26px, 1.8vw, 36px); }
   .contact h2 { font-size: clamp(3rem, 3.2vw, 4rem); }
   .contact-list a {
-    grid-template-columns: clamp(120px, 9vw, 180px) minmax(0, 1fr) 26px;
+    grid-template-columns: clamp(120px, 9vw, 180px) minmax(0, 1fr);
     min-height: clamp(74px, 5vw, 100px);
     padding: clamp(16px, 1.2vw, 24px) clamp(14px, 1vw, 20px);
   }
@@ -507,7 +510,7 @@ section[id] { scroll-margin-top: 72px; }
   .decision-card p { font-size: clamp(15px, .9vw, 18px); }
   .stat-row { gap: clamp(16px, 1.5vw, 28px); }
   .stat-row strong { font-size: clamp(2.4rem, 2.8vw, 3.25rem); }
-  .case-footer { padding-top: clamp(22px, 1.5vw, 30px); }
+  .case-links { padding-top: clamp(22px, 1.5vw, 30px); }
 }
 
 @media (max-width: 900px) {

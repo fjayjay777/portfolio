@@ -1,4 +1,4 @@
-import { defineConfig } from 'vitest/config'
+import { configDefaults, defineConfig } from 'vitest/config'
 import { readFile } from 'node:fs/promises'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -66,5 +66,11 @@ export default defineConfig({
       },
     },
   ],
-  test: { environment: 'jsdom', setupFiles: ['./src/test/setup.ts'] },
+  // .worktrees holds other branches' checkouts; running their suites from here
+  // reports failures that have nothing to do with this working tree.
+  test: {
+    environment: 'jsdom',
+    setupFiles: ['./src/test/setup.ts'],
+    exclude: [...configDefaults.exclude, '**/.worktrees/**'],
+  },
 })

@@ -40,26 +40,18 @@ test('sends Contact from Me to the Homepage contact area', async () => {
   expect(scrollIntoView).toHaveBeenCalledWith({ behavior: 'smooth', block: 'start' })
 })
 
-test('opens Claimly project details and restores trigger focus after Escape', async () => {
+test('opens the Claimly case study from the work index', async () => {
   const user = userEvent.setup()
   renderAt('/')
-  const trigger = screen.getByRole('button', { name: /Claimly project/i })
 
-  await user.click(trigger)
+  await user.click(screen.getByRole('link', { name: /Claimly case study/i }))
 
-  expect(screen.getByRole('dialog', { name: 'Claimly project details' })).toBeVisible()
-
-  await user.keyboard('{Escape}')
-
-  expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
-  expect(trigger).toHaveFocus()
+  expect(await screen.findByRole('heading', { level: 1, name: 'Claimly' })).toBeInTheDocument()
 })
 
-test('embeds the Claimly prototype and provides a direct demo link', async () => {
-  const user = userEvent.setup()
-  renderAt('/')
-
-  await user.click(screen.getByRole('button', { name: /Claimly project/i }))
+// The prototype used to live in a homepage dialog; it now sits on the case page.
+test('embeds the Claimly prototype and provides a direct demo link', () => {
+  renderAt('/work/claimly')
 
   expect(screen.getByTitle('Claimly interactive prototype')).toHaveAttribute('src', '/demos/claimly/')
   expect(screen.getByRole('link', { name: 'Open Claimly demo' })).toHaveAttribute('href', '/demos/claimly/')
