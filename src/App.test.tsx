@@ -86,7 +86,7 @@ test('renders the Me page profile and preserves Contact navigation', () => {
   renderAt('/me')
 
   expect(screen.getByRole('heading', { name: 'Jiani Huang' })).toBeVisible()
-  expect(screen.getByText(/designer and developer with eight years/i)).toBeVisible()
+  expect(screen.getByText(/came to user experience from painting/i)).toBeVisible()
   expect(screen.getByRole('link', { name: 'ME' })).toHaveAttribute('aria-current', 'page')
   expect(screen.getByRole('link', { name: 'Contact' })).toHaveAttribute('href', '/#contact')
 })
