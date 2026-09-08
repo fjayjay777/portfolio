@@ -2,6 +2,12 @@ import { SiteNav } from '../components/SiteNav'
 
 const experience = [
   {
+    role: 'User Experience Project Consultant',
+    org: 'University of Michigan School of Information — Engaged Learning Office',
+    when: 'Sep 2026 — Present',
+    note: 'Cross-functional project coordination for university and external client engagements, working with faculty and stakeholders to define project scope, align expectations, track priorities, and support successful project delivery.',
+  },
+  {
     role: 'UX Designer',
     org: 'Ann Arbor Hands-On Museum',
     when: 'Jan 2026 — Present',
@@ -19,7 +25,7 @@ const education = [
   {
     role: 'MS in Information — UX Research & Design',
     org: 'University of Michigan, School of Information',
-    when: 'Expected Dec 2026',
+    when: 'Expected May 2027',
     note: 'GPA 4.0 / 4.0.',
   },
   {
@@ -52,7 +58,6 @@ export function MePage() {
     <div className="site-shell">
       <SiteNav />
       <main className="me-page section-shell">
-        <p className="eyebrow">Me</p>
         <h1>Jiani Huang</h1>
 
         <div className="me-intro">
@@ -77,15 +82,17 @@ export function MePage() {
           </ul>
         </div>
 
-        <section className="me-section" aria-labelledby="experience-title">
-          <div className="section-label"><span>/</span><h2 id="experience-title">Experience</h2></div>
-          <CvList entries={experience} />
-        </section>
+        <div className="me-columns">
+          <section className="me-section" aria-labelledby="education-title">
+            <div className="section-label"><span>/</span><h2 id="education-title">Education</h2></div>
+            <CvList entries={education} />
+          </section>
 
-        <section className="me-section" aria-labelledby="education-title">
-          <div className="section-label"><span>/</span><h2 id="education-title">Education</h2></div>
-          <CvList entries={education} />
-        </section>
+          <section className="me-section" aria-labelledby="experience-title">
+            <div className="section-label"><span>/</span><h2 id="experience-title">Experience</h2></div>
+            <CvList entries={experience} />
+          </section>
+        </div>
 
       </main>
     </div>
