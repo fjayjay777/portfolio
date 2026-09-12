@@ -107,36 +107,31 @@ export function ClaimlyPage() {
           </div>
         </section>
 
-        <section className="case-section section-shell" aria-labelledby="overview-title">
+        <section className="case-section section-shell claimly-text-section" aria-labelledby="overview-title">
           <div className="section-label"><span>/</span><h2 id="overview-title">Overview</h2></div>
-          <div className="claimly-editorial claimly-overview">
-            <p className="claimly-pullquote">
-              The document creates the doubt. Claimly gives the user enough evidence to act on it.
+          <div className="case-body claimly-centered-body">
+            <p>
+              An explanation of benefits is written for the people who process it. It gives you a CPT number, a set
+              of reason codes, and three dollar amounts that do not visibly reconcile. Someone who suspects an error
+              gets stuck twice: the document cannot confirm the suspicion, and its language makes the problem hard
+              to challenge.
             </p>
-            <div className="case-body claimly-reading">
-              <p>
-                An explanation of benefits is written for the people who process it. It gives you a CPT number, a set
-                of reason codes, and three dollar amounts that do not visibly reconcile. Someone who suspects an error
-                gets stuck twice: the document cannot confirm the suspicion, and its language makes the problem hard
-                to challenge.
-              </p>
-              <p>
-                Claimly closes both gaps in one pass. It reads the bill against the plan's own terms, marks the lines
-                that do not match, and turns the finding into a script the person can read aloud. The AI does the
-                reading and drafting, but speed is not the main value. The product gives someone the difference between
-                thinking a bill may be wrong and being able to say why.
-              </p>
-            </div>
+            <p>
+              Claimly closes both gaps in one pass. It reads the bill against the plan's own terms, marks the lines
+              that do not match, and turns the finding into a script the person can read aloud. The AI does the
+              reading and drafting, but speed is not the main value. The product gives someone the difference between
+              thinking a bill may be wrong and being able to say why.
+            </p>
           </div>
         </section>
 
-        <section className="case-section section-shell" aria-labelledby="research-title">
+        <section className="case-section section-shell claimly-text-section" aria-labelledby="research-title">
           <div className="section-label"><span>/</span><h2 id="research-title">Research</h2></div>
-          <div className="claimly-research-intro">
-            <p className="claimly-research-count">15+ survey responses<br />4+ follow-up interviews</p>
+          <div className="case-body claimly-centered-body">
             <p>
-              Before drawing a screen, I checked what people actually did with a medical bill they could not
-              understand. The research pointed past comprehension alone: people also lacked a safe next move.
+              Before drawing a screen, I spoke with people about what they actually did with a medical bill they could
+              not understand. Across 15+ survey responses and 4+ follow-up interviews, the problem extended beyond
+              comprehension: people also lacked a safe next move.
             </p>
           </div>
           <ol className="claimly-findings" aria-label="Research findings">
@@ -171,7 +166,7 @@ export function ClaimlyPage() {
           </ol>
         </section>
 
-        <section className="case-section section-shell" aria-labelledby="decisions-title">
+        <section className="case-section section-shell claimly-text-section" aria-labelledby="decisions-title">
           <div className="section-label"><span>/</span><h2 id="decisions-title">Design decisions</h2></div>
           <ol className="claimly-decisions">
             {decisions.map((decision, index) => (
@@ -184,50 +179,41 @@ export function ClaimlyPage() {
           </ol>
         </section>
 
-        <section className="case-section section-shell" aria-labelledby="outcome-title">
+        <section className="case-section section-shell claimly-text-section" aria-labelledby="outcome-title">
           <div className="section-label"><span>/</span><h2 id="outcome-title">Outcome</h2></div>
           <div className="stat-row claimly-stat-row">
             <div><strong>15+</strong><span>Survey responses</span></div>
             <div><strong>4+</strong><span>Interviews</span></div>
             <div><strong>9</strong><span>Unclear what an EOB is</span></div>
           </div>
-          <div className="claimly-outcome-copy">
-            <div>
-              <p className="claimly-kicker">Built in six weeks</p>
-              <p>
-                Claimly went from problem framing to a working interface during the University of Michigan Tech
-                Innovation Jam, between October and mid-November 2025. Research, the design system, and the prototype
-                all fit inside that window.
-              </p>
-            </div>
-            <div>
-              <p className="claimly-kicker">Still to prove</p>
-              <p>
-                Since the Jam I have carried the concept forward myself. It is a working prototype, not a shipped
-                product. The next useful test is not whether someone understands the report. It is whether the appeal
-                script helps them make the call they would otherwise skip.
-              </p>
-            </div>
+          <div className="case-body claimly-centered-body">
+            <p>
+              Claimly went from problem framing to a working interface during the University of Michigan Tech
+              Innovation Jam, between October and mid-November 2025. Research, the design system, and the prototype all
+              fit inside that six-week window.
+            </p>
+            <p>
+              Since the Jam I have carried the concept forward myself. It is a working prototype, not a shipped
+              product. The next useful test is not whether someone understands the report. It is whether the appeal
+              script helps them make the call they would otherwise skip.
+            </p>
           </div>
         </section>
 
-        <section className="case-section section-shell" aria-labelledby="reflection-title">
+        <section className="case-section section-shell claimly-text-section" aria-labelledby="reflection-title">
           <div className="section-label"><span>/</span><h2 id="reflection-title">Reflection</h2></div>
-          <div className="claimly-reflection">
-            <p className="claimly-reflection-lead">The last mile is still a phone call.</p>
-            <div className="case-body claimly-reading">
-              <p>
-                The surprise was not that people could not read their bills. Many already believed something was wrong,
-                knew an appeal was possible, and paid anyway. Complexity closed the case, not ignorance. Two of four
-                interviewees had abandoned an appeal they understood and were entitled to pursue.
-              </p>
-              <p>
-                That changed what I thought the product had to do. Decoding the bill is necessary, but my prototype
-                still ends by handing someone a phone call to make. It shortens the distance to action: the script is
-                written, the claim number is filled in, and the evidence is listed. It does not close that distance.
-                What happens at that last step is the question I would test next.
-              </p>
-            </div>
+          <div className="case-body claimly-centered-body">
+            <p>
+              The surprise was not that people could not read their bills. Many already believed something was wrong,
+              knew an appeal was possible, and paid anyway. Complexity closed the case, not ignorance. Two of four
+              interviewees had abandoned an appeal they understood and were entitled to pursue.
+            </p>
+            <p>
+              That changed what I thought the product had to do. Decoding the bill is necessary, but my prototype still
+              ends by handing someone a phone call to make. It shortens the distance to action: the script is written,
+              the claim number is filled in, and the evidence is listed. It does not close that distance. What happens
+              at that last step is the question I would test next.
+            </p>
           </div>
         </section>
 
