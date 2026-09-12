@@ -330,6 +330,98 @@ section[id] { scroll-margin-top: 72px; }
 .stat-row strong { display: block; font: 400 clamp(1.8rem, 3.4vw, 2.4rem)/1 var(--serif); letter-spacing: -.03em; }
 .stat-row span { display: block; margin-top: 8px; color: var(--soft); font: 400 10px/1.4 var(--mono); letter-spacing: .14em; text-transform: uppercase; }
 
+/* Claimly editorial narrative ----------------------------------------- */
+.claimly-page .case-section > .section-label { margin-bottom: clamp(28px, 3vw, 42px); }
+.claimly-editorial,
+.claimly-reflection {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: clamp(24px, 3vw, 48px);
+  align-items: start;
+}
+.claimly-pullquote,
+.claimly-reflection-lead {
+  grid-column: 1 / span 5;
+  max-width: 15ch;
+  margin: 0;
+  color: var(--ink);
+  font: 400 clamp(1.75rem, 3vw, 2.65rem)/1.14 var(--serif);
+  letter-spacing: -.035em;
+}
+.claimly-reading { grid-column: 7 / -1; max-width: 60ch; }
+.claimly-research-intro {
+  display: grid;
+  grid-template-columns: minmax(190px, 3fr) minmax(0, 7fr);
+  gap: clamp(28px, 5vw, 72px);
+  align-items: start;
+}
+.claimly-research-count,
+.claimly-kicker {
+  margin: 0;
+  color: var(--accent);
+  font: 400 11px/1.7 var(--mono);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+.claimly-research-intro > p:last-child {
+  max-width: 58ch;
+  margin: 0;
+  color: #35312b;
+  font-size: 16px;
+  line-height: 1.7;
+}
+.claimly-findings,
+.claimly-decisions { margin: clamp(32px, 4vw, 52px) 0 0; padding: 0; list-style: none; }
+.claimly-findings li,
+.claimly-decisions li {
+  display: grid;
+  grid-template-columns: 56px minmax(190px, 4fr) minmax(0, 6fr);
+  gap: clamp(20px, 3vw, 48px);
+  align-items: start;
+  border-top: 1px solid var(--rule);
+  padding: clamp(22px, 2.5vw, 34px) 0;
+}
+.finding-index,
+.decision-index {
+  color: var(--accent);
+  font: 400 11px/1.5 var(--mono);
+  letter-spacing: .14em;
+}
+.claimly-findings h3,
+.claimly-decisions h3 {
+  max-width: 22ch;
+  margin: 0;
+  font: 400 clamp(1.2rem, 1.8vw, 1.55rem)/1.25 var(--serif);
+  letter-spacing: -.02em;
+}
+.claimly-findings p,
+.claimly-decisions p {
+  max-width: 58ch;
+  margin: 0;
+  color: #35312b;
+  font-size: 15px;
+  line-height: 1.68;
+}
+.claimly-stat-row { max-width: none; margin-bottom: clamp(32px, 4vw, 52px); }
+.claimly-stat-row div { padding-top: clamp(16px, 2vw, 24px); }
+.claimly-outcome-copy {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(40px, 6vw, 88px);
+}
+.claimly-outcome-copy > div {
+  display: grid;
+  grid-template-columns: minmax(92px, 120px) minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+.claimly-outcome-copy p:last-child {
+  margin: 0;
+  color: #35312b;
+  font-size: 16px;
+  line-height: 1.7;
+}
+
 .case-end { margin-top: var(--gap); }
 .case-next {
   display: block; border-top: 1px solid var(--rule);
@@ -531,6 +623,19 @@ section[id] { scroll-margin-top: 72px; }
   .step { grid-template-columns: 1fr; gap: 22px; }
   .step:nth-child(even) .step-copy { order: 0; }
   .decision-grid { grid-template-columns: 1fr; }
+  .claimly-editorial,
+  .claimly-reflection { grid-template-columns: 1fr; gap: 24px; }
+  .claimly-pullquote,
+  .claimly-reflection-lead,
+  .claimly-reading { grid-column: auto; }
+  .claimly-pullquote,
+  .claimly-reflection-lead { max-width: 20ch; }
+  .claimly-findings li,
+  .claimly-decisions li {
+    grid-template-columns: 42px minmax(170px, .8fr) minmax(0, 1.2fr);
+    gap: 20px;
+  }
+  .claimly-outcome-copy { grid-template-columns: 1fr; gap: 28px; }
 }
 @media (max-width: 680px) {
   :root { --content: min(100% - 28px, 667px); }
@@ -547,6 +652,19 @@ section[id] { scroll-margin-top: 72px; }
   .project-dialog { padding: 22px; }
   .project-dialog__content { grid-template-columns: 1fr; gap: 26px; }
   .mobile-demo__frame { width: min(100%, 270px); margin-inline: auto; }
+  .claimly-page .case-section > .section-label { margin-bottom: 24px; }
+  .claimly-research-intro { grid-template-columns: 1fr; gap: 18px; }
+  .claimly-findings,
+  .claimly-decisions { margin-top: 28px; }
+  .claimly-findings li,
+  .claimly-decisions li {
+    grid-template-columns: 30px minmax(0, 1fr);
+    gap: 8px 12px;
+    padding: 22px 0;
+  }
+  .claimly-findings p,
+  .claimly-decisions p { grid-column: 2; }
+  .claimly-outcome-copy > div { grid-template-columns: 1fr; gap: 10px; }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
