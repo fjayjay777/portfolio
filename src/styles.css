@@ -315,6 +315,14 @@ section[id] { scroll-margin-top: 72px; }
 /* Wider than the demo frame's 300px default would suggest: at 270px the 402pt
    design was being shown at 63%, which no amount of resolution makes legible. */
 .phone-shot { margin: 0; justify-self: center; width: min(100%, 340px); }
+.claimly-page .step {
+  grid-template-columns: minmax(0, 1fr) 300px;
+  gap: clamp(20px, 2.5vw, 30px);
+}
+.claimly-page .step:nth-child(even) { grid-template-columns: 300px minmax(0, 1fr); }
+.claimly-page .step-copy { justify-self: end; }
+.claimly-page .step:nth-child(even) .step-copy { justify-self: start; }
+.claimly-page .phone-shot { width: min(100%, 300px); }
 .mobile-demo__shot {
   position: absolute; top: calc(var(--demo-status) * var(--demo-scale)); left: 0;
   display: block; width: 100%; height: auto;
@@ -331,14 +339,10 @@ section[id] { scroll-margin-top: 72px; }
 .stat-row span { display: block; margin-top: 8px; color: var(--soft); font: 400 10px/1.4 var(--mono); letter-spacing: .14em; text-transform: uppercase; }
 
 /* Claimly editorial narrative ----------------------------------------- */
-.claimly-text-section { max-width: 860px; }
-.claimly-text-section > .section-label,
-.claimly-centered-body { width: 100%; max-width: 68ch; margin-inline: auto; }
-.claimly-text-section > .section-label { margin-bottom: 20px; }
+.claimly-centered-body { width: 100%; max-width: none; }
 .claimly-findings,
 .claimly-decisions {
-  max-width: 68ch;
-  margin: 30px auto 0;
+  margin: 30px 0 0;
   padding: 0;
   list-style: none;
 }
@@ -371,7 +375,7 @@ section[id] { scroll-margin-top: 72px; }
   font-size: 16px;
   line-height: 1.7;
 }
-.claimly-stat-row { max-width: 68ch; margin: 0 auto 30px; }
+.claimly-stat-row { max-width: none; margin: 0 0 30px; }
 
 .case-end { margin-top: var(--gap); }
 .case-next {
@@ -573,6 +577,10 @@ section[id] { scroll-margin-top: 72px; }
   .case-facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .step { grid-template-columns: 1fr; gap: 22px; }
   .step:nth-child(even) .step-copy { order: 0; }
+  .claimly-page .step,
+  .claimly-page .step:nth-child(even) { grid-template-columns: 1fr; gap: 20px; }
+  .claimly-page .step-copy,
+  .claimly-page .step:nth-child(even) .step-copy { justify-self: stretch; }
   .decision-grid { grid-template-columns: 1fr; }
 }
 @media (max-width: 680px) {
