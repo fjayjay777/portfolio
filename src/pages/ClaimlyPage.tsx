@@ -107,7 +107,7 @@ export function ClaimlyPage() {
           </div>
         </section>
 
-        <section className="case-section section-shell" aria-labelledby="overview-title">
+        <section className="case-section section-shell claimly-text-section" aria-labelledby="overview-title">
           <div className="section-label"><span>/</span><h2 id="overview-title">Overview</h2></div>
           <div className="case-body claimly-centered-body">
             <p>
@@ -125,7 +125,7 @@ export function ClaimlyPage() {
           </div>
         </section>
 
-        <section className="case-section section-shell" aria-labelledby="research-title">
+        <section className="case-section section-shell claimly-text-section" aria-labelledby="research-title">
           <div className="section-label"><span>/</span><h2 id="research-title">Research</h2></div>
           <div className="case-body claimly-centered-body">
             <p>
@@ -166,7 +166,7 @@ export function ClaimlyPage() {
           </ol>
         </section>
 
-        <section className="case-section section-shell" aria-labelledby="decisions-title">
+        <section className="case-section section-shell claimly-text-section" aria-labelledby="decisions-title">
           <div className="section-label"><span>/</span><h2 id="decisions-title">Design decisions</h2></div>
           <ol className="claimly-decisions">
             {decisions.map((decision, index) => (
@@ -179,7 +179,7 @@ export function ClaimlyPage() {
           </ol>
         </section>
 
-        <section className="case-section section-shell" aria-labelledby="outcome-title">
+        <section className="case-section section-shell claimly-text-section" aria-labelledby="outcome-title">
           <div className="section-label"><span>/</span><h2 id="outcome-title">Outcome</h2></div>
           <div className="stat-row claimly-stat-row">
             <div><strong>15+</strong><span>Survey responses</span></div>
@@ -200,7 +200,7 @@ export function ClaimlyPage() {
           </div>
         </section>
 
-        <section className="case-section section-shell" aria-labelledby="reflection-title">
+        <section className="case-section section-shell claimly-text-section" aria-labelledby="reflection-title">
           <div className="section-label"><span>/</span><h2 id="reflection-title">Reflection</h2></div>
           <div className="case-body claimly-centered-body">
             <p>

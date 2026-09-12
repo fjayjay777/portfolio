@@ -57,11 +57,10 @@ test('embeds the Claimly prototype and provides a direct demo link', () => {
   expect(screen.getByRole('link', { name: 'Open Claimly demo' })).toHaveAttribute('href', '/demos/claimly/')
 })
 
-test('uses the shared case-study width for Claimly text sections', () => {
+test('centers Claimly text sections without oversized pull quotes', () => {
   renderAt('/work/claimly')
 
-  expect(screen.getByRole('region', { name: 'Overview' })).toHaveClass('section-shell')
-  expect(screen.getByRole('region', { name: 'Overview' })).not.toHaveClass('claimly-text-section')
+  expect(screen.getByRole('region', { name: 'Overview' })).toHaveClass('claimly-text-section')
   expect(screen.getByLabelText('Research findings')).toBeVisible()
   expect(screen.getByText('01', { selector: '.finding-index' })).toBeVisible()
   expect(screen.queryByText('The document creates the doubt. Claimly gives the user enough evidence to act on it.')).not.toBeInTheDocument()
