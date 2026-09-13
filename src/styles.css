@@ -330,6 +330,64 @@ section[id] { scroll-margin-top: 72px; }
 .stat-row strong { display: block; font: 400 clamp(1.8rem, 3.4vw, 2.4rem)/1 var(--serif); letter-spacing: -.03em; }
 .stat-row span { display: block; margin-top: 8px; color: var(--soft); font: 400 10px/1.4 var(--mono); letter-spacing: .14em; text-transform: uppercase; }
 
+/* Claimly editorial narrative ----------------------------------------- */
+.claimly-page .case-section { max-width: 940px; padding-top: clamp(72px, 8vw, 120px); }
+.claimly-text-section > .section-label,
+.claimly-page .claimly-centered-body { width: 100%; max-width: none; margin-inline: auto; }
+.claimly-page .case-section > .section-label { margin-bottom: 28px; }
+.claimly-findings,
+.claimly-decisions {
+  max-width: none;
+  margin: 30px auto 0;
+  padding: 0;
+  list-style: none;
+}
+.claimly-findings li,
+.claimly-decisions li {
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr);
+  gap: 8px 14px;
+  align-items: start;
+  border-top: 1px solid var(--rule);
+  padding: 28px 0;
+}
+.finding-index,
+.decision-index {
+  color: var(--accent);
+  font: 400 11px/1.5 var(--mono);
+  letter-spacing: .14em;
+}
+.claimly-findings h3,
+.claimly-decisions h3 {
+  margin: 0;
+  font: 400 1.15rem/1.35 var(--serif);
+  letter-spacing: -.02em;
+}
+.claimly-findings p,
+.claimly-decisions p {
+  grid-column: 2;
+  margin: 0;
+  color: #35312b;
+  font-size: 16px;
+  line-height: 1.7;
+}
+.claimly-stat-row { max-width: none; margin: 0 auto 30px; }
+.claimly-page .step {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 48px;
+}
+.claimly-page .step-list { gap: clamp(48px, 5vw, 72px); }
+.claimly-page .phone-shot { width: min(100%, 360px); }
+.claimly-page .phone-shot .mobile-demo__frame { width: 100%; }
+.claimly-page .case-body p,
+.claimly-page .step-copy p,
+.claimly-page .claimly-findings p,
+.claimly-page .claimly-decisions p { font-size: 18px; line-height: 1.75; }
+.claimly-page .case-body p:not(:last-child) { margin-bottom: 24px; }
+.claimly-page .step-copy h3,
+.claimly-page .claimly-findings h3,
+.claimly-page .claimly-decisions h3 { font-size: 22px; line-height: 1.4; }
+
 .case-end { margin-top: var(--gap); }
 .case-next {
   display: block; border-top: 1px solid var(--rule);
@@ -530,6 +588,7 @@ section[id] { scroll-margin-top: 72px; }
   .case-facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .step { grid-template-columns: 1fr; gap: 22px; }
   .step:nth-child(even) .step-copy { order: 0; }
+  .claimly-page .step { grid-template-columns: 1fr; gap: 32px; }
   .decision-grid { grid-template-columns: 1fr; }
 }
 @media (max-width: 680px) {
@@ -547,6 +606,8 @@ section[id] { scroll-margin-top: 72px; }
   .project-dialog { padding: 22px; }
   .project-dialog__content { grid-template-columns: 1fr; gap: 26px; }
   .mobile-demo__frame { width: min(100%, 270px); margin-inline: auto; }
+  .claimly-findings,
+  .claimly-decisions { margin-top: 28px; }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }

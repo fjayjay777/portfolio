@@ -57,6 +57,16 @@ test('embeds the Claimly prototype and provides a direct demo link', () => {
   expect(screen.getByRole('link', { name: 'Open Claimly demo' })).toHaveAttribute('href', '/demos/claimly/')
 })
 
+test('centers Claimly text sections without oversized pull quotes', () => {
+  renderAt('/work/claimly')
+
+  expect(screen.getByRole('region', { name: 'Overview' })).toHaveClass('claimly-text-section')
+  expect(screen.getByLabelText('Research findings')).toBeVisible()
+  expect(screen.getByText('01', { selector: '.finding-index' })).toBeVisible()
+  expect(screen.queryByText('The document creates the doubt. Claimly gives the user enough evidence to act on it.')).not.toBeInTheDocument()
+  expect(screen.queryByText('The last mile is still a phone call.')).not.toBeInTheDocument()
+})
+
 test('opens the Medisync case study from the work index', async () => {
   const user = userEvent.setup()
   renderAt('/')

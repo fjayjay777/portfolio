@@ -50,11 +50,26 @@ const decisions = [
   },
 ]
 
+const findings = [
+  {
+    title: 'People pay bills they cannot read.',
+    note: 'The most common response was to pay anyway. The bill did not look correct; disputing it simply felt like the greater risk. Paying became the safe option even when it might be the wrong one.',
+  },
+  {
+    title: 'Knowing an appeal exists is not enough.',
+    note: 'Two interviewees knew they could appeal and still stopped. The legitimate path asked for more time and confidence than they had, so abandoning the claim became easier than pursuing it.',
+  },
+  {
+    title: 'The document people are told to check is the one they cannot read.',
+    note: 'Six respondents had never compared an EOB with the bill, and nine were unclear on what an EOB was. The step most likely to reveal an error was also the least accessible one.',
+  },
+]
+
 export function ClaimlyPage() {
   return (
     <div className="site-shell">
       <SiteNav autoHide />
-      <main className="case-page">
+      <main className="case-page claimly-page">
         <header className="case-hero section-shell">
           <Link className="back-link" to="/#works">← Selected works</Link>
           <p className="eyebrow">Financial clarity</p>
@@ -92,49 +107,42 @@ export function ClaimlyPage() {
           </div>
         </section>
 
-        <section className="case-section section-shell" aria-labelledby="overview-title">
+        <section className="case-section section-shell claimly-text-section" aria-labelledby="overview-title">
           <div className="section-label"><span>/</span><h2 id="overview-title">Overview</h2></div>
-          <div className="case-body">
+          <div className="case-body claimly-centered-body">
             <p>
-              An explanation of benefits is written for the people who process it. It gives you a CPT number, a set of
-              reason codes, and three dollar amounts that do not visibly reconcile. Someone who suspects an error is
-              stuck twice over: they cannot confirm it from the document, and they do not have the vocabulary to
-              challenge it — the codes that would let them argue are the same codes that make the document unreadable.
+              An explanation of benefits is written for the people who process it. It gives you a CPT number, a set
+              of reason codes, and three dollar amounts that do not visibly reconcile. Someone who suspects an error
+              gets stuck twice: the document cannot confirm the suspicion, and its language makes the problem hard
+              to challenge.
             </p>
             <p>
-              Claimly closes both gaps in one pass. It reads the bill, decodes it line by line against the plan's own
-              terms, marks the lines that do not match, and turns the finding into a script the person can read out
-              loud. The intent is an AI product: a model does the reading and the drafting. What that buys is not speed
-              so much as nerve — the difference between suspecting a bill is wrong and being able to say why.
+              Claimly closes both gaps in one pass. It reads the bill against the plan's own terms, marks the lines
+              that do not match, and turns the finding into a script the person can read aloud. The AI does the
+              reading and drafting, but speed is not the main value. The product gives someone the difference between
+              thinking a bill may be wrong and being able to say why.
             </p>
           </div>
         </section>
 
-        <section className="case-section section-shell" aria-labelledby="research-title">
+        <section className="case-section section-shell claimly-text-section" aria-labelledby="research-title">
           <div className="section-label"><span>/</span><h2 id="research-title">Research</h2></div>
-          <div className="case-body">
+          <div className="case-body claimly-centered-body">
             <p>
-              The problem was checked before it was designed for: 15+ survey responses on how people handle a medical
-              bill they do not understand, and 4+ follow-up interviews going through the experience in detail.
+              Before drawing a screen, I spoke with people about what they actually did with a medical bill they could
+              not understand. Across 15+ survey responses and 4+ follow-up interviews, the problem extended beyond
+              comprehension: people also lacked a safe next move.
             </p>
-            <ul className="finding-list">
-              <li>
-                <strong>People pay bills they cannot read.</strong> The most common response to an incomprehensible
-                medical bill was to pay it anyway — not because it looked correct, but because disputing it felt like a
-                risk to their credit. Paying is the safe option even when it is the wrong one.
-              </li>
-              <li>
-                <strong>Knowing an appeal exists is not enough.</strong> Two interviewees knew they were entitled to
-                appeal and dropped it anyway. The process was unfamiliar and troublesome enough that abandoning a
-                legitimate claim was the easier path.
-              </li>
-              <li>
-                <strong>The document people are told to check is the one they cannot read.</strong> Six respondents had
-                never compared their EOB against the bill, and nine were not clear on what an EOB is. The reconciliation
-                that would catch an error is the step nobody is equipped to take.
-              </li>
-            </ul>
           </div>
+          <ol className="claimly-findings" aria-label="Research findings">
+            {findings.map((finding, index) => (
+              <li key={finding.title}>
+                <span className="finding-index">0{index + 1}</span>
+                <h3>{finding.title}</h3>
+                <p>{finding.note}</p>
+              </li>
+            ))}
+          </ol>
         </section>
 
         <section className="case-section section-shell" aria-labelledby="walkthrough-title">
@@ -158,54 +166,53 @@ export function ClaimlyPage() {
           </ol>
         </section>
 
-        <section className="case-section section-shell" aria-labelledby="decisions-title">
+        <section className="case-section section-shell claimly-text-section" aria-labelledby="decisions-title">
           <div className="section-label"><span>/</span><h2 id="decisions-title">Design decisions</h2></div>
-          <div className="decision-grid">
-            {decisions.map((decision) => (
-              <article className="decision-card" key={decision.title}>
+          <ol className="claimly-decisions">
+            {decisions.map((decision, index) => (
+              <li key={decision.title}>
+                <span className="decision-index">0{index + 1}</span>
                 <h3>{decision.title}</h3>
                 <p>{decision.note}</p>
-              </article>
+              </li>
             ))}
-          </div>
+          </ol>
         </section>
 
-        <section className="case-section section-shell" aria-labelledby="outcome-title">
+        <section className="case-section section-shell claimly-text-section" aria-labelledby="outcome-title">
           <div className="section-label"><span>/</span><h2 id="outcome-title">Outcome</h2></div>
-          <div className="case-body">
-            <div className="stat-row">
-              <div><strong>15+</strong><span>Survey responses</span></div>
-              <div><strong>4+</strong><span>Interviews</span></div>
-              <div><strong>9</strong><span>Unclear what an EOB is</span></div>
-            </div>
+          <div className="stat-row claimly-stat-row">
+            <div><strong>15+</strong><span>Survey responses</span></div>
+            <div><strong>4+</strong><span>Interviews</span></div>
+            <div><strong>9</strong><span>Unclear what an EOB is</span></div>
+          </div>
+          <div className="case-body claimly-centered-body">
             <p>
-              Claimly was founded as a product concept and taken through the University of Michigan Tech Innovation Jam
-              between October and mid-November 2025 — roughly six weeks from the problem to a working interface, with
-              the research, the design system, and the prototype all inside that window.
+              Claimly went from problem framing to a working interface during the University of Michigan Tech
+              Innovation Jam, between October and mid-November 2025. Research, the design system, and the prototype all
+              fit inside that six-week window.
             </p>
             <p>
-              Since the Jam I have carried it on myself. It is a founded concept with a working prototype rather than a
-              shipped product, and the thing I would want to know next is whether the appeal script actually gets used —
-              whether someone holding it makes the call they would otherwise have skipped.
+              Since the Jam I have carried the concept forward myself. It is a working prototype, not a shipped
+              product. The next useful test is not whether someone understands the report. It is whether the appeal
+              script helps them make the call they would otherwise skip.
             </p>
           </div>
         </section>
 
-        <section className="case-section section-shell" aria-labelledby="reflection-title">
+        <section className="case-section section-shell claimly-text-section" aria-labelledby="reflection-title">
           <div className="section-label"><span>/</span><h2 id="reflection-title">Reflection</h2></div>
-          <div className="case-body">
+          <div className="case-body claimly-centered-body">
             <p>
-              The surprise was not that people cannot read their bills. It was that many of them already know something
-              is wrong, and know tools exist to help them dispute it, and pay anyway. Complexity closes the case, not
-              ignorance. Two of the four interviews were exactly that: an appeal they were entitled to, understood, and
-              abandoned because the process was more than they wanted to take on.
+              The surprise was not that people could not read their bills. Many already believed something was wrong,
+              knew an appeal was possible, and paid anyway. Complexity closed the case, not ignorance. Two of four
+              interviewees had abandoned an appeal they understood and were entitled to pursue.
             </p>
             <p>
-              That reframes what the product is for. If awareness were the bottleneck, decoding the bill would be
-              enough — and Claimly does decode it. But the honest read of my own prototype is that it still ends by
-              handing someone a phone call to make. It shortens the distance between suspecting something is wrong and
-              acting on it: the script is written, the claim number is already in it, the evidence is listed. It does not
-              close that distance. What to do about the last step is the question I am working on now.
+              That changed what I thought the product had to do. Decoding the bill is necessary, but my prototype still
+              ends by handing someone a phone call to make. It shortens the distance to action: the script is written,
+              the claim number is filled in, and the evidence is listed. It does not close that distance. What happens
+              at that last step is the question I would test next.
             </p>
           </div>
         </section>
