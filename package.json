@@ -9,7 +9,7 @@
     "prepare:claimly-demo": "node scripts/prepare-claimly-demo.mjs",
     "prepare:medisync-demo": "node scripts/prepare-medisync-demo.mjs",
     "prepare:sizzle-demo": "node scripts/prepare-sizzle-demo.mjs",
-    "build": "npm run prepare:demos && tsc -b && vite build",
+    "build": "tsc -b && vite build",
     "test": "vitest",
     "typecheck": "tsc -b --pretty false",
     "lint": "eslint . --max-warnings=0"
