@@ -1,4 +1,7 @@
 import { useState } from 'react'
+import claimlyPreview from '../assets/claimly/02-report.png'
+import medisyncPreview from '../assets/medisync/md-00-home.png'
+import sizzlePreview from '../assets/sizzle/sz-01-recommend.jpg'
 import { Link } from 'react-router-dom'
 import { HeroFigure } from '../components/HeroFigure'
 import { ProjectDialog, type Project } from '../components/ProjectDialog'
@@ -6,12 +9,14 @@ import { SiteNav } from '../components/SiteNav'
 import { useHashScroll } from '../hooks/useHashScroll'
 import { useInView } from '../hooks/useInView'
 
+const previews = [claimlyPreview, medisyncPreview, sizzlePreview]
+
 const projects: Project[] = [
   {
     name: 'Claimly',
     category: 'Financial clarity',
     chip: '#7fa895',
-    summary: 'A concept that helps people understand claims and make confident decisions with information that is easy to act on.',
+    summary: 'A concept app that reads a medical bill, flags the charge that looks wrong, and drafts the appeal.',
     caseStudy: '/work/claimly',
     // Claimly's shell is 402 wide (iPhone 16 Pro), not the 430 the frame defaults to.
     demo: { url: '/demos/claimly/', canvas: '#f4f4f4', viewport: { width: 402, height: 874 } },
@@ -20,7 +25,7 @@ const projects: Project[] = [
     name: 'Medisync',
     category: 'Healthcare access',
     chip: '#7d97bb',
-    summary: 'A patient-centered booking experience that makes it easier to compare care options and coordinate appointments.',
+    summary: 'A booking app that helps patients compare care options and coordinate appointments.',
     caseStudy: '/work/medisync',
     demo: { url: '/demos/medisync/', canvas: '#f4f5f2' },
   },
@@ -28,7 +33,7 @@ const projects: Project[] = [
     name: 'Sizzle',
     category: 'Food discovery',
     chip: '#c79553',
-    summary: 'A warm, mobile-first cooking experience for finding recipes, planning meals, and keeping a personal kitchen organized.',
+    summary: 'A mobile app for finding recipes, planning meals, and cooking from what’s already in your fridge.',
     caseStudy: '/work/sizzle',
     // Sizzle's landing header is a translucent cream over the page color, so the
     // status bar has to match the composited result, not the page token.
@@ -48,14 +53,14 @@ export function HomePage() {
   }
 
   return (
-    <div className="site-shell">
+    <div className="site-shell portfolio-home">
       <SiteNav />
       <main>
         <section className="hero section-shell" aria-labelledby="home-title">
           <HeroFigure />
           <p className="eyebrow">Designer &amp; Researcher</p>
           <h1 id="home-title">Jiani Huang</h1>
-          <p className="hero-lead">I design human-centered products that bridge user needs, intelligent technology, and thoughtful interaction.</p>
+          <p className="hero-lead">I design products that make complex information easier to understand and technology easier to use.</p>
           <div className="hero-detail">
             <p className="meta-label">University of Michigan School of Information</p>
             <p className="location">Based in Ann Arbor</p>
@@ -71,6 +76,11 @@ export function HomePage() {
             {projects.map((project, index) => {
               const rowContent = (
                 <>
+                  <span className="work-preview" aria-hidden="true">
+                    <img src={previews[index]} alt="" loading="lazy" />
+                    <span className="work-preview-label">{project.name} / Product design</span>
+                  </span>
+                  <span className="work-info">
                   <span className="work-index">0{index + 1}</span>
                   <span className="work-chip" style={{ '--chip': project.chip } as React.CSSProperties} />
                   <span className="work-name">{project.name}</span>
@@ -78,13 +88,15 @@ export function HomePage() {
                     <span className="work-category">{project.category}</span>
                     {project.demo && <span className="work-tag">Interactive demo</span>}
                   </span>
-                  <span className="work-arrow" aria-hidden="true">↗</span>
+                  <span className="work-summary">{project.summary}</span>
+                  <span className="work-cta">Explore case study <span className="work-arrow" aria-hidden="true">↗</span></span>
+                  </span>
                 </>
               )
 
               return project.caseStudy ? (
                 <Link
-                  className="work-row"
+                  className={`work-row work-row--${project.name.toLowerCase()}`}
                   key={project.name}
                   to={project.caseStudy}
                   aria-label={`${project.name} case study`}
@@ -93,7 +105,7 @@ export function HomePage() {
                 </Link>
               ) : (
                 <button
-                  className="work-row"
+                  className={`work-row work-row--${project.name.toLowerCase()}`}
                   key={project.name}
                   type="button"
                   aria-label={`${project.name} project`}
@@ -121,7 +133,7 @@ export function HomePage() {
               <a href="tel:+13855384176"><span>Phone</span><strong>385-528-4176</strong></a>
               <a href="https://www.linkedin.com" target="_blank" rel="noreferrer"><span>LinkedIn</span><strong>Jiani Huang</strong></a>
             </div>
-            <p className="footer-note">Design and built by Jiani @2026</p>
+            <p className="footer-note">Designed and built by Jiani © 2026</p>
           </div>
         </section>
       </main>

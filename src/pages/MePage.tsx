@@ -1,38 +1,46 @@
+import { Link } from 'react-router-dom'
 import { SiteNav } from '../components/SiteNav'
+import { caseOrder } from '../data/caseOrder'
 
 const experience = [
   {
     role: 'User Experience Project Consultant',
-    org: 'University of Michigan School of Information — Engaged Learning Office',
-    when: 'Sep 2026 — Present',
-    note: 'Cross-functional project coordination for university and external client engagements, working with faculty and stakeholders to define project scope, align expectations, track priorities, and support successful project delivery.',
+    org: 'University of Michigan School of Information, Engaged Learning Office',
+    when: 'Since Sep 2026',
+    note: 'I coordinate projects for the university and outside clients: agreeing on scope and expectations with faculty and stakeholders, then tracking priorities through delivery.',
   },
   {
     role: 'UX Designer',
     org: 'Ann Arbor Hands-On Museum',
-    when: 'Jan 2026 — Present',
-    note: 'An interactive physics exhibit engineered for years of high-frequency public use, iterated across physical and digital prototypes from hours of floor observation.',
+    when: 'Since Jan 2026',
+    note: 'I’m designing an interactive physics exhibit built for years of heavy public use, iterating on physical and digital prototypes based on hours of floor observation.',
   },
   {
     role: 'UX Designer',
-    org: 'University of Michigan FEAST Research Program — Abriendo Caminos',
-    when: 'Jan 2026 — Present',
-    note: 'Bilingual biomedical outreach modules for middle-school students, shaped by feedback from twelve educators.',
+    org: 'University of Michigan FEAST Research Program, Abriendo Caminos',
+    when: 'Since Jan 2026',
+    note: 'I design bilingual biomedical outreach modules for middle-school students, using feedback from twelve educators.',
   },
+]
+
+const contact = [
+  { label: 'Email', value: 'Huangjn35@gmail.com', href: 'mailto:huangjn35@gmail.com' },
+  { label: 'Phone', value: '385-528-4176', href: 'tel:+13855384176' },
+  { label: 'LinkedIn', value: 'Jiani Huang', href: 'https://www.linkedin.com', external: true },
 ]
 
 const education = [
   {
-    role: 'MS in Information — UX Research & Design',
+    role: 'MS in Information (UX Research & Design)',
     org: 'University of Michigan, School of Information',
     when: 'Expected May 2027',
     note: 'GPA 4.0 / 4.0.',
   },
   {
-    role: 'BFA — Painting & Drawing',
+    role: 'BFA in Painting & Drawing',
     org: 'University of Utah',
     when: 'Dec 2024',
-    note: 'Major GPA 3.86 / 4.0. Dean’s List six times; top 10% of class, 2021—2024.',
+    note: 'Major GPA 3.86 / 4.0. Dean’s List six times; top 10% of class from 2021 to 2024.',
   },
 ]
 
@@ -53,6 +61,50 @@ function CvList({ entries }: { entries: typeof experience }) {
   )
 }
 
+/* Ends the page with the two things a reader looks for after a bio: the work
+   and a way to get in touch. Kept smaller than the home contact section, which
+   stays the main contact point. */
+function MeFooter() {
+  return (
+    <footer className="me-end">
+      <div className="me-end-inner">
+        <div className="me-end-grid">
+          <section className="me-end-col" aria-labelledby="me-end-work-title">
+            <div className="section-label"><span>/</span><h2 id="me-end-work-title">Work</h2></div>
+            <Link className="me-end-link" to="/#works">
+              <span className="me-end-link__row">
+                <span className="me-end-link__name">Selected works</span>
+                <span className="me-end-link__arrow" aria-hidden="true">↗</span>
+              </span>
+              <span className="me-end-link__cases">
+                {caseOrder.map((entry) => entry.name).join(' · ')}
+              </span>
+            </Link>
+          </section>
+
+          <section className="me-end-col" aria-labelledby="me-end-contact-title">
+            <div className="section-label"><span>/</span><h2 id="me-end-contact-title">Contact</h2></div>
+            <div className="contact-list">
+              {contact.map((item) => (
+                <a
+                  key={item.label}
+                  href={item.href}
+                  {...(item.external ? { target: '_blank', rel: 'noreferrer' } : {})}
+                >
+                  <span>{item.label}</span>
+                  <strong>{item.value}</strong>
+                </a>
+              ))}
+            </div>
+          </section>
+        </div>
+
+        <p className="footer-note">Designed and built by Jiani © 2026</p>
+      </div>
+    </footer>
+  )
+}
+
 export function MePage() {
   return (
     <div className="site-shell">
@@ -62,17 +114,18 @@ export function MePage() {
 
         <div className="me-intro">
           <p>
-            I came to user experience from painting. I finished a BFA in Painting and Drawing at the University of
-            Utah, and I am now a Master of Science in Information candidate at the University of Michigan on the User
-            Experience Research and Design track.
+            Hi, welcome to my website. I’m Jiani, a second-year graduate student at the University of Michigan School
+            of Information, specializing in UX research and design. Currently, I also work as a UX-focused project
+            consultant for the school’s Engaged Learning Office.
           </p>
           <p>
-            Most of my work focuses on <strong>making complex information easier to understand and technology easier
-            to use</strong>. I’m especially interested in products where the consequences are real: a medical bill
-            written in reason codes, a clinic booking that starts from a blank form, or public health material that has
-            to reach people who didn’t choose to study it. I combine <strong>product design, UX research, and front-end
-            development</strong> to explore how new technology can be genuinely useful, and I like putting a working
-            prototype in someone’s hands instead of only describing one.
+            Most of my work so far has focused on making complex information easier and more intuitive for people to
+            understand. My projects have covered medical bills full of reason codes, clinic prices and insurance
+            options, and bilingual biomedical lessons for middle school students.
+          </p>
+          <p>
+            I’m looking for full-time roles starting in 2027, as a UX researcher, AI product manager, or product
+            designer.
           </p>
           <ul className="skill-list" aria-label="Skills">
             <li>Product design</li>
@@ -95,6 +148,8 @@ export function MePage() {
         </div>
 
       </main>
+
+      <MeFooter />
     </div>
   )
 }
