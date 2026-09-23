@@ -1,21 +1,19 @@
 import { useState } from 'react'
-import claimlyPreview from '../assets/claimly/02-report.png'
-import medisyncPreview from '../assets/medisync/md-00-home.png'
-import sizzlePreview from '../assets/sizzle/sz-01-recommend.jpg'
 import { Link } from 'react-router-dom'
 import { HeroFigure } from '../components/HeroFigure'
+import { ClaimlyCover, MedisyncCover, SizzleCover } from '../components/ProjectCovers'
 import { ProjectDialog, type Project } from '../components/ProjectDialog'
 import { SiteNav } from '../components/SiteNav'
 import { useHashScroll } from '../hooks/useHashScroll'
 import { useInView } from '../hooks/useInView'
 
-const previews = [claimlyPreview, medisyncPreview, sizzlePreview]
+const covers = [ClaimlyCover, MedisyncCover, SizzleCover]
 
 const projects: Project[] = [
   {
     name: 'Claimly',
     category: 'Financial clarity',
-    chip: '#7fa895',
+    chip: '#3f85ff',
     summary: 'A concept app that reads a medical bill, flags the charge that looks wrong, and drafts the appeal.',
     caseStudy: '/work/claimly',
     // Claimly's shell is 402 wide (iPhone 16 Pro), not the 430 the frame defaults to.
@@ -24,7 +22,7 @@ const projects: Project[] = [
   {
     name: 'Medisync',
     category: 'Healthcare access',
-    chip: '#7d97bb',
+    chip: '#7f9062',
     summary: 'A booking app that helps patients compare care options and coordinate appointments.',
     caseStudy: '/work/medisync',
     demo: { url: '/demos/medisync/', canvas: '#f4f5f2' },
@@ -32,7 +30,7 @@ const projects: Project[] = [
   {
     name: 'Sizzle',
     category: 'Food discovery',
-    chip: '#c79553',
+    chip: '#e59343',
     summary: 'A mobile app for finding recipes, planning meals, and cooking from what’s already in your fridge.',
     caseStudy: '/work/sizzle',
     // Sizzle's landing header is a translucent cream over the page color, so the
@@ -74,11 +72,11 @@ export function HomePage() {
           </div>
           <div className="work-list">
             {projects.map((project, index) => {
+              const Cover = covers[index]
               const rowContent = (
                 <>
                   <span className="work-preview" aria-hidden="true">
-                    <img src={previews[index]} alt="" loading="lazy" />
-                    <span className="work-preview-label">{project.name} / Product design</span>
+                    <Cover />
                   </span>
                   <span className="work-info">
                   <span className="work-index">0{index + 1}</span>
@@ -96,7 +94,7 @@ export function HomePage() {
 
               return project.caseStudy ? (
                 <Link
-                  className={`work-row work-row--${project.name.toLowerCase()}`}
+                  className={`work-tile work-tile--${project.name.toLowerCase()}`}
                   key={project.name}
                   to={project.caseStudy}
                   aria-label={`${project.name} case study`}
@@ -105,7 +103,7 @@ export function HomePage() {
                 </Link>
               ) : (
                 <button
-                  className={`work-row work-row--${project.name.toLowerCase()}`}
+                  className={`work-tile work-tile--${project.name.toLowerCase()}`}
                   key={project.name}
                   type="button"
                   aria-label={`${project.name} project`}
