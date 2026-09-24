@@ -50,6 +50,30 @@ test('shows the biography and skill tags', () => {
   expect(within(skills).getByText('Front-end development')).toBeVisible()
 })
 
+test('lists degrees without grades', () => {
+  render(
+    <MemoryRouter>
+      <MePage />
+    </MemoryRouter>,
+  )
+
+  const education = screen.getByRole('region', { name: 'Education' })
+
+  expect(within(education).getByText('Bachelor of Fine Arts')).toBeVisible()
+  expect(within(education).queryByText(/GPA/)).not.toBeInTheDocument()
+})
+
+test('shows the portrait with a caption beside the biography', () => {
+  render(
+    <MemoryRouter>
+      <MePage />
+    </MemoryRouter>,
+  )
+
+  expect(screen.getByRole('img', { name: 'Portrait of Jiani Huang' })).toBeVisible()
+  expect(screen.getByText('Based in Ann Arbor, MI')).toBeVisible()
+})
+
 test('closes the page with a footer offering both exits', () => {
   render(
     <MemoryRouter>

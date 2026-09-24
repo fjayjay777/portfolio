@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import portrait from '../assets/jiani-huang-portrait.jpg'
 import { SiteNav } from '../components/SiteNav'
 import { caseOrder } from '../data/caseOrder'
 
@@ -34,17 +35,17 @@ const education = [
     role: 'MS in Information (UX Research & Design)',
     org: 'University of Michigan, School of Information',
     when: 'Expected May 2027',
-    note: 'GPA 4.0 / 4.0.',
   },
   {
-    role: 'BFA in Painting & Drawing',
+    role: 'Bachelor of Fine Arts',
     org: 'University of Utah',
     when: 'Dec 2024',
-    note: 'Major GPA 3.86 / 4.0. Dean’s List six times; top 10% of class from 2021 to 2024.',
   },
 ]
 
-function CvList({ entries }: { entries: typeof experience }) {
+type CvEntry = { role: string; org: string; when: string; note?: string }
+
+function CvList({ entries }: { entries: CvEntry[] }) {
   return (
     <div className="cv-list">
       {entries.map((entry) => (
@@ -52,7 +53,7 @@ function CvList({ entries }: { entries: typeof experience }) {
           <div className="cv-main">
             <h3>{entry.role}</h3>
             <p className="cv-org">{entry.org}</p>
-            <p className="cv-note">{entry.note}</p>
+            {entry.note && <p className="cv-note">{entry.note}</p>}
           </div>
           <p className="cv-when">{entry.when}</p>
         </article>
@@ -110,43 +111,48 @@ export function MePage() {
     <div className="site-shell">
       <SiteNav />
       <main className="me-page section-shell">
+        <p className="eyebrow">About</p>
         <h1>Jiani Huang</h1>
 
-        <div className="me-intro">
-          <p>
-            Hi, welcome to my website. I’m Jiani, a second-year graduate student at the University of Michigan School
-            of Information, specializing in UX research and design. Currently, I also work as a UX-focused project
-            consultant for the school’s Engaged Learning Office.
-          </p>
-          <p>
-            Most of my work so far has focused on making complex information easier and more intuitive for people to
-            understand. My projects have covered medical bills full of reason codes, clinic prices and insurance
-            options, and bilingual biomedical lessons for middle school students.
-          </p>
-          <p>
-            I’m looking for full-time roles starting in 2027, as a UX researcher, AI product manager, or product
-            designer.
-          </p>
-          <ul className="skill-list" aria-label="Skills">
-            <li>Product design</li>
-            <li>UX research</li>
-            <li>Prototyping</li>
-            <li>Front-end development</li>
-          </ul>
+        <div className="me-hero">
+          <figure className="me-portrait">
+            <img src={portrait} alt="Portrait of Jiani Huang" width={960} height={1200} />
+            <figcaption>Based in Ann Arbor, MI</figcaption>
+          </figure>
+
+          <div className="me-intro">
+            <p>
+              Hi, welcome to my website. I’m Jiani, a second-year graduate student at the University of Michigan School
+              of Information, specializing in UX research and design. Currently, I also work as a UX-focused project
+              consultant for the school’s Engaged Learning Office.
+            </p>
+            <p>
+              Most of my work so far has focused on making complex information easier and more intuitive for people to
+              understand. My projects have covered medical bills full of reason codes, clinic prices and insurance
+              options, and bilingual biomedical lessons for middle school students.
+            </p>
+            <p>
+              I’m looking for full-time roles starting in 2027, as a UX researcher, AI product manager, or product
+              designer.
+            </p>
+            <ul className="skill-list" aria-label="Skills">
+              <li>Product design</li>
+              <li>UX research</li>
+              <li>Prototyping</li>
+              <li>Front-end development</li>
+            </ul>
+          </div>
         </div>
 
-        <div className="me-columns">
-          <section className="me-section" aria-labelledby="education-title">
-            <div className="section-label"><span>/</span><h2 id="education-title">Education</h2></div>
-            <CvList entries={education} />
-          </section>
+        <section className="me-section" aria-labelledby="experience-title">
+          <div className="section-label"><span>/</span><h2 id="experience-title">Experience</h2></div>
+          <CvList entries={experience} />
+        </section>
 
-          <section className="me-section" aria-labelledby="experience-title">
-            <div className="section-label"><span>/</span><h2 id="experience-title">Experience</h2></div>
-            <CvList entries={experience} />
-          </section>
-        </div>
-
+        <section className="me-section" aria-labelledby="education-title">
+          <div className="section-label"><span>/</span><h2 id="education-title">Education</h2></div>
+          <CvList entries={education} />
+        </section>
       </main>
 
       <MeFooter />
