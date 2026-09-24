@@ -8,9 +8,9 @@ import { CaseFooter } from '../components/CaseFooter'
 import { SiteNav } from '../components/SiteNav'
 
 const facts = [
-  { label: 'Role', value: 'Founder · design and front-end build' },
+  { label: 'Role', value: 'Founder · concept, design, front-end build' },
   { label: 'Timeline', value: 'Oct to mid-Nov 2025 · Tech Innovation Jam' },
-  { label: 'Team', value: 'Solo founder; research with Jam teammates' },
+  { label: 'Team', value: 'Led a 5-person Jam team through research and pitch' },
   { label: 'Scope', value: 'Bill intake, claim report, appeal guidance' },
 ]
 
@@ -53,7 +53,7 @@ const decisions = [
 const findings = [
   {
     title: 'People pay bills they cannot read.',
-    note: 'The most common response was to pay anyway. The bill did not look correct, but disputing it felt like the greater risk.',
+    note: 'The most common response was to pay the bill anyway. Even when a charge looked wrong, participants felt that disputing it would be riskier and more time-consuming than simply paying. If the amount was small, many chose to let it go rather than spend time trying to resolve it.',
   },
   {
     title: 'Knowing an appeal exists is not enough.',
@@ -107,6 +107,32 @@ export function ClaimlyPage() {
           </div>
         </section>
 
+        <section className="case-section section-shell claimly-text-section" aria-labelledby="problem-title">
+          <div className="section-label"><span>/</span><h2 id="problem-title">Problem statement</h2></div>
+          <div className="case-body claimly-centered-body">
+            <p>
+              When patients receive a medical bill, they see charges, billing codes, and insurance decisions without a
+              clear explanation of how they connect. It can be difficult to understand why insurance covers some
+              services, pays only part of others, or denies a claim altogether.
+            </p>
+            <p>
+              Patients are often left unsure how these decisions determine their final out-of-pocket cost, whether the
+              bill is correct, or what to do when something looks wrong. Many spend hours trying to get answers, and
+              some end up paying more than they owe.
+            </p>
+          </div>
+        </section>
+
+        <section className="case-section section-shell claimly-text-section" aria-labelledby="goal-title">
+          <div className="section-label"><span>/</span><h2 id="goal-title">Design goal</h2></div>
+          <div className="case-body claimly-centered-body">
+            <p className="claimly-goal">
+              How might we help patients understand how medical charges, insurance decisions, and out-of-pocket costs
+              connect, while helping them take action when a billing issue occurs?
+            </p>
+          </div>
+        </section>
+
         <section className="case-section section-shell claimly-text-section" aria-labelledby="overview-title">
           <div className="section-label"><span>/</span><h2 id="overview-title">Overview</h2></div>
           <div className="case-body claimly-centered-body">
@@ -117,9 +143,10 @@ export function ClaimlyPage() {
               to challenge.
             </p>
             <p>
-              Claimly closes both gaps in one pass. It reads the bill against the plan's own terms, marks the lines that
-              do not match, and turns the finding into a script the person can read aloud. A model does the reading and
-              drafting, so that someone who suspects a bill is wrong can say why.
+              Claimly closes both gaps in one pass, through four core functions: bill analysis, EOB comparison, code
+              explanation, and appeal support. It reads the bill, compares it with the EOB, marks the lines that do not
+              match, explains the codes behind them, and turns the finding into a script the person can read aloud. A
+              model does the reading and drafting, so that someone who suspects a bill is wrong can say why.
             </p>
           </div>
         </section>
@@ -183,13 +210,14 @@ export function ClaimlyPage() {
           <div className="stat-row claimly-stat-row">
             <div><strong>15+</strong><span>Survey responses</span></div>
             <div><strong>4+</strong><span>Interviews</span></div>
-            <div><strong>9</strong><span>Unclear what an EOB is</span></div>
+            <div><strong>4</strong><span>Core functions</span></div>
           </div>
           <div className="case-body claimly-centered-body">
             <p>
               Claimly went from problem framing to a working interface during the University of Michigan Tech
-              Innovation Jam, between October and mid-November 2025. Research, the design system, and the prototype all
-              fit inside that six-week window.
+              Innovation Jam, between October and mid-November 2025. The concept, the design system, and the prototype
+              are my own work. I led a five-person team through the user research, then pitched the result to a panel
+              of four judges, all inside that six-week window.
             </p>
             <p>
               Since the Jam I have carried the concept forward myself. It has a working prototype but has not shipped.
