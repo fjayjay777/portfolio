@@ -1,4 +1,4 @@
-import { cleanup, render, screen } from '@testing-library/react'
+import { cleanup, render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 import { afterEach, beforeEach, expect, test, vi } from 'vitest'
@@ -91,4 +91,25 @@ test('renders the Me page profile and preserves Contact navigation', () => {
   expect(screen.getByText(/second-year graduate student/i)).toBeVisible()
   expect(screen.getByRole('link', { name: 'ME' })).toHaveAttribute('aria-current', 'page')
   expect(screen.getByRole('link', { name: 'Contact' })).toHaveAttribute('href', '/#contact')
+})
+
+test('renders the Nighty case study, its facts and every part without WebGL', async () => {
+  renderAt('/work/nighty')
+
+  expect(await screen.findByRole('heading', { level: 1, name: 'Nighty' })).toBeVisible()
+  expect(screen.getByText('June 2024')).toBeVisible()
+  expect(screen.getByText('Product design')).toBeVisible()
+  expect(within(screen.getByRole('list', { name: 'Parts' })).getAllByRole('button')).toHaveLength(10)
+  // Both viewers fall back to a notice, and the controls that need a model are left out.
+  expect(screen.getAllByText(/WebGL turned off/)).toHaveLength(2)
+  expect(screen.queryByRole('slider', { name: 'Explode amount' })).not.toBeInTheDocument()
+})
+
+test('walks from Sizzle to Nighty and from Nighty back to Claimly', async () => {
+  const user = userEvent.setup()
+  renderAt('/work/sizzle')
+
+  await user.click(screen.getByRole('link', { name: /Next project\s*Nighty/i }))
+  expect(await screen.findByRole('heading', { level: 1, name: 'Nighty' })).toBeVisible()
+  expect(screen.getByRole('link', { name: /Next project\s*Claimly/i })).toHaveAttribute('href', '/work/claimly')
 })
