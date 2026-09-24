@@ -4,6 +4,7 @@ import banana from '../assets/sizzle/brand/banana.svg'
 import blueberries from '../assets/sizzle/brand/blueberries.svg'
 import egg from '../assets/sizzle/brand/egg.svg'
 import waffles from '../assets/sizzle/brand/blueberry-banana-waffles.jpg'
+import { PILLOW, profileHeight } from '../nighty/shape'
 
 /*
  * Homepage cover art. Each one tells the product's idea with pieces of its own
@@ -298,6 +299,96 @@ export function SizzleCover() {
       <rect x="448" y="251" width="12" height="16" rx="3" stroke="#fff" strokeWidth="1.6" />
       <path d="M448 257h12m-3-3.5v-1" stroke="#fff" strokeWidth="1.6" strokeLinecap="round" />
       <text x="468" y="263.5" {...text} fontSize="12" fontWeight="600" fill="#fff">Create</text>
+    </svg>
+  )
+}
+
+/* Nighty ----------------------------------------------------------------- */
+
+const nighty = {
+  navy: '#26324a',
+  ink: '#1b2233',
+  muted: '#667085',
+  blueSoft: '#c9d3ef',
+  moon: '#f1d9a6',
+  cover: '#efebe3',
+  gusset: '#56606b',
+  surface: '#e7eaf2',
+  shadow: '#1d2740',
+  font: 'Inter, sans-serif',
+}
+
+/** The pillow's side profile, traced from the same height curve the 3D model uses. */
+function pillowProfile(left: number, base: number, scale: number) {
+  const half = PILLOW.depth / 2
+  const bandX = 40, bandY = 24
+  const top: string[] = []
+  for (let z = -half; z <= half; z += 6) {
+    const edge = Math.min(1, Math.max(0, (Math.abs(z) - (half - bandX)) / bandX))
+    const height = profileHeight(z) - bandY * (1 - Math.sqrt(1 - edge * edge))
+    top.push(`${(left + (z + half) * scale).toFixed(1)} ${(base - height * scale).toFixed(1)}`)
+  }
+  const right = left + PILLOW.depth * scale
+  return [
+    `M${left} ${base - bandY * scale}`,
+    `L${top.join(' L')}`,
+    `L${right} ${base - bandY * scale}`,
+    `Q${right} ${base} ${right - bandX * scale} ${base}`,
+    `L${left + bandX * scale} ${base}`,
+    `Q${left} ${base} ${left} ${base - bandY * scale}Z`,
+  ].join(' ')
+}
+
+export function NightyCover() {
+  const text = { fontFamily: nighty.font }
+  const left = 145, base = 262, scale = 0.75
+  const profile = pillowProfile(left, base, scale)
+  // A night's sleep stages, deepest tallest.
+  const stages = [14, 22, 30, 18, 12, 26, 30, 16, 12, 20, 14, 10]
+  return (
+    <svg className="project-cover" {...coverProps}>
+      <circle cx="280" cy="170" r="140" fill="#fff" fillOpacity=".5" />
+
+      {/* The pillow in profile: neck roll, head cradle, rear roll, pod at the back */}
+      <path d={profile} fill={nighty.gusset} />
+      <path d={profile} fill="none" stroke={nighty.cover} strokeWidth="9" strokeLinejoin="round" clipPath="url(#nighty-top)" />
+      <defs>
+        <clipPath id="nighty-top"><rect x={left - 10} y="150" width={PILLOW.depth * scale + 20} height="70" /></clipPath>
+      </defs>
+      <rect x={left - 5} y={base - 42 * scale} width="8" height={30 * scale} rx="3" fill="#b9bcc1" />
+      <circle cx={left - 1} cy={base - 27 * scale} r="1.8" fill="#8fbfff" />
+
+      {/* The room it is reading */}
+      <g>
+        <Edge x={52} y={40} w={150} h={92} r={16} tint={nighty.shadow} />
+        <rect x="52" y="40" width="150" height="92" rx="16" fill="#fff" />
+        <text x="70" y="64" {...text} fontSize="9" fontWeight="700" letterSpacing="1.4" fill={nighty.muted}>ROOM</text>
+        <text x="70" y="96" {...text} fontSize="26" fontWeight="700" letterSpacing="-.6" fill={nighty.ink}>27.0°</text>
+        <rect x="70" y="106" width="76" height="18" rx="9" fill={nighty.blueSoft} />
+        <text x="108" y="118.5" {...text} fontSize="9" fontWeight="600" fill={nighty.navy} textAnchor="middle">Cooling on</text>
+      </g>
+
+      {/* White noise playing from inside the foam */}
+      <g>
+        <rect x="214" y="70" width="132" height="34" rx="17" fill={nighty.navy} />
+        {[6, 12, 18, 10, 5].map((h, i) => (
+          <rect key={i} x={232 + i * 5} y={87 - h / 2} width="2.4" height={h} rx="1.2" fill="#fff" />
+        ))}
+        <text x="264" y="91" {...text} fontSize="11" fontWeight="600" fill="#fff">White noise</text>
+      </g>
+
+      {/* Last night, in light and deep sleep */}
+      <g>
+        <Edge x={370} y={34} w={150} h={112} r={16} tint={nighty.shadow} />
+        <rect x="370" y="34" width="150" height="112" rx="16" fill="#fff" />
+        <text x="386" y="58" {...text} fontSize="9" fontWeight="700" letterSpacing="1.4" fill={nighty.muted}>LAST NIGHT</text>
+        <text x="386" y="84" {...text} fontSize="18" fontWeight="700" letterSpacing="-.4" fill={nighty.ink}>7h 42m</text>
+        {stages.map((h, i) => (
+          <rect key={i} x={386 + i * 10} y={132 - h} width="7" height={h} rx="2" fill={h >= 26 ? nighty.navy : nighty.blueSoft} />
+        ))}
+      </g>
+      <circle cx="506" cy="42" r="12" fill={nighty.moon} />
+      <circle cx="512" cy="37" r="10" fill={nighty.surface} />
     </svg>
   )
 }

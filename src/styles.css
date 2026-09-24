@@ -813,6 +813,7 @@ section[id] { scroll-margin-top: 72px; }
 }
 .work-tile--medisync { --project-surface: #eef1e6; }
 .work-tile--sizzle { --project-surface: #fbe9da; }
+.work-tile--nighty { --project-surface: #e7eaf2; }
 .work-preview { position: relative; display: block; height: clamp(300px, 30vw, 380px); overflow: hidden; border-radius: 14px; background: var(--project-surface); }
 /* Branded concept art; the SVG's default "meet" scaling keeps it uncropped. */
 .project-cover { position: absolute; inset: 16px 12px; width: calc(100% - 24px); height: calc(100% - 32px); transition: transform .5s var(--ease); }
