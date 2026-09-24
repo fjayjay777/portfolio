@@ -946,3 +946,13 @@ section[id] { scroll-margin-top: 72px; }
   .nighty-part { grid-template-columns: 28px minmax(0, 1fr); }
   .nighty-part__role { grid-column: 2; text-align: left; }
 }
+
+/* Names the active part inside the stage; on a phone it is the only label left. */
+.nighty-caption {
+  position: absolute; z-index: 2; top: 16px; left: 16px;
+  margin: 0; border: 1px solid var(--rule); border-radius: 999px;
+  background: rgb(250 248 244 / .92); backdrop-filter: blur(8px);
+  padding: 7px 12px; color: var(--ink); font: 400 12px/1.2 var(--mono); letter-spacing: .04em;
+  pointer-events: none;
+}
+.route-failed { padding: var(--gap) 0; color: #35312b; font-size: 17px; line-height: 1.65; }

@@ -5,7 +5,8 @@ import { afterEach, expect, test, vi } from 'vitest'
 import { NightyPage } from './NightyPage'
 
 // Pretend WebGL exists so the controls render; the scene itself never starts.
-vi.mock('../nighty/stage', () => ({ hasWebGL: () => true, createStage: () => ({ dispose: () => undefined }) }))
+const createStage = vi.hoisted(() => vi.fn(() => ({ dispose: () => undefined })))
+vi.mock('../nighty/stage', () => ({ hasWebGL: () => true, createStage }))
 
 afterEach(cleanup)
 
@@ -32,4 +33,24 @@ test('selects a part from the list and clears it on a second press', async () =>
   expect(core).toHaveAttribute('aria-pressed', 'true')
   await user.click(core)
   expect(core).toHaveAttribute('aria-pressed', 'false')
+})
+
+// On a phone the list sits below the model and the labels are hidden, so the stage names the part itself.
+test('names the selected part inside the model stage', async () => {
+  const user = userEvent.setup()
+  renderPage()
+
+  await user.click(screen.getByRole('button', { name: /Sleep-sensing strip/ }))
+  expect(screen.getByText('05 · Sleep-sensing strip')).toBeInTheDocument()
+})
+
+test('keeps the page up and explains itself when the renderer cannot start', () => {
+  vi.spyOn(console, 'error').mockImplementation(() => undefined)
+  createStage.mockImplementationOnce(() => {
+    throw new Error('Error creating WebGL context.')
+  })
+  renderPage()
+
+  expect(screen.getByRole('heading', { level: 1, name: 'Nighty' })).toBeVisible()
+  expect(screen.getByText(/3D model can’t load/)).toBeVisible()
 })

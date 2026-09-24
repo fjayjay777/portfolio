@@ -9,6 +9,12 @@ export type NightyPart = {
   description: string
   /** How far the part travels from its assembled place when fully exploded. */
   offset: Vec3
+  /**
+   * When the part leaves as the view explodes, 0 first. Above the core the
+   * stack peels from the top down; below it the base goes before the board so
+   * the board never drops through it.
+   */
+  sequence: number
 }
 
 /**
@@ -24,6 +30,7 @@ export const parts: readonly NightyPart[] = [
     role: 'Contact surface',
     description: 'A removable spacer-knit cover that zips along the rear edge. The open knit lets air from the channels below escape at the surface, and it comes off for washing.',
     offset: [0, 470, 0],
+    sequence: 0,
   },
   {
     id: 'comfort',
@@ -32,6 +39,7 @@ export const parts: readonly NightyPart[] = [
     role: 'Comfort',
     description: '20 mm of slow-recovery memory foam, perforated on a grid so warmth from the head does not pool in the cradle.',
     offset: [0, 350, 0],
+    sequence: 1,
   },
   {
     id: 'gel',
@@ -40,6 +48,7 @@ export const parts: readonly NightyPart[] = [
     role: 'Passive cooling',
     description: 'A 6 mm gel sheet that absorbs heat as it melts near skin temperature, taking the edge off the warm first hour after lying down.',
     offset: [0, 265, 0],
+    sequence: 2,
   },
   {
     id: 'heater',
@@ -48,14 +57,16 @@ export const parts: readonly NightyPart[] = [
     role: 'Active warming',
     description: 'A thin carbon-fibre film under the head zone with four NTC probes. It only runs when the room is cold, and the probes cap its surface temperature.',
     offset: [0, 205, 0],
+    sequence: 3,
   },
   {
     id: 'sensor',
     number: '05',
     name: 'Sleep-sensing strip',
     role: 'Sleep tracking',
-    description: 'A piezoelectric strip under the neck roll picks up breathing, heartbeat and movement through the foam. Those signals are what the app turns into light and deep sleep.',
+    description: 'A piezoelectric strip under the neck roll picks up breathing, heartbeat and movement through the foam. Nighty reads those signals as light or deep sleep.',
     offset: [0, 155, 0],
+    sequence: 4,
   },
   {
     id: 'speakers',
@@ -64,6 +75,7 @@ export const parts: readonly NightyPart[] = [
     role: 'White noise',
     description: 'Two 50 mm flat drivers, one in each shoulder end, so the sound reaches the ear on the pillow without filling the room.',
     offset: [0, 110, 0],
+    sequence: 5,
   },
   {
     id: 'core',
@@ -72,6 +84,7 @@ export const parts: readonly NightyPart[] = [
     role: 'Support',
     description: 'High-density memory foam shaped to the neck roll, head cradle and rear roll. Pockets hold the speakers and the electronics, and three grooves carry air from the fan to the head zone.',
     offset: [0, 0, 0],
+    sequence: 6,
   },
   {
     id: 'board',
@@ -80,6 +93,7 @@ export const parts: readonly NightyPart[] = [
     role: 'Control',
     description: 'The microcontroller, the Bluetooth and Wi-Fi radio, and the heater and fan drivers. It reads every sensor and decides when to warm, cool or play.',
     offset: [0, -110, 170],
+    sequence: 9,
   },
   {
     id: 'pod',
@@ -88,6 +102,7 @@ export const parts: readonly NightyPart[] = [
     role: 'Room sensing, airflow',
     description: 'Sits in the rear panel, outside the foam, so its temperature and humidity sensor reads the room rather than the pillow. It also holds the quiet fan, the button, the status light and the USB-C port.',
     offset: [0, 70, -250],
+    sequence: 7,
   },
   {
     id: 'base',
@@ -96,5 +111,6 @@ export const parts: readonly NightyPart[] = [
     role: 'Grip',
     description: 'A silicone-dotted panel under the core that keeps the pillow from sliding on the sheet and closes the board bay.',
     offset: [0, -190, 0],
+    sequence: 8,
   },
 ]

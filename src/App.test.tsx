@@ -101,7 +101,7 @@ test('renders the Nighty case study, its facts and every part without WebGL', as
   expect(screen.getByText('Product design')).toBeVisible()
   expect(within(screen.getByRole('list', { name: 'Parts' })).getAllByRole('button')).toHaveLength(10)
   // Both viewers fall back to a notice, and the controls that need a model are left out.
-  expect(screen.getAllByText(/WebGL turned off/)).toHaveLength(2)
+  expect(screen.getAllByText(/3D model can’t load/)).toHaveLength(2)
   expect(screen.queryByRole('slider', { name: 'Explode amount' })).not.toBeInTheDocument()
 })
 

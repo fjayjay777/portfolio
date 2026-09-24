@@ -38,6 +38,7 @@ export function hasWebGL(): boolean {
 }
 
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t
+const currentPixelRatio = () => Math.min(window.devicePixelRatio, 2)
 
 /**
  * Mounts a Nighty scene in `host` and runs it while it is on screen. `read` is
@@ -46,10 +47,9 @@ const lerp = (a: number, b: number, t: number) => a + (b - a) * t
  */
 export function createStage(host: HTMLElement, { interactive, labels, read }: StageOptions) {
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-  const coarsePointer = window.matchMedia('(pointer: coarse)').matches
 
-  const renderer = new WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' })
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+  // The default power preference: the scene is light, and asking for the discrete GPU drains laptops.
+  const renderer = new WebGLRenderer({ antialias: true, alpha: true })
   renderer.toneMapping = NeutralToneMapping
   renderer.shadowMap.enabled = true
   renderer.shadowMap.type = PCFShadowMap
@@ -100,16 +100,19 @@ export function createStage(host: HTMLElement, { interactive, labels, read }: St
   controls.maxPolarAngle = 0.5 * Math.PI - 0.04
   controls.autoRotate = !interactive && !reducedMotion
   controls.autoRotateSpeed = 0.5
-  if (coarsePointer) {
-    // One finger scrolls the page; two fingers turn and zoom the model.
-    controls.touches = { ONE: null, TWO: TOUCH.DOLLY_ROTATE }
-    canvas.style.touchAction = 'pan-y'
-  }
+  // On any touchscreen, phone or laptop, one finger scrolls the page and two turn and zoom the model.
+  // Mouse and pen dragging are unaffected.
+  controls.touches = { ONE: null, TWO: TOUCH.DOLLY_ROTATE }
+  canvas.style.touchAction = 'pan-y'
 
   let width = 1
   let height = 1
+  let pixelRatio = 0
   let current = read().explode
   let framed = { y: 0, distance: 0 }
+  /** Set when something outside the frame loop (resize, reveal) needs a fresh draw. */
+  let dirty = true
+  let drawnActive: string | null = null
 
   /** Distance that fits the model at this explode amount into the current aspect ratio. */
   function framing(amount: number) {
@@ -136,15 +139,19 @@ export function createStage(host: HTMLElement, { interactive, labels, read }: St
     framed = next
   }
 
+  /** Also runs when the pixel ratio changes (browser zoom, another display), which never resizes the host. */
   function resize() {
     width = Math.max(1, host.clientWidth)
     height = Math.max(1, host.clientHeight)
+    pixelRatio = currentPixelRatio()
+    renderer.setPixelRatio(pixelRatio)
     renderer.setSize(width, height, false)
     camera.aspect = width / height
     // The interactive stage has its controls along the bottom, so centre the model in the space above them.
     if (interactive) camera.setViewOffset(width, height, 0, CONTROLS_INSET / 2, width, height)
     camera.updateProjectionMatrix()
     reframe(current)
+    dirty = true
   }
 
   function setOpacity(index: number, part: PartModel, value: number) {
@@ -219,12 +226,16 @@ export function createStage(host: HTMLElement, { interactive, labels, read }: St
   let visible = false
   let last = 0
 
+  /** Advances one frame, and draws only if something visible changed, so a still model costs nothing. */
   function update(dt: number) {
+    if (currentPixelRatio() !== pixelRatio) resize()
     const input = read()
     const target = Math.min(1, Math.max(0, input.explode))
+    const previous = current
     current = reducedMotion ? target : current + (target - current) * (1 - Math.exp(-dt * 5))
     if (Math.abs(target - current) < 1e-4) current = target
     if (Math.abs(framing(current).y - framed.y) > 1e-3) reframe(current)
+    let changed = dirty || current !== previous || input.activeId !== drawnActive
 
     if (interactive && pointerInside) {
       const next = pick()
@@ -242,7 +253,7 @@ export function createStage(host: HTMLElement, { interactive, labels, read }: St
     // Lift the whole model so its lowest part always rests on the floor.
     let lowest = 0
     const progress = model.parts.map((part, index) => {
-      const value = partProgress(current, index, count)
+      const value = partProgress(current, parts[index].sequence, count)
       const [x, y, z] = scaleOffset(parts[index].offset, value)
       part.group.position.set(x, y, z)
       lowest = Math.min(lowest, part.floor + y)
@@ -256,10 +267,17 @@ export function createStage(host: HTMLElement, { interactive, labels, read }: St
       const ghost = part.id === 'cover' ? lerp(1, GHOST, progress[index]) : 1
       const goal = active ? (part.id === active ? 1 : Math.min(ghost, FADED)) : ghost
       const value = Math.abs(goal - opacity[index]) < 0.002 ? goal : lerp(opacity[index], goal, ease)
-      if (value !== opacity[index]) setOpacity(index, part, value)
+      if (value !== opacity[index]) {
+        setOpacity(index, part, value)
+        changed = true
+      }
     })
 
-    controls.update(dt)
+    // Damping and auto-rotation keep the camera moving after the pointer lets go.
+    if (controls.update(dt)) changed = true
+    if (!changed) return
+    dirty = false
+    drawnActive = active
     renderer.render(scene, camera)
 
     labels.forEach((label, index) => {
@@ -288,6 +306,7 @@ export function createStage(host: HTMLElement, { interactive, labels, read }: St
   resizeObserver.observe(host)
   const visibility = new IntersectionObserver(([entry]) => {
     visible = entry.isIntersecting
+    dirty = true
     if (visible && !frame) {
       last = performance.now()
       frame = requestAnimationFrame(tick)

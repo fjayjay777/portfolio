@@ -20,6 +20,7 @@ export function NightyPage() {
   const [selected, setSelected] = useState<string | null>(null)
   const [hovered, setHovered] = useState<string | null>(null)
   const active = hovered ?? selected
+  const activePart = parts.find((part) => part.id === active)
   const exploded = explode >= 50
 
   return (
@@ -76,6 +77,10 @@ export function NightyPage() {
                 onHover={setHovered}
                 onSelect={setSelected}
               />
+              {/* The list states the selection for screen readers; this names it where the eye already is. */}
+              {webgl && activePart && (
+                <p className="nighty-caption" aria-hidden="true">{activePart.number} · {activePart.name}</p>
+              )}
               {webgl && (
                 <div className="nighty-controls">
                   <button className="nighty-toggle" type="button" onClick={() => setExplode(exploded ? 0 : 100)}>

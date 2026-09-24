@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { ErrorBoundary } from '../components/ErrorBoundary'
 import { parts } from './parts'
 import { createStage, hasWebGL, type StageInput } from './stage'
 
@@ -15,8 +16,22 @@ type NightyViewerProps = {
   onSelect?: (id: string | null) => void
 }
 
-export function NightyViewer({ label, explode, activeId = null, interactive = false, onHover, onSelect }: NightyViewerProps) {
+const fallback = (
+  <p className="nighty-fallback">This browser can’t run WebGL, so the 3D model can’t load. Every part is still listed on this page.</p>
+)
+
+/** The 3D model, or a short notice when WebGL is off or the renderer fails to start. */
+export function NightyViewer(props: NightyViewerProps) {
   const [supported] = useState(hasWebGL)
+  if (!supported) return fallback
+  return (
+    <ErrorBoundary fallback={fallback}>
+      <ViewerStage {...props} />
+    </ErrorBoundary>
+  )
+}
+
+function ViewerStage({ label, explode, activeId = null, interactive = false, onHover, onSelect }: NightyViewerProps) {
   const hostRef = useRef<HTMLDivElement>(null)
   const labelRefs = useRef<(HTMLButtonElement | null)[]>([])
   const input = useRef<StageInput>({ explode, activeId, onHover, onSelect })
@@ -27,14 +42,10 @@ export function NightyViewer({ label, explode, activeId = null, interactive = fa
 
   useEffect(() => {
     const host = hostRef.current
-    if (!supported || !host) return
+    if (!host) return
     const stage = createStage(host, { interactive, labels: labelRefs.current, read: () => input.current })
     return stage.dispose
-  }, [supported, interactive])
-
-  if (!supported) {
-    return <p className="nighty-fallback">This browser has WebGL turned off, so the 3D model can’t load. Every part is still listed on this page.</p>
-  }
+  }, [interactive])
 
   return (
     <div className="nighty-viewer" ref={hostRef} role="img" aria-label={label}>
