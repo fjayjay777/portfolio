@@ -107,7 +107,7 @@ function speakerDriver(kit: Kit): Group {
 
 const BUILDERS: Record<string, (kit: Kit) => Built> = {
   cover(kit) {
-    const top = kit.physical({ color: '#e6e2d9', roughness: 0.9, sheen: 1, sheenRoughness: 0.7, sheenColor: '#ffffff', bumpMap: textures.knitBump(), bumpScale: 2.5 })
+    const top = kit.physical({ color: '#ddd8cc', roughness: 0.9, sheen: 1, sheenRoughness: 0.7, sheenColor: '#ffffff', bumpMap: textures.knitBump(), bumpScale: 2.5 })
     const side = kit.physical({ color: '#56606b', roughness: 0.82, sheen: 1, sheenRoughness: 0.5, sheenColor: '#a8b2bd', bumpMap: textures.spacerBump(), bumpScale: 2 })
     const built = layer('cover', [side, side, top, side, side, side])
     const map = textures.tagMap()

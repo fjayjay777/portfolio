@@ -134,19 +134,19 @@ export function foamBump() {
 function perforation(context: CanvasRenderingContext2D, width: number, height: number, hole: string, face: string) {
   context.fillStyle = face
   context.fillRect(0, 0, width, height)
-  const gradient = context.createRadialGradient(width / 2, height / 2, 0, width / 2, height / 2, width * 0.19)
+  const gradient = context.createRadialGradient(width / 2, height / 2, 0, width / 2, height / 2, width * 0.15)
   gradient.addColorStop(0, hole)
   gradient.addColorStop(0.8, hole)
   gradient.addColorStop(1, face)
   context.fillStyle = gradient
   context.beginPath()
-  context.arc(width / 2, height / 2, width * 0.19, 0, Math.PI * 2)
+  context.arc(width / 2, height / 2, width * 0.15, 0, Math.PI * 2)
   context.fill()
 }
 
 /** The comfort layer's ventilation holes, one per 14 mm cell: colour multiplier and height map. */
 export function perforationMap() {
-  return once('perforation-map', () => tiled(paint(128, 128, (context, width, height) => perforation(context, width, height, '#5e6468', '#ffffff')), 14, true))
+  return once('perforation-map', () => tiled(paint(128, 128, (context, width, height) => perforation(context, width, height, '#a3aaae', '#ffffff')), 14, true))
 }
 
 export function perforationBump() {

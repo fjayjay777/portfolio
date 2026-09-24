@@ -79,7 +79,7 @@ export const parts: readonly NightyPart[] = [
     name: 'Main board',
     role: 'Control',
     description: 'The microcontroller, the Bluetooth and Wi-Fi radio, and the heater and fan drivers. It reads every sensor and decides when to warm, cool or play.',
-    offset: [0, -120, 60],
+    offset: [0, -110, 170],
   },
   {
     id: 'pod',
@@ -87,7 +87,7 @@ export const parts: readonly NightyPart[] = [
     name: 'Rear control pod',
     role: 'Room sensing, airflow',
     description: 'Sits in the rear panel, outside the foam, so its temperature and humidity sensor reads the room rather than the pillow. It also holds the quiet fan, the button, the status light and the USB-C port.',
-    offset: [0, 30, -150],
+    offset: [0, 70, -250],
   },
   {
     id: 'base',

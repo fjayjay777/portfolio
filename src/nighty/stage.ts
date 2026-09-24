@@ -25,6 +25,8 @@ const AZIMUTH = 0.66
 const ELEVATION = 0.38
 const FOV = 30
 const LABEL_THRESHOLD = 0.6
+/** Height of the explode controls laid over the bottom of the interactive stage, in CSS pixels. */
+const CONTROLS_INSET = 72
 
 export function hasWebGL(): boolean {
   if (typeof window === 'undefined' || typeof window.WebGL2RenderingContext === 'undefined') return false
@@ -61,9 +63,9 @@ export function createStage(host: HTMLElement, { interactive, labels, read }: St
   room.dispose()
   pmrem.dispose()
   scene.environment = environment
-  scene.environmentIntensity = 0.55
+  scene.environmentIntensity = 0.5
 
-  const key = new DirectionalLight('#fff6ec', 2.2)
+  const key = new DirectionalLight('#fff6ec', 1.7)
   key.position.set(-420, 1100, 620)
   key.target.position.set(0, 200, 0)
   key.castShadow = true
@@ -75,7 +77,7 @@ export function createStage(host: HTMLElement, { interactive, labels, read }: St
   key.shadow.radius = 4
   scene.add(key, key.target)
 
-  const floor = new Mesh(new PlaneGeometry(4000, 4000), new ShadowMaterial({ opacity: 0.16 }))
+  const floor = new Mesh(new PlaneGeometry(4000, 4000), new ShadowMaterial({ opacity: 0.12 }))
   floor.rotation.x = -Math.PI / 2
   floor.receiveShadow = true
   scene.add(floor)
@@ -112,10 +114,10 @@ export function createStage(host: HTMLElement, { interactive, labels, read }: St
   /** Distance that fits the model at this explode amount into the current aspect ratio. */
   function framing(amount: number) {
     const half = Math.tan((FOV * Math.PI) / 360)
-    const contentHeight = lerp(250, 900, amount)
-    const contentWidth = lerp(760, 920, amount)
+    const contentHeight = lerp(240, 1080, amount)
+    const contentWidth = lerp(760, 940, amount)
     const distance = Math.max(contentHeight / 2 / half, contentWidth / 2 / (half * camera.aspect)) * 1.08
-    return { y: lerp(50, 385, amount), distance }
+    return { y: lerp(55, 340, amount), distance }
   }
 
   /** Re-aims the camera for a new frame, keeping the user's angle and relative zoom. */
@@ -139,6 +141,8 @@ export function createStage(host: HTMLElement, { interactive, labels, read }: St
     height = Math.max(1, host.clientHeight)
     renderer.setSize(width, height, false)
     camera.aspect = width / height
+    // The interactive stage has its controls along the bottom, so centre the model in the space above them.
+    if (interactive) camera.setViewOffset(width, height, 0, CONTROLS_INSET / 2, width, height)
     camera.updateProjectionMatrix()
     reframe(current)
   }
