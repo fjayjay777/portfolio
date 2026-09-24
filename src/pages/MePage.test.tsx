@@ -90,7 +90,10 @@ test('closes the page with a footer offering both exits', () => {
     'mailto:huangjn35@gmail.com',
   )
 
+  expect(within(footer).getByRole('link', { name: /385-528-4176/ })).toHaveAttribute('href', 'tel:+13855284176')
+
   const linkedin = within(footer).getByRole('link', { name: /LinkedIn/ })
+  expect(linkedin).toHaveAttribute('href', 'https://www.linkedin.com/in/jiani-huang-b22515365/')
   expect(linkedin).toHaveAttribute('target', '_blank')
   expect(linkedin).toHaveAttribute('rel', 'noreferrer')
 })

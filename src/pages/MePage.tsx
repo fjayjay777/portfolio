@@ -26,8 +26,8 @@ const experience = [
 
 const contact = [
   { label: 'Email', value: 'Huangjn35@gmail.com', href: 'mailto:huangjn35@gmail.com' },
-  { label: 'Phone', value: '385-528-4176', href: 'tel:+13855384176' },
-  { label: 'LinkedIn', value: 'Jiani Huang', href: 'https://www.linkedin.com', external: true },
+  { label: 'Phone', value: '385-528-4176', href: 'tel:+13855284176' },
+  { label: 'LinkedIn', value: 'Jiani Huang', href: 'https://www.linkedin.com/in/jiani-huang-b22515365/', external: true },
 ]
 
 const education = [

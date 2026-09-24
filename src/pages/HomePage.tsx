@@ -128,8 +128,8 @@ export function HomePage() {
             </div>
             <div className="contact-list">
               <a href="mailto:huangjn35@gmail.com"><span>Email</span><strong>Huangjn35@gmail.com</strong></a>
-              <a href="tel:+13855384176"><span>Phone</span><strong>385-528-4176</strong></a>
-              <a href="https://www.linkedin.com" target="_blank" rel="noreferrer"><span>LinkedIn</span><strong>Jiani Huang</strong></a>
+              <a href="tel:+13855284176"><span>Phone</span><strong>385-528-4176</strong></a>
+              <a href="https://www.linkedin.com/in/jiani-huang-b22515365/" target="_blank" rel="noreferrer"><span>LinkedIn</span><strong>Jiani Huang</strong></a>
             </div>
             <p className="footer-note">Designed and built by Jiani © 2026</p>
           </div>
