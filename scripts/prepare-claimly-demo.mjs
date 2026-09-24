@@ -1,4 +1,4 @@
-import { access, cp, mkdir, readdir, readFile, rm, writeFile } from 'node:fs/promises'
+import { access, cp, mkdir, readdir, readFile, rename, rm, writeFile } from 'node:fs/promises'
 import { constants } from 'node:fs'
 import { execFile as execFileCallback } from 'node:child_process'
 import { promisify } from 'node:util'
@@ -41,15 +41,26 @@ await rm(destination, { recursive: true, force: true })
 await mkdir(destination, { recursive: true })
 await cp(source, destination, { recursive: true })
 
-async function rewriteHtml(directory) {
+// Expo exports package assets (the Poppins fonts, router icons) under
+// assets/node_modules. The repo ignores every node_modules folder, so those files
+// never reached Git and the deployed demo hung waiting for its fonts. Serve them
+// from assets/vendor instead and point the bundle there.
+await rename(resolve(destination, 'assets/node_modules'), resolve(destination, 'assets/vendor'))
+
+async function rewriteExport(directory) {
   for (const entry of await readdir(directory, { withFileTypes: true })) {
     const file = resolve(directory, entry.name)
-    if (entry.isDirectory()) await rewriteHtml(file)
-    if (entry.isFile() && entry.name.endsWith('.html')) {
+    if (entry.isDirectory()) await rewriteExport(file)
+    if (!entry.isFile()) continue
+    if (entry.name.endsWith('.html')) {
       const contents = await readFile(file, 'utf8')
       await writeFile(file, contents.replaceAll('src="/_expo/', 'src="/demos/claimly/_expo/'))
+    }
+    if (entry.name.endsWith('.js')) {
+      const contents = await readFile(file, 'utf8')
+      await writeFile(file, contents.replaceAll('/demos/claimly/assets/node_modules/', '/demos/claimly/assets/vendor/'))
     }
   }
 }
 
-await rewriteHtml(destination)
+await rewriteExport(destination)
