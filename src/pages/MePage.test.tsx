@@ -84,7 +84,7 @@ test('closes the page with a footer offering both exits', () => {
   const footer = screen.getByRole('contentinfo')
 
   expect(within(footer).getByRole('link', { name: /Selected works/ })).toHaveAttribute('href', '/#works')
-  expect(within(footer).getByText('Claimly · Medisync · Sizzle')).toBeVisible()
+  expect(within(footer).getByText('Claimly · Medisync · Sizzle · Nighty')).toBeVisible()
   expect(within(footer).getByRole('link', { name: /Huangjn35@gmail.com/ })).toHaveAttribute(
     'href',
     'mailto:huangjn35@gmail.com',

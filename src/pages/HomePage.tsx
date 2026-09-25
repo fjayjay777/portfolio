@@ -1,13 +1,13 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { HeroFigure } from '../components/HeroFigure'
-import { ClaimlyCover, MedisyncCover, SizzleCover } from '../components/ProjectCovers'
+import { ClaimlyCover, MedisyncCover, NightyCover, SizzleCover } from '../components/ProjectCovers'
 import { ProjectDialog, type Project } from '../components/ProjectDialog'
 import { SiteNav } from '../components/SiteNav'
 import { useHashScroll } from '../hooks/useHashScroll'
 import { useInView } from '../hooks/useInView'
 
-const covers = [ClaimlyCover, MedisyncCover, SizzleCover]
+const covers = [ClaimlyCover, MedisyncCover, SizzleCover, NightyCover]
 
 const projects: Project[] = [
   {
@@ -36,6 +36,13 @@ const projects: Project[] = [
     // Sizzle's landing header is a translucent cream over the page color, so the
     // status bar has to match the composited result, not the page token.
     demo: { url: '/demos/sizzle/', canvas: '#fef9f0' },
+  },
+  {
+    name: 'Nighty',
+    category: 'Sleep technology',
+    chip: '#5b73b8',
+    summary: 'A smart pillow that adjusts its temperature to the room, plays white noise, and tracks how deeply you sleep.',
+    caseStudy: '/work/nighty',
   },
 ]
 
