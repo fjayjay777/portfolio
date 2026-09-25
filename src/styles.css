@@ -459,6 +459,72 @@ section[id] { scroll-margin-top: 72px; }
 .claimly-page .step-copy h3,
 .claimly-page .claimly-findings h3,
 .claimly-page .claimly-decisions h3 { font-size: 20px; line-height: 1.4; }
+/* The flow breaks out of the 940px reading measure to the full site width;
+   its label and intro stay on the measure so they line up with the sections
+   around it. */
+.claimly-page .claimly-flow-section { max-width: none; }
+.claimly-flow-copy { max-width: 940px; margin-inline: auto; }
+.claimly-flow-copy + .flow-canvas { margin-top: 36px; }
+
+/* Flow canvas ---------------------------------------------------------- */
+.flow-canvas { --flow-blue: #3f85ff; --flow-tint: #eaf2ff; position: relative; margin: 0; }
+.flow-canvas__viewport {
+  overflow-x: auto; overflow-y: hidden; overscroll-behavior-x: contain;
+  border: 1px solid var(--rule); border-radius: 14px;
+  /* Bottom padding keeps a strip of board clear for the zoom controls. */
+  padding-bottom: 60px;
+  background-color: #fff;
+  background-image: radial-gradient(circle, #d3d9e2 1px, transparent 1.4px);
+  background-size: 20px 20px;
+  background-attachment: local;
+}
+.flow-canvas__viewport:focus-visible { outline: 2px solid var(--flow-blue); outline-offset: 3px; }
+.flow-canvas__viewport.is-pannable { cursor: grab; }
+.flow-canvas__viewport.is-dragging { cursor: grabbing; user-select: none; }
+/* Centred when the diagram is narrower than the board. */
+.flow-canvas__stage { margin-inline: auto; }
+.flow-canvas__stage > svg { display: block; width: 100%; height: 100%; }
+.flow-canvas__controls {
+  position: absolute; right: 12px; bottom: 12px;
+  display: flex; align-items: center; gap: 2px;
+  border: 1px solid var(--rule); border-radius: 10px; padding: 3px;
+  background: #fff; color: var(--ink);
+  font: 400 12px/1 var(--mono);
+}
+.flow-canvas__controls button {
+  min-width: 36px; height: 36px; border: 0; border-radius: 7px;
+  background: transparent; color: inherit; font-size: 17px;
+}
+.flow-canvas__controls button:hover:not(:disabled) { background: var(--flow-tint); color: var(--flow-blue); }
+.flow-canvas__controls button:disabled { color: #bdb7ad; cursor: default; }
+.flow-canvas__controls .flow-canvas__fit { padding: 0 10px; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; }
+.flow-canvas__controls output { min-width: 44px; color: var(--soft); text-align: center; }
+.flow-canvas__hint { padding: 0 8px; color: var(--soft); letter-spacing: .04em; }
+
+/* Diagram marks: blue connectors and outlines on the white board. */
+.claimly-flow { font-family: Inter, sans-serif; }
+.claimly-flow .flow-title { fill: var(--ink); font-size: 14px; font-weight: 500; text-anchor: middle; dominant-baseline: central; }
+.claimly-flow .flow-note { fill: var(--soft); font-size: 12px; text-anchor: middle; dominant-baseline: central; }
+.flow-step rect,
+.flow-decision polygon { fill: #fff; stroke: var(--flow-blue); stroke-width: 1.5; }
+.flow-step--ai rect { fill: var(--flow-tint); }
+.flow-terminal rect { fill: var(--flow-blue); stroke: var(--flow-blue); stroke-width: 1.5; }
+.claimly-flow .flow-terminal .flow-title { fill: #fff; }
+.claimly-flow .flow-terminal .flow-note { fill: #dce9ff; }
+.flow-terminal--outside rect { fill: #fff; stroke-dasharray: 5 4; }
+.claimly-flow .flow-terminal--outside .flow-title { fill: var(--ink); }
+.claimly-flow .flow-terminal--outside .flow-note { fill: var(--soft); }
+.flow-edge { fill: none; stroke: var(--flow-blue); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+#claimly-flow-arrow path { fill: var(--flow-blue); }
+.flow-branch { fill: var(--flow-blue); font: 500 11px var(--mono); letter-spacing: .06em; dominant-baseline: central; }
+.flow-stage text { fill: var(--soft); font: 400 11px var(--mono); letter-spacing: .14em; text-transform: uppercase; }
+.flow-stage line { stroke: #e3e8ef; stroke-width: 1; }
+.flow-legend text { fill: var(--soft); font-size: 12px; dominant-baseline: central; }
+.flow-legend__screen,
+.flow-legend__decision { fill: #fff; stroke: var(--flow-blue); stroke-width: 1.25; }
+.flow-legend__ai { fill: var(--flow-tint); stroke: var(--flow-blue); stroke-width: 1.25; }
+.flow-legend__terminal { fill: var(--flow-blue); }
+.flow-legend__outside { fill: #fff; stroke: var(--flow-blue); stroke-width: 1.25; stroke-dasharray: 3 2; }
 
 .case-end { margin-top: var(--gap); }
 .case-next {

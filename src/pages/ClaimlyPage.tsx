@@ -2,6 +2,8 @@ import { Link } from 'react-router-dom'
 import intakeShot from '../assets/claimly/01-intake.png'
 import reportShot from '../assets/claimly/02-report.png'
 import appealShot from '../assets/claimly/03-appeal.png'
+import { ClaimlyFlow, claimlyFlowSize } from '../components/ClaimlyFlow'
+import { FlowCanvas } from '../components/FlowCanvas'
 import { MobileDemoFrame } from '../components/MobileDemoFrame'
 import { PhoneShot } from '../components/PhoneShot'
 import { CaseFooter } from '../components/CaseFooter'
@@ -169,6 +171,21 @@ export function ClaimlyPage() {
               </li>
             ))}
           </ol>
+        </section>
+
+        <section className="case-section section-shell claimly-flow-section" aria-labelledby="flow-title">
+          <div className="claimly-flow-copy">
+            <div className="section-label"><span>/</span><h2 id="flow-title">Interaction flow</h2></div>
+            <div className="case-body claimly-centered-body">
+              <p>
+                The full product flow, from getting a bill in to calling the insurer. The demo above follows its main
+                path; the other branches are not in the prototype.
+              </p>
+            </div>
+          </div>
+          <FlowCanvas {...claimlyFlowSize} label="Claimly interaction flow">
+            <ClaimlyFlow />
+          </FlowCanvas>
         </section>
 
         <section className="case-section section-shell" aria-labelledby="walkthrough-title">

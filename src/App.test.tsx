@@ -57,6 +57,21 @@ test('embeds the Claimly prototype and provides a direct demo link', () => {
   expect(screen.getByRole('link', { name: 'Open Claimly demo' })).toHaveAttribute('href', '/demos/claimly/')
 })
 
+test('shows the Claimly interaction flow on a zoomable canvas', async () => {
+  const user = userEvent.setup()
+  renderAt('/work/claimly')
+
+  expect(screen.getByRole('img', { name: 'Claimly interaction flow' })).toBeInTheDocument()
+
+  // jsdom has no layout, so the canvas starts at its full 100% size.
+  const zoom = screen.getByRole('status')
+  expect(zoom).toHaveTextContent('100%')
+  await user.click(screen.getByRole('button', { name: 'Zoom in' }))
+  expect(zoom).toHaveTextContent('125%')
+  await user.click(screen.getByRole('button', { name: 'Fit' }))
+  expect(zoom).toHaveTextContent('100%')
+})
+
 test('centers Claimly text sections without oversized pull quotes', () => {
   renderAt('/work/claimly')
 
