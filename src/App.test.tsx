@@ -148,10 +148,13 @@ test('traces Medisync scenarios across the swimlanes', async () => {
   const user = userEvent.setup()
   renderAt('/work/medisync')
 
-  // As on Claimly, jsdom shows the autoplayed booking path whole.
+  // As on Claimly, jsdom shows the autoplayed path whole: booking to visit summary, then the one-tap rebook.
   const scenarios = screen.getByRole('group', { name: 'Trace a scenario' })
-  expect(within(scenarios).getByRole('button', { name: 'Book a first visit' })).toHaveAttribute('aria-pressed', 'true')
-  expect(screen.getByText('11 / 11 · Files')).toBeInTheDocument()
+  expect(within(scenarios).getByRole('button', { name: 'Visit and rebook' })).toHaveAttribute('aria-pressed', 'true')
+  expect(screen.getByText('13 / 13 · Upcoming visit')).toBeInTheDocument()
+
+  await user.click(within(scenarios).getByRole('button', { name: 'Record round trip' }))
+  expect(screen.getByText('11 / 11 · Read visit summary')).toBeInTheDocument()
 
   await user.click(within(scenarios).getByRole('button', { name: 'Keep a reading private' }))
   expect(screen.getByText('04 / 04 · Stays private')).toBeInTheDocument()

@@ -183,9 +183,9 @@ export function MedisyncPage() {
             <div className="section-label"><span>/</span><h2 id="flow-title">Interaction flow</h2></div>
             <div className="case-body">
               <p>
-                The full flow across all three parts, with the shared record between patient and clinic. Select a
-                scenario to trace its path. Only the patient app is in the demo above; the clinic system and the watch
-                widget exist as designs.
+                The full flow across all three parts, with the shared record between patient and clinic. Rebooking from
+                a past visit takes one tap, against four screens for a first booking. Select a scenario to trace its
+                path. Only the patient app is in the demo above; the clinic system and the watch widget exist as designs.
               </p>
             </div>
           </div>
