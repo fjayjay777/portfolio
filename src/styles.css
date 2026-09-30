@@ -485,13 +485,9 @@ section[id] { scroll-margin-top: 72px; }
 .ai-open dd { margin: 0; color: #35312b; font-size: 17px; line-height: 1.7; }
 
 /* Flow canvas ---------------------------------------------------------- */
-/* The flow section breaks out of the 940px reading measure to the full site
-   width; its label and intro stay on the measure so they line up with the
-   sections around it. */
-.claimly-page .flow-section { max-width: none; }
-.case-study-layout .case-section.flow-section { width: var(--content); }
-.flow-section-copy { max-width: 940px; margin-inline: auto; }
-.flow-section-copy + .flow-canvas { margin-top: 36px; }
+/* Boards stay on the 940px reading measure, flush with the text around them. */
+.flow-section-copy + .flow-canvas,
+.flow-section-copy + .flow-player { margin-top: 36px; }
 
 /* Each case study retints the board through these. --flow-label and
    --flow-strong carry text, so they stay dark enough to read on white. */
@@ -557,6 +553,35 @@ section[id] { scroll-margin-top: 72px; }
 .flow-legend__tint { fill: var(--flow-tint); stroke: var(--flow-line); stroke-width: 1.25; }
 .flow-legend__terminal { fill: var(--flow-strong); }
 .flow-legend__outside { fill: #fff; stroke: var(--flow-line); stroke-width: 1.25; stroke-dasharray: 3 2; }
+/* Scenario player: pick a path and the rest of the diagram steps back. */
+.flow-player { display: grid; gap: 8px; }
+.flow-player + .flow-canvas { margin-top: 10px; }
+.flow-player__meta { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 36px; }
+.flow-player__scenarios { display: flex; flex-wrap: wrap; gap: 6px; }
+.flow-player button {
+  min-height: 36px; border: 1px solid var(--rule); border-radius: 999px; padding: 0 14px;
+  background: #fff; color: var(--ink); font-size: 14px;
+  transition: border-color .2s var(--ease), color .2s var(--ease), background .2s var(--ease);
+}
+.flow-player button:hover { border-color: var(--flow-line); color: var(--flow-line); }
+.flow-player button[aria-pressed='true'] { border-color: var(--flow-line); background: var(--flow-line); color: #fff; }
+.flow-player__status { margin: 0; color: var(--soft); font: 400 12px/1.5 var(--mono); letter-spacing: .06em; }
+.flow-player .flow-player__replay { border-style: dashed; }
+/* The player sits outside the canvas, so it takes the board colours from here. */
+.flow-section { --flow-line: #3f85ff; }
+.flow-section--medisync { --flow-line: #7f9062; }
+
+.flow-node,
+.flow-diagram .flow-edge,
+.flow-branch { transition: opacity .35s var(--ease); }
+.is-scenario .flow-node:not(.is-lit),
+.is-scenario .flow-branch:not(.is-lit) { opacity: .28; }
+.is-scenario .flow-edge:not(.flow-edge--lit) { opacity: .2; }
+.flow-edge--lit { stroke-width: 2.5; }
+.is-current rect,
+.is-current polygon { stroke-width: 2.5; }
+.flow-dot { fill: var(--flow-line); stroke: #fff; stroke-width: 2; }
+
 /* Swimlane furniture: lane headings, dividers, a tinted band behind the
    shared lane, and dashed rules between phases. */
 .flow-lane text,

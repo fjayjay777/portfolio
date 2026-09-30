@@ -3,7 +3,8 @@ import searchShot from '../assets/medisync/md-01-search.jpg'
 import pricesShot from '../assets/medisync/md-02-prices.jpg'
 import confirmShot from '../assets/medisync/md-03-confirm.jpg'
 import { FlowCanvas } from '../components/FlowCanvas'
-import { MedisyncFlow, medisyncFlowSize } from '../components/MedisyncFlow'
+import { FlowPlayer } from '../components/FlowPlayer'
+import { medisyncFlow } from '../components/MedisyncFlow'
 import { MedisyncIA, medisyncIASize } from '../components/MedisyncIA'
 import { MobileDemoFrame } from '../components/MobileDemoFrame'
 import { CaseFooter } from '../components/CaseFooter'
@@ -182,15 +183,14 @@ export function MedisyncPage() {
             <div className="section-label"><span>/</span><h2 id="flow-title">Interaction flow</h2></div>
             <div className="case-body">
               <p>
-                The full flow across all three parts, with the shared record between patient and clinic. Only the
-                patient app is in the demo above; the clinic system and the watch widget exist as designs.
+                The full flow across all three parts, with the shared record between patient and clinic. Select a
+                scenario to trace its path. Only the patient app is in the demo above; the clinic system and the watch
+                widget exist as designs.
               </p>
             </div>
           </div>
           {/* Phones open on the patient lane; the watch lane is empty until the last phase. */}
-          <FlowCanvas {...medisyncFlowSize} label="Medisync interaction flow" focusX={420}>
-            <MedisyncFlow />
-          </FlowCanvas>
+          <FlowPlayer spec={medisyncFlow} focusX={420} />
         </section>
 
         <section className="case-section section-shell" aria-labelledby="walkthrough-title">

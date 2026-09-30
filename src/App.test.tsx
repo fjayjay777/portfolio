@@ -72,6 +72,23 @@ test('shows the Claimly interaction flow on a zoomable canvas', async () => {
   expect(zoom).toHaveTextContent('100%')
 })
 
+test('traces Claimly scenarios on the interaction flow', async () => {
+  const user = userEvent.setup()
+  renderAt('/work/claimly')
+
+  // jsdom has no IntersectionObserver or SVG geometry, so the main path autoplays and shows whole.
+  const scenarios = screen.getByRole('group', { name: 'Trace a scenario' })
+  expect(within(scenarios).getByRole('button', { name: 'Dispute a charge' })).toHaveAttribute('aria-pressed', 'true')
+  expect(screen.getByText('14 / 14 · Call the insurer')).toBeInTheDocument()
+
+  await user.click(within(scenarios).getByRole('button', { name: 'No errors found' }))
+  expect(screen.getByText('08 / 08 · Add to spending')).toBeInTheDocument()
+
+  await user.click(within(scenarios).getByRole('button', { name: 'Full flow' }))
+  expect(screen.getByText('Pick a scenario to trace its path')).toBeInTheDocument()
+  expect(within(scenarios).getByRole('button', { name: 'Full flow' })).toHaveAttribute('aria-pressed', 'true')
+})
+
 test('splits each Claimly AI step between the model and the person', () => {
   renderAt('/work/claimly')
 
@@ -125,6 +142,22 @@ test('shows the Medisync swimlane flow on its case study page', () => {
   for (const lane of ['Watch', 'Patient app', 'Shared record', 'Clinic system']) {
     expect(within(flow).getByText(lane)).toBeInTheDocument()
   }
+})
+
+test('traces Medisync scenarios across the swimlanes', async () => {
+  const user = userEvent.setup()
+  renderAt('/work/medisync')
+
+  // As on Claimly, jsdom shows the autoplayed booking path whole.
+  const scenarios = screen.getByRole('group', { name: 'Trace a scenario' })
+  expect(within(scenarios).getByRole('button', { name: 'Book a first visit' })).toHaveAttribute('aria-pressed', 'true')
+  expect(screen.getByText('11 / 11 · Files')).toBeInTheDocument()
+
+  await user.click(within(scenarios).getByRole('button', { name: 'Keep a reading private' }))
+  expect(screen.getByText('04 / 04 · Stays private')).toBeInTheDocument()
+
+  await user.click(within(scenarios).getByRole('button', { name: 'Share an abnormal reading' }))
+  expect(screen.getByText('05 / 05 · Doctor reviews')).toBeInTheDocument()
 })
 
 test('maps the Medisync information architecture beside the flow without clashing ids', () => {

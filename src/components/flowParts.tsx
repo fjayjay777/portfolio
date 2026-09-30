@@ -59,11 +59,12 @@ export function Decision({ cx, cy, label, w = 150, h = 84 }: { cx: number; cy: n
 const MarkerId = createContext('flow-arrow')
 
 /** The svg shell every diagram shares: accessible name and description, and its arrow marker. */
-export function FlowSvg({ width, height, title, desc, children }: {
+export function FlowSvg({ width, height, title, desc, className, children }: {
   width: number
   height: number
   title: string
   desc: string
+  className?: string
   children: ReactNode
 }) {
   // useId output contains characters that url(#…) references would need escaped.
@@ -71,7 +72,7 @@ export function FlowSvg({ width, height, title, desc, children }: {
   return (
     <MarkerId.Provider value={`${id}-arrow`}>
       <svg
-        className="flow-diagram"
+        className={`flow-diagram${className ? ` ${className}` : ''}`}
         viewBox={`0 0 ${width} ${height}`}
         role="img"
         aria-labelledby={`${id}-title`}
@@ -106,20 +107,28 @@ function ArrowMarker() {
   )
 }
 
-/** Dashed edges are for things that are not data moving, such as a visit in person. */
-export function Edge({ d, end = true, dashed = false }: { d: string; end?: boolean; dashed?: boolean }) {
+/**
+ * Dashed edges are for things that are not data moving, such as a visit in
+ * person. Lit edges trace the path a scenario has taken.
+ */
+export function Edge({ d, end = true, dashed = false, lit = false }: {
+  d: string
+  end?: boolean
+  dashed?: boolean
+  lit?: boolean
+}) {
   const marker = useContext(MarkerId)
   return (
     <path
-      className={`flow-edge${dashed ? ' flow-edge--dashed' : ''}`}
+      className={`flow-edge${dashed ? ' flow-edge--dashed' : ''}${lit ? ' flow-edge--lit' : ''}`}
       d={d}
       markerEnd={end ? `url(#${marker})` : undefined}
     />
   )
 }
 
-export function Branch({ x, y, children }: { x: number; y: number; children: string }) {
-  return <text className="flow-branch" x={x} y={y}>{children}</text>
+export function Branch({ x, y, lit = false, children }: { x: number; y: number; lit?: boolean; children: string }) {
+  return <text className={`flow-branch${lit ? ' is-lit' : ''}`} x={x} y={y}>{children}</text>
 }
 
 /* Screen cards for information-architecture maps: a titled header over the
