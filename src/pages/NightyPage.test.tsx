@@ -44,6 +44,16 @@ test('names the selected part inside the model stage', async () => {
   expect(screen.getByText('05 · Sleep-sensing strip')).toBeInTheDocument()
 })
 
+test('frames the pillow with a problem statement beside the design goal', () => {
+  renderPage()
+
+  expect(screen.getByRole('region', { name: 'Problem statement' })).toHaveTextContent(/symptoms of insomnia/)
+  const goal = screen.getByRole('region', { name: 'Design goal' })
+  expect(goal).toHaveTextContent(/How might we help people with sleep difficulties/)
+  // Both halves share one grid row, so they sit side by side rather than stacked.
+  expect(goal.parentElement).toHaveClass('nighty-framing')
+})
+
 test('keeps the page up and explains itself when the renderer cannot start', () => {
   vi.spyOn(console, 'error').mockImplementation(() => undefined)
   createStage.mockImplementationOnce(() => {

@@ -1059,6 +1059,12 @@ section[id] { scroll-margin-top: 72px; }
   color: var(--soft); font: 400 12px/1.6 var(--mono); letter-spacing: .06em; text-align: center;
 }
 
+/* Same columns as the exploded grid below, so the goal lines up over the parts list. */
+.nighty-framing {
+  display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: clamp(32px, 4vw, 56px); align-items: start;
+  padding-top: var(--gap);
+}
+.nighty-framing .case-body p { font-size: 17px; line-height: 1.7; }
 .nighty-exploded { padding-top: var(--gap); }
 .nighty-exploded-grid { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: clamp(32px, 4vw, 56px); align-items: start; }
 /* Stays in view while the parts list scrolls past it. */
@@ -1112,7 +1118,8 @@ section[id] { scroll-margin-top: 72px; }
 .nighty-note h3 { margin: 0 0 10px; font: 500 16px/1.4 Inter, sans-serif; }
 
 @media (max-width: 900px) {
-  .nighty-model-inner, .nighty-exploded-grid { grid-template-columns: minmax(0, 1fr); }
+  .nighty-model-inner, .nighty-exploded-grid, .nighty-framing { grid-template-columns: minmax(0, 1fr); }
+  .nighty-framing { gap: 48px; }
   .nighty-stage--exploded { position: relative; top: 0; height: 520px; }
 }
 @media (max-width: 680px) {
