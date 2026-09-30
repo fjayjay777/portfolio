@@ -72,6 +72,23 @@ test('shows the Claimly interaction flow on a zoomable canvas', async () => {
   expect(zoom).toHaveTextContent('100%')
 })
 
+test('splits each Claimly AI step between the model and the person', () => {
+  renderAt('/work/claimly')
+
+  const section = screen.getByRole('region', { name: 'AI design considerations' })
+  const steps = within(within(section).getByRole('list', { name: /AI role and user control/ })).getAllByRole('listitem')
+  expect(steps.map((step) => within(step).getByRole('heading').textContent)).toEqual([
+    'Bill analysis',
+    'EOB comparison',
+    'Code explanation',
+    'Appeal support',
+  ])
+  for (const step of steps) {
+    expect(within(step).getByText('AI role')).toBeInTheDocument()
+    expect(within(step).getByText('User control')).toBeInTheDocument()
+  }
+})
+
 test('centers Claimly text sections without oversized pull quotes', () => {
   renderAt('/work/claimly')
 
@@ -90,6 +107,38 @@ test('opens the Medisync case study from the work index', async () => {
 
   expect(await screen.findByRole('heading', { level: 1, name: 'Medisync' })).toBeVisible()
   expect(screen.getByRole('heading', { name: 'Product walkthrough' })).toBeVisible()
+})
+
+test('frames Medisync with a problem statement and design goal before the overview', () => {
+  renderAt('/work/medisync')
+
+  const headings = screen.getAllByRole('heading', { level: 2 }).map((heading) => heading.textContent)
+  expect(headings.slice(0, 4)).toEqual(['Interactive demo', 'Problem statement', 'Design goal', 'Overview'])
+  expect(screen.getByText(/How might we connect patients and providers/)).toHaveClass('case-goal')
+})
+
+test('shows the Medisync swimlane flow on its case study page', () => {
+  renderAt('/work/medisync')
+
+  const flow = screen.getByRole('img', { name: 'Medisync interaction flow' })
+  expect(flow).toBeInTheDocument()
+  for (const lane of ['Watch', 'Patient app', 'Shared record', 'Clinic system']) {
+    expect(within(flow).getByText(lane)).toBeInTheDocument()
+  }
+})
+
+test('maps the Medisync information architecture beside the flow without clashing ids', () => {
+  const { container } = renderAt('/work/medisync')
+
+  const ia = screen.getByRole('img', { name: 'Medisync information architecture' })
+  for (const tab of ['Home', 'Explore', 'Appointments', 'Files', 'Profile']) {
+    expect(within(ia).getByText(tab)).toBeInTheDocument()
+  }
+
+  // Two diagrams share the page, so each needs its own arrow marker.
+  expect(screen.getAllByRole('button', { name: 'Zoom in' })).toHaveLength(2)
+  const markerIds = [...container.querySelectorAll('marker')].map((marker) => marker.id)
+  expect(new Set(markerIds).size).toBe(2)
 })
 
 test('embeds the Medisync prototype on its case study page', () => {

@@ -2,6 +2,9 @@ import { Link } from 'react-router-dom'
 import searchShot from '../assets/medisync/md-01-search.jpg'
 import pricesShot from '../assets/medisync/md-02-prices.jpg'
 import confirmShot from '../assets/medisync/md-03-confirm.jpg'
+import { FlowCanvas } from '../components/FlowCanvas'
+import { MedisyncFlow, medisyncFlowSize } from '../components/MedisyncFlow'
+import { MedisyncIA, medisyncIASize } from '../components/MedisyncIA'
 import { MobileDemoFrame } from '../components/MobileDemoFrame'
 import { CaseFooter } from '../components/CaseFooter'
 import { PhoneShot } from '../components/PhoneShot'
@@ -91,15 +94,37 @@ export function MedisyncPage() {
           </div>
         </section>
 
+        <section className="case-section section-shell" aria-labelledby="problem-title">
+          <div className="section-label"><span>/</span><h2 id="problem-title">Problem statement</h2></div>
+          <div className="case-body">
+            <p>
+              Healthcare runs on platforms that do not talk to each other, so patients carry their history from one
+              clinic to the next themselves. Every new provider starts with a blank intake form: the same insurance
+              details, conditions, and medications, entered again. Records move between departments only when the
+              patient brings them, and continuity breaks the moment someone moves, switches providers, or is referred.
+            </p>
+            <p>
+              Clinicians sit on the other side of the same gap. Staff spend time hunting for a referral patient’s
+              history, and between visits no one can see how a patient is recovering. For someone managing a chronic
+              condition, or a parent keeping several children’s records straight, a record that only appears on
+              appointment day arrives too late to act on.
+            </p>
+          </div>
+        </section>
+
+        <section className="case-section section-shell" aria-labelledby="goal-title">
+          <div className="section-label"><span>/</span><h2 id="goal-title">Design goal</h2></div>
+          <div className="case-body">
+            <p className="case-goal">
+              How might we connect patients and providers through one shared health record, so care does not restart
+              at every new clinic or stop between visits, while patients stay in control of what is shared?
+            </p>
+          </div>
+        </section>
+
         <section className="case-section section-shell" aria-labelledby="overview-title">
           <div className="section-label"><span>/</span><h2 id="overview-title">Overview</h2></div>
           <div className="case-body">
-            <p>
-              Healthcare runs on platforms that do not talk to each other. Patients re-enter the same insurance and
-              history at every new clinic and carry their own records between departments; continuity breaks the moment
-              they move or switch providers. Clinicians sit on the other side of the same gap, unable to pull the
-              history of a referral patient or track recovery between visits.
-            </p>
             <p>
               Medisync closes the gap from both ends with three parts that share one record: a patient app for
               discovery, cost, and booking, a watch widget for continuous health data, and an office system for
@@ -134,6 +159,38 @@ export function MedisyncPage() {
               </li>
             </ul>
           </div>
+        </section>
+
+        <section className="case-section section-shell flow-section flow-section--medisync" aria-labelledby="ia-title">
+          <div className="flow-section-copy">
+            <div className="section-label"><span>/</span><h2 id="ia-title">Information architecture</h2></div>
+            <div className="case-body">
+              <p>
+                The patient app is organized around five bottom-navigation tabs. The booking path sits under Explore and
+                runs four screens deep; insurance details and the next appointment are one tap from Home. The clinic
+                system and the watch widget are covered in the interaction flow below.
+              </p>
+            </div>
+          </div>
+          <FlowCanvas {...medisyncIASize} label="Medisync information architecture" focusX={560}>
+            <MedisyncIA />
+          </FlowCanvas>
+        </section>
+
+        <section className="case-section section-shell flow-section flow-section--medisync" aria-labelledby="flow-title">
+          <div className="flow-section-copy">
+            <div className="section-label"><span>/</span><h2 id="flow-title">Interaction flow</h2></div>
+            <div className="case-body">
+              <p>
+                The full flow across all three parts, with the shared record between patient and clinic. Only the
+                patient app is in the demo above; the clinic system and the watch widget exist as designs.
+              </p>
+            </div>
+          </div>
+          {/* Phones open on the patient lane; the watch lane is empty until the last phase. */}
+          <FlowCanvas {...medisyncFlowSize} label="Medisync interaction flow" focusX={420}>
+            <MedisyncFlow />
+          </FlowCanvas>
         </section>
 
         <section className="case-section section-shell" aria-labelledby="walkthrough-title">

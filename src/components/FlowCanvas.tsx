@@ -5,6 +5,8 @@ type FlowCanvasProps = {
   width: number
   height: number
   label: string
+  /** Diagram x to centre on when the board first opens too narrow to show it all. */
+  focusX?: number
   children: ReactNode
 }
 
@@ -27,7 +29,7 @@ function snap(scale: number, direction: 1 | -1) {
  * instead of panning vertically, so a swipe over it still scrolls the page;
  * only the horizontal overflow pans, by drag, trackpad or touch.
  */
-export function FlowCanvas({ width, height, label, children }: FlowCanvasProps) {
+export function FlowCanvas({ width, height, label, focusX, children }: FlowCanvasProps) {
   const viewportRef = useRef<HTMLDivElement>(null)
   const drag = useRef<{ x: number; scrollLeft: number } | null>(null)
   // Where the view was centred before a zoom, in diagram units.
@@ -40,10 +42,17 @@ export function FlowCanvas({ width, height, label, children }: FlowCanvasProps) 
     const viewport = viewportRef.current
     if (!viewport || typeof ResizeObserver === 'undefined') return
 
-    const observer = new ResizeObserver(([entry]) => setViewportWidth(entry.contentRect.width))
+    let measured = false
+    const observer = new ResizeObserver(([entry]) => {
+      // The first measurement settles the starting zoom, and the scale effect
+      // below then scrolls to the focus point.
+      if (!measured && focusX !== undefined) pendingCenter.current = focusX
+      measured = true
+      setViewportWidth(entry.contentRect.width)
+    })
     observer.observe(viewport)
     return () => observer.disconnect()
-  }, [])
+  }, [focusX])
 
   const fit = viewportWidth ? Math.min(1, viewportWidth / width) : 1
   const scale = zoom ?? Math.max(fit, MIN_READABLE)

@@ -67,6 +67,45 @@ const findings = [
   },
 ]
 
+// One row per core function: what the AI does, what the user controls, and the principle behind the split.
+const aiWorkflow = [
+  {
+    step: 'Bill analysis',
+    principle: 'Transparency',
+    ai: 'Extracts line items, CPT codes, and amounts from PDF, photo, or manual input.',
+    user: 'Extracted values are displayed as parsed, so users can verify them against the source document.',
+  },
+  {
+    step: 'EOB comparison',
+    principle: 'Calibrated confidence',
+    ai: 'Cross-checks billed charges against the EOB and plan terms, and flags discrepancies.',
+    user: 'Each flag states its rationale and is framed as a potential error, not a confirmed one.',
+  },
+  {
+    step: 'Code explanation',
+    principle: 'Explainability',
+    ai: 'Translates CPT and reason codes into plain language.',
+    user: 'Original codes remain visible for reference when contacting the insurer.',
+  },
+  {
+    step: 'Appeal support',
+    principle: 'Human-in-the-loop',
+    ai: 'Generates an appeal script pre-filled with the claim number and EOB date.',
+    user: 'Users decide whether to dispute, can regenerate the script, and contact the insurer themselves.',
+  },
+]
+
+const aiOpen = [
+  {
+    title: 'Input quality',
+    note: 'The prototype gives no confidence signal for low-quality scans. A readability check is required before analysis runs.',
+  },
+  {
+    title: 'Data privacy',
+    note: 'Storage, retention, and access policies for protected health information are not yet defined.',
+  },
+]
+
 export function ClaimlyPage() {
   return (
     <div className="site-shell">
@@ -128,7 +167,7 @@ export function ClaimlyPage() {
         <section className="case-section section-shell claimly-text-section" aria-labelledby="goal-title">
           <div className="section-label"><span>/</span><h2 id="goal-title">Design goal</h2></div>
           <div className="case-body claimly-centered-body">
-            <p className="claimly-goal">
+            <p className="case-goal">
               How might we help patients understand how medical charges, insurance decisions, and out-of-pocket costs
               connect, while helping them take action when a billing issue occurs?
             </p>
@@ -173,8 +212,8 @@ export function ClaimlyPage() {
           </ol>
         </section>
 
-        <section className="case-section section-shell claimly-flow-section" aria-labelledby="flow-title">
-          <div className="claimly-flow-copy">
+        <section className="case-section section-shell flow-section" aria-labelledby="flow-title">
+          <div className="flow-section-copy">
             <div className="section-label"><span>/</span><h2 id="flow-title">Interaction flow</h2></div>
             <div className="case-body claimly-centered-body">
               <p>
@@ -220,6 +259,49 @@ export function ClaimlyPage() {
               </li>
             ))}
           </ol>
+        </section>
+
+        <section className="case-section section-shell claimly-text-section" aria-labelledby="ai-title">
+          <div className="section-label"><span>/</span><h2 id="ai-title">AI design considerations</h2></div>
+          <div className="case-body claimly-centered-body">
+            <p>
+              Claimly applies AI to extraction, comparison, explanation, and drafting. Because errors carry direct
+              financial consequences for users, each function keeps a human in the loop: the AI generates, and the user
+              verifies and decides.
+            </p>
+          </div>
+          <ol className="ai-workflow" aria-label="AI role and user control for each core function">
+            {aiWorkflow.map((row, index) => (
+              <li key={row.step}>
+                <span className="decision-index">0{index + 1}</span>
+                <div className="ai-workflow__head">
+                  <h3>{row.step}</h3>
+                  <span className="ai-workflow__principle">{row.principle}</span>
+                </div>
+                <dl>
+                  <div>
+                    <dt>AI role</dt>
+                    <dd>{row.ai}</dd>
+                  </div>
+                  <div>
+                    <dt>User control</dt>
+                    <dd>{row.user}</dd>
+                  </div>
+                </dl>
+              </li>
+            ))}
+          </ol>
+          <div className="ai-open">
+            <h3>Open considerations</h3>
+            <dl>
+              {aiOpen.map((item) => (
+                <div key={item.title}>
+                  <dt>{item.title}</dt>
+                  <dd>{item.note}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
         </section>
 
         <section className="case-section section-shell claimly-text-section" aria-labelledby="outcome-title">
