@@ -65,34 +65,47 @@ export function NightyPage() {
           </div>
         </section>
 
-        {/* Problem and goal side by side: the goal answers the problem, so they read as a pair. */}
-        <div className="nighty-framing section-shell">
-          <section aria-labelledby="problem-title">
-            <div className="section-label"><span>/</span><h2 id="problem-title">Problem statement</h2></div>
+        {/* Problem beside its design goal, with the approach underneath: the same opening as the other cases. */}
+        <section className="nighty-overview section-shell" aria-labelledby="overview-title">
+          <div className="section-label"><span>/</span><h2 id="overview-title">Overview</h2></div>
+          <div className="case-framing">
+            <div>
+              <h3 className="case-framing__label">Problem</h3>
+              <div className="case-body">
+                <p>
+                  About one in three adults experiences symptoms of insomnia, and around 10% meet the criteria for
+                  chronic insomnia disorder. Poor sleep is linked to alcohol misuse and to anxiety about sleep itself,
+                  and it raises the risk of depression and anxiety disorders.
+                </p>
+                <p>
+                  Two conditions a sleeper can change, room temperature and noise, are managed by separate products: a
+                  thermostat set for the whole room and a white-noise machine on the nightstand. Tracking whether sleep
+                  is improving usually means wearing a watch or ring to bed. None of these respond to one another, and
+                  the pillow, the one surface in contact with the sleeper all night, stays passive.
+                </p>
+              </div>
+            </div>
+            <div>
+              <h3 className="case-framing__label">Design goal</h3>
+              <div className="case-body">
+                <p className="case-goal">
+                  How might we help people with sleep difficulties rest better by making the pillow sense and adjust
+                  their sleep environment, and track their sleep without a device worn to bed?
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="case-framing__approach">
+            <h3 className="case-framing__label">Approach</h3>
             <div className="case-body">
               <p>
-                About one in three adults experiences symptoms of insomnia, and around 10% meet the criteria for chronic
-                insomnia disorder. Poor sleep is linked to alcohol misuse and to anxiety about sleep itself, and it raises
-                the risk of depression and anxiety disorders.
-              </p>
-              <p>
-                Two conditions a sleeper can change, room temperature and noise, are managed by separate products: a
-                thermostat set for the whole room and a white-noise machine on the nightstand. Tracking whether sleep is
-                improving usually means wearing a watch or ring to bed. None of these respond to one another, and the
-                pillow, the one surface in contact with the sleeper all night, stays passive.
+                Nighty builds three functions into a contoured memory-foam pillow: it warms or cools the head zone to suit
+                the room, plays white noise from inside the foam, and tracks light and deep sleep through the night. The
+                exploded view below shows where each part sits.
               </p>
             </div>
-          </section>
-          <section aria-labelledby="goal-title">
-            <div className="section-label"><span>/</span><h2 id="goal-title">Design goal</h2></div>
-            <div className="case-body">
-              <p className="case-goal">
-                How might we help people with sleep difficulties rest better by making the pillow sense and adjust their
-                sleep environment, and track their sleep without a device worn to bed?
-              </p>
-            </div>
-          </section>
-        </div>
+          </div>
+        </section>
 
         <section className="nighty-exploded section-shell" aria-labelledby="exploded-title">
           <div className="section-label"><span>/</span><h2 id="exploded-title">Exploded view</h2></div>

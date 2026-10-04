@@ -404,8 +404,8 @@ section[id] { scroll-margin-top: 72px; }
   padding: 0;
   list-style: none;
 }
-.claimly-findings li,
-.claimly-decisions li {
+.claimly-findings > li,
+.claimly-decisions > li {
   display: grid;
   grid-template-columns: 32px minmax(0, 1fr);
   gap: 8px 14px;
@@ -461,6 +461,33 @@ section[id] { scroll-margin-top: 72px; }
 .claimly-page .step-copy h3,
 .claimly-page .claimly-findings h3,
 .claimly-page .claimly-decisions h3 { font-size: 20px; line-height: 1.4; }
+/* Overview: the problem beside its design goal, with the approach underneath. */
+.case-framing {
+  display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 40px clamp(32px, 5vw, 56px);
+  align-items: start;
+}
+.case-framing__label { margin: 0 0 12px; color: var(--accent); font: 400 12px/1.6 var(--mono); letter-spacing: .08em; text-transform: uppercase; }
+.case-framing__approach { margin-top: 40px; border-top: 1px solid var(--rule); padding-top: 28px; }
+/* Evidence chain under a finding: four light tiles, two to a row, reading left
+   to right then down. The step that is still unproven is drawn open. */
+.evidence-chain {
+  grid-column: 2; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px;
+  margin: 16px 0 0;
+}
+.evidence-chain__step {
+  border: 1px solid rgb(65 111 148 / .14); border-radius: 12px; padding: 16px 18px;
+  background: rgb(65 111 148 / .05);
+}
+.evidence-chain__step--open { border-style: dashed; border-color: rgb(65 111 148 / .32); background: rgb(65 111 148 / .02); }
+.evidence-chain dt { color: var(--accent); font: 400 12px/1.6 var(--mono); letter-spacing: .08em; text-transform: uppercase; }
+.evidence-chain dd { margin: 6px 0 0; color: #35312b; font-size: 16px; line-height: 1.6; }
+.evidence-chain__step--open dd { color: var(--soft); }
+.evidence-chain ul { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+.evidence-chain__source {
+  display: inline-block; margin-right: 8px; border: 1px solid rgb(65 111 148 / .2); border-radius: 999px; padding: 1px 8px;
+  background: rgb(255 255 255 / .6); color: var(--soft);
+  font: 400 11px/1.6 var(--mono); letter-spacing: .06em; text-transform: uppercase; vertical-align: 1px;
+}
 /* AI workflow: the numbered-row rhythm of the findings, with the model's part
    and the person's part side by side under each step. */
 .ai-workflow { margin: 30px 0 0; padding: 0; list-style: none; }
@@ -623,6 +650,7 @@ section[id] { scroll-margin-top: 72px; }
 .case-next__category { display: block; margin-top: 10px; color: var(--soft); font: 400 11px/1.5 var(--mono); letter-spacing: .16em; text-transform: uppercase; }
 .case-next:hover .case-next__name { color: var(--accent); transform: translateX(6px); }
 .case-next:hover .case-next__arrow { color: var(--accent); transform: translate(4px, -4px); }
+
 .case-links {
   display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between;
   border-top: 1px solid var(--rule); padding-top: 20px;
@@ -812,6 +840,7 @@ section[id] { scroll-margin-top: 72px; }
   .step { grid-template-columns: 1fr; gap: 22px; }
   .step:nth-child(even) .step-copy { order: 0; }
   .claimly-page .step { grid-template-columns: 1fr; gap: 32px; }
+  .case-framing { grid-template-columns: minmax(0, 1fr); }
   .claimly-page .phone-shot,
   .claimly-page .step:nth-child(even) .phone-shot { justify-self: center; }
   .decision-grid { grid-template-columns: 1fr; }
@@ -837,6 +866,7 @@ section[id] { scroll-margin-top: 72px; }
   .me-portrait { width: min(100%, 240px); }
   .cv-row { grid-template-columns: minmax(0, 1fr); gap: 8px; }
   .ai-workflow dl { grid-template-columns: minmax(0, 1fr); }
+  .evidence-chain { grid-template-columns: minmax(0, 1fr); }
   .ai-open dl { grid-template-columns: minmax(0, 1fr); gap: 4px; }
   .ai-open dl > div:not(:last-child) dd { margin-bottom: 14px; }
 }
@@ -1059,12 +1089,10 @@ section[id] { scroll-margin-top: 72px; }
   color: var(--soft); font: 400 12px/1.6 var(--mono); letter-spacing: .06em; text-align: center;
 }
 
+.nighty-overview { padding-top: var(--gap); }
 /* Same columns as the exploded grid below, so the goal lines up over the parts list. */
-.nighty-framing {
-  display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: clamp(32px, 4vw, 56px); align-items: start;
-  padding-top: var(--gap);
-}
-.nighty-framing .case-body p { font-size: 17px; line-height: 1.7; }
+.nighty-overview .case-framing { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); column-gap: clamp(32px, 4vw, 56px); }
+.nighty-overview .case-body p { font-size: 17px; line-height: 1.7; }
 .nighty-exploded { padding-top: var(--gap); }
 .nighty-exploded-grid { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: clamp(32px, 4vw, 56px); align-items: start; }
 /* Stays in view while the parts list scrolls past it. */
@@ -1118,8 +1146,7 @@ section[id] { scroll-margin-top: 72px; }
 .nighty-note h3 { margin: 0 0 10px; font: 500 16px/1.4 Inter, sans-serif; }
 
 @media (max-width: 900px) {
-  .nighty-model-inner, .nighty-exploded-grid, .nighty-framing { grid-template-columns: minmax(0, 1fr); }
-  .nighty-framing { gap: 48px; }
+  .nighty-model-inner, .nighty-exploded-grid, .nighty-overview .case-framing { grid-template-columns: minmax(0, 1fr); }
   .nighty-stage--exploded { position: relative; top: 0; height: 520px; }
 }
 @media (max-width: 680px) {

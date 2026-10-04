@@ -89,6 +89,28 @@ test('traces Claimly scenarios on the interaction flow', async () => {
   expect(within(scenarios).getByRole('button', { name: 'Full flow' })).toHaveAttribute('aria-pressed', 'true')
 })
 
+test('backs every Claimly finding with an evidence chain', () => {
+  renderAt('/work/claimly')
+
+  // Direct children only: each chain's own evidence list nests further list items.
+  const findings = [...screen.getByRole('list', { name: 'Research findings' }).children] as HTMLElement[]
+  expect(findings).toHaveLength(3)
+
+  for (const finding of findings) {
+    const chain = within(finding).getByLabelText('Evidence chain')
+    expect([...chain.querySelectorAll('dt')].map((term) => term.textContent)).toEqual([
+      'Evidence',
+      'Insight',
+      'Product decision',
+      'Not yet validated',
+    ])
+  }
+
+  expect(within(findings[1]).getByRole('heading')).toHaveTextContent('Knowing an appeal exists is not enough.')
+  expect(within(findings[1]).getByText(/5 of 15\+ respondents/)).toBeInTheDocument()
+  expect(within(findings[2]).getByText(/9 of 15\+ respondents/)).toBeInTheDocument()
+})
+
 test('splits each Claimly AI step between the model and the person', () => {
   renderAt('/work/claimly')
 
@@ -104,6 +126,31 @@ test('splits each Claimly AI step between the model and the person', () => {
     expect(within(step).getByText('AI role')).toBeInTheDocument()
     expect(within(step).getByText('User control')).toBeInTheDocument()
   }
+})
+
+test('opens Claimly with one overview holding the problem, goal, and approach', () => {
+  renderAt('/work/claimly')
+
+  const sections = screen.getAllByRole('heading', { level: 2 }).map((heading) => heading.textContent)
+  expect(sections).toEqual([
+    'Interactive demo',
+    'Overview',
+    'Research',
+    'Interaction flow',
+    'Product walkthrough',
+    'Design decisions',
+    'AI design considerations',
+    'Outcome',
+    'Reflection',
+  ])
+
+  const overview = screen.getByRole('region', { name: 'Overview' })
+  expect(within(overview).getAllByRole('heading', { level: 3 }).map((heading) => heading.textContent)).toEqual([
+    'Problem',
+    'Design goal',
+    'Approach',
+  ])
+  expect(within(overview).getByText(/How might we help patients/)).toHaveClass('case-goal')
 })
 
 test('centers Claimly text sections without oversized pull quotes', () => {
@@ -126,12 +173,24 @@ test('opens the Medisync case study from the work index', async () => {
   expect(screen.getByRole('heading', { name: 'Product walkthrough' })).toBeVisible()
 })
 
-test('frames Medisync with a problem statement and design goal before the overview', () => {
-  renderAt('/work/medisync')
+// Every app case study opens the same way after its demo: one overview holding the problem, the
+// design goal that answers it, and the approach.
+test.each([
+  ['/work/medisync', /How might we connect patients and providers/],
+  ['/work/sizzle', /How might we give home cooks/],
+])('opens %s with the shared overview', (path, goal) => {
+  renderAt(path)
 
-  const headings = screen.getAllByRole('heading', { level: 2 }).map((heading) => heading.textContent)
-  expect(headings.slice(0, 4)).toEqual(['Interactive demo', 'Problem statement', 'Design goal', 'Overview'])
-  expect(screen.getByText(/How might we connect patients and providers/)).toHaveClass('case-goal')
+  const sections = screen.getAllByRole('heading', { level: 2 }).map((heading) => heading.textContent)
+  expect(sections.slice(0, 3)).toEqual(['Interactive demo', 'Overview', 'Research'])
+
+  const overview = screen.getByRole('region', { name: 'Overview' })
+  expect(within(overview).getAllByRole('heading', { level: 3 }).map((heading) => heading.textContent)).toEqual([
+    'Problem',
+    'Design goal',
+    'Approach',
+  ])
+  expect(within(overview).getByText(goal)).toHaveClass('case-goal')
 })
 
 test('shows the Medisync swimlane flow on its case study page', () => {

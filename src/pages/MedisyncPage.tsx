@@ -95,43 +95,48 @@ export function MedisyncPage() {
           </div>
         </section>
 
-        <section className="case-section section-shell" aria-labelledby="problem-title">
-          <div className="section-label"><span>/</span><h2 id="problem-title">Problem statement</h2></div>
-          <div className="case-body">
-            <p>
-              Healthcare runs on platforms that do not talk to each other, so patients carry their history from one
-              clinic to the next themselves. Every new provider starts with a blank intake form: the same insurance
-              details, conditions, and medications, entered again. Records move between departments only when the
-              patient brings them, and continuity breaks the moment someone moves, switches providers, or is referred.
-            </p>
-            <p>
-              Clinicians sit on the other side of the same gap. Staff spend time hunting for a referral patient’s
-              history, and between visits no one can see how a patient is recovering. For someone managing a chronic
-              condition, or a parent keeping several children’s records straight, a record that only appears on
-              appointment day arrives too late to act on.
-            </p>
-          </div>
-        </section>
-
-        <section className="case-section section-shell" aria-labelledby="goal-title">
-          <div className="section-label"><span>/</span><h2 id="goal-title">Design goal</h2></div>
-          <div className="case-body">
-            <p className="case-goal">
-              How might we connect patients and providers through one shared health record, so care does not restart
-              at every new clinic or stop between visits, while patients stay in control of what is shared?
-            </p>
-          </div>
-        </section>
-
+        {/* Problem beside its design goal, with the approach underneath: the same opening as the other cases. */}
         <section className="case-section section-shell" aria-labelledby="overview-title">
           <div className="section-label"><span>/</span><h2 id="overview-title">Overview</h2></div>
-          <div className="case-body">
-            <p>
-              Medisync closes the gap from both ends with three parts that share one record: a patient app for
-              discovery, cost, and booking, a watch widget for continuous health data, and an office system for
-              providers. Insurance and history travel with the appointment, so patients stop repeating the same intake
-              at the front desk.
-            </p>
+          <div className="case-framing">
+            <div>
+              <h3 className="case-framing__label">Problem</h3>
+              <div className="case-body">
+                <p>
+                  Healthcare runs on platforms that do not talk to each other, so patients carry their history from one
+                  clinic to the next themselves. Every new provider starts with a blank intake form: the same insurance
+                  details, conditions, and medications, entered again. Records move between departments only when the
+                  patient brings them, and continuity breaks the moment someone moves, switches providers, or is
+                  referred.
+                </p>
+                <p>
+                  Clinicians sit on the other side of the same gap. Staff spend time hunting for a referral patient’s
+                  history, and between visits no one can see how a patient is recovering. For someone managing a chronic
+                  condition, or a parent keeping several children’s records straight, a record that only appears on
+                  appointment day arrives too late to act on.
+                </p>
+              </div>
+            </div>
+            <div>
+              <h3 className="case-framing__label">Design goal</h3>
+              <div className="case-body">
+                <p className="case-goal">
+                  How might we connect patients and providers through one shared health record, so care does not
+                  restart at every new clinic or stop between visits, while patients stay in control of what is shared?
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="case-framing__approach">
+            <h3 className="case-framing__label">Approach</h3>
+            <div className="case-body">
+              <p>
+                Medisync closes the gap from both ends with three parts that share one record: a patient app for
+                discovery, cost, and booking, a watch widget for continuous health data, and an office system for
+                providers. Insurance and history travel with the appointment, so patients stop repeating the same intake
+                at the front desk.
+              </p>
+            </div>
           </div>
         </section>
 

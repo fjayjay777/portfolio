@@ -1,4 +1,4 @@
-import { cleanup, render, screen } from '@testing-library/react'
+import { cleanup, render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 import { afterEach, expect, test, vi } from 'vitest'
@@ -44,14 +44,17 @@ test('names the selected part inside the model stage', async () => {
   expect(screen.getByText('05 · Sleep-sensing strip')).toBeInTheDocument()
 })
 
-test('frames the pillow with a problem statement beside the design goal', () => {
+test('opens with the shared overview: problem beside the goal, approach beneath', () => {
   renderPage()
 
-  expect(screen.getByRole('region', { name: 'Problem statement' })).toHaveTextContent(/symptoms of insomnia/)
-  const goal = screen.getByRole('region', { name: 'Design goal' })
-  expect(goal).toHaveTextContent(/How might we help people with sleep difficulties/)
-  // Both halves share one grid row, so they sit side by side rather than stacked.
-  expect(goal.parentElement).toHaveClass('nighty-framing')
+  const overview = screen.getByRole('region', { name: 'Overview' })
+  expect(within(overview).getAllByRole('heading', { level: 3 }).map((heading) => heading.textContent)).toEqual([
+    'Problem',
+    'Design goal',
+    'Approach',
+  ])
+  expect(overview).toHaveTextContent(/symptoms of insomnia/)
+  expect(within(overview).getByText(/How might we help people with sleep difficulties/)).toHaveClass('case-goal')
 })
 
 test('keeps the page up and explains itself when the renderer cannot start', () => {

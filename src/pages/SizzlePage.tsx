@@ -90,20 +90,40 @@ export function SizzlePage() {
           </div>
         </section>
 
+        {/* Problem beside its design goal, with the approach underneath: the same opening as the other cases. */}
         <section className="case-section section-shell" aria-labelledby="overview-title">
           <div className="section-label"><span>/</span><h2 id="overview-title">Overview</h2></div>
-          <div className="case-body">
-            <p>
-              Recipe platforms are built as libraries. They hold enormous professional catalogues, but users cannot
-              contribute to them, talk to each other, or find what fits their week. The interfaces are cluttered and the
-              feedback loops are thin. Cooking has an active community, but it lives on social platforms that have no
-              way to organize a recipe.
-            </p>
-            <p>
-              Sizzle sits between the two. People share their own recipes with other cooks and get a library's
-              organization along with the social side libraries lack. Design ran from December 2023 to April 2024 across
-              three iterations, and a first edition shipped with developers.
-            </p>
+          <div className="case-framing">
+            <div>
+              <h3 className="case-framing__label">Problem</h3>
+              <div className="case-body">
+                <p>
+                  Recipe platforms are built as libraries. They hold enormous professional catalogues, but users cannot
+                  contribute to them, talk to each other, or find what fits their week. The interfaces are cluttered and
+                  the feedback loops are thin. Cooking has an active community, but it lives on social platforms that
+                  have no way to organize a recipe.
+                </p>
+              </div>
+            </div>
+            <div>
+              <h3 className="case-framing__label">Design goal</h3>
+              <div className="case-body">
+                <p className="case-goal">
+                  How might we give home cooks a library’s organization and a social platform’s community in one place,
+                  so they can find, plan, and cook what fits their week?
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="case-framing__approach">
+            <h3 className="case-framing__label">Approach</h3>
+            <div className="case-body">
+              <p>
+                Sizzle sits between the two. People share their own recipes with other cooks and get a library's
+                organization along with the social side libraries lack. Design ran from December 2023 to April 2024
+                across three iterations, and a first edition shipped with developers.
+              </p>
+            </div>
           </div>
         </section>
 

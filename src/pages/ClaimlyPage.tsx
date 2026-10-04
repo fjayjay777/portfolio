@@ -52,18 +52,64 @@ const decisions = [
   },
 ]
 
-const findings = [
+/** How a finding was reached: what was observed, what it means, what changed, and what is still unproven. */
+type EvidenceChain = {
+  evidence: { source: string; text: string }[]
+  insight: string
+  decision: string
+  open: string
+}
+
+type Finding = { title: string; chain: EvidenceChain }
+
+const findings: Finding[] = [
   {
     title: 'People pay bills they cannot read.',
-    note: 'The most common response was to pay the bill anyway. Even when a charge looked wrong, participants felt that disputing it would be riskier and more time-consuming than simply paying. If the amount was small, many chose to let it go rather than spend time trying to resolve it.',
+    chain: {
+      evidence: [
+        {
+          source: 'Survey',
+          text: 'Paying the bill anyway was the most common response, even when a charge looked wrong.',
+        },
+        {
+          source: 'Interview',
+          text: 'Participants saw disputing a charge as riskier and more time-consuming than paying it, and let small amounts go.',
+        },
+      ],
+      insight: 'Uncertainty defaults to payment. Without a clear signal that something is wrong, people do not question the bill.',
+      decision: 'The report opens on the flagged item and states the number of potential mistakes before any figures, so the reason to question the bill comes first.',
+      open: 'Whether a flagged item leads people to question a bill before paying it.',
+    },
   },
   {
     title: 'Knowing an appeal exists is not enough.',
-    note: 'Two interviewees knew they could appeal and still stopped. The legitimate path asked for more time and confidence than they had.',
+    chain: {
+      evidence: [
+        {
+          source: 'Interview',
+          text: 'Two interviewees described the appeal process as long and frustrating, and would rather pay than explain the bill to a series of customer-service agents.',
+        },
+        {
+          source: 'Survey',
+          text: '5 of 15+ respondents would rather pay than appeal when the amount was affordable.',
+        },
+      ],
+      insight: 'The barrier is not only understanding the bill. It is also the time and communication an appeal requires.',
+      decision: 'Added the appeal script after synthesizing the interviews and survey, to reduce the preparation needed before contacting the insurer.',
+      open: 'Whether the appeal solution saves time, or makes users more willing to appeal.',
+    },
   },
   {
     title: 'The document people are told to check is the one they cannot read.',
-    note: 'Six respondents had never compared an EOB with the bill, and nine were unclear on what an EOB was.',
+    chain: {
+      evidence: [
+        { source: 'Survey', text: '6 of 15+ respondents had never compared an EOB with their bill.' },
+        { source: 'Survey', text: '9 of 15+ respondents were unclear on what an EOB is.' },
+      ],
+      insight: 'The EOB is the document that confirms or rules out an error, but many people cannot read it, so the comparison has to be done for them.',
+      decision: 'Made EOB comparison a core function, and kept each CPT and reason code on screen with a plain-language translation beneath it.',
+      open: 'Whether the plain-language translation lets people check a bill against its EOB on their own.',
+    },
   },
 ]
 
@@ -105,6 +151,38 @@ const aiOpen = [
     note: 'Storage, retention, and access policies for protected health information are not yet defined.',
   },
 ]
+
+function EvidenceChainList({ chain }: { chain: EvidenceChain }) {
+  return (
+    <dl className="evidence-chain" aria-label="Evidence chain">
+      <div className="evidence-chain__step">
+        <dt>Evidence</dt>
+        <dd>
+          <ul>
+            {chain.evidence.map((item) => (
+              <li key={item.text}>
+                <span className="evidence-chain__source">{item.source}</span>
+                {item.text}
+              </li>
+            ))}
+          </ul>
+        </dd>
+      </div>
+      <div className="evidence-chain__step">
+        <dt>Insight</dt>
+        <dd>{chain.insight}</dd>
+      </div>
+      <div className="evidence-chain__step">
+        <dt>Product decision</dt>
+        <dd>{chain.decision}</dd>
+      </div>
+      <div className="evidence-chain__step evidence-chain__step--open">
+        <dt>Not yet validated</dt>
+        <dd>{chain.open}</dd>
+      </div>
+    </dl>
+  )
+}
 
 export function ClaimlyPage() {
   return (
@@ -148,47 +226,45 @@ export function ClaimlyPage() {
           </div>
         </section>
 
-        <section className="case-section section-shell claimly-text-section" aria-labelledby="problem-title">
-          <div className="section-label"><span>/</span><h2 id="problem-title">Problem statement</h2></div>
-          <div className="case-body claimly-centered-body">
-            <p>
-              When patients receive a medical bill, they see charges, billing codes, and insurance decisions without a
-              clear explanation of how they connect. It can be difficult to understand why insurance covers some
-              services, pays only part of others, or denies a claim altogether.
-            </p>
-            <p>
-              Patients are often left unsure how these decisions determine their final out-of-pocket cost, whether the
-              bill is correct, or what to do when something looks wrong. Many spend hours trying to get answers, and
-              some end up paying more than they owe.
-            </p>
-          </div>
-        </section>
-
-        <section className="case-section section-shell claimly-text-section" aria-labelledby="goal-title">
-          <div className="section-label"><span>/</span><h2 id="goal-title">Design goal</h2></div>
-          <div className="case-body claimly-centered-body">
-            <p className="case-goal">
-              How might we help patients understand how medical charges, insurance decisions, and out-of-pocket costs
-              connect, while helping them take action when a billing issue occurs?
-            </p>
-          </div>
-        </section>
-
+        {/* Problem, goal, and approach in one section: the goal answers the problem beside it, and the
+            approach underneath names the four functions the later sections refer back to. */}
         <section className="case-section section-shell claimly-text-section" aria-labelledby="overview-title">
           <div className="section-label"><span>/</span><h2 id="overview-title">Overview</h2></div>
-          <div className="case-body claimly-centered-body">
-            <p>
-              An explanation of benefits is written for the people who process it. It gives you a CPT number, a set
-              of reason codes, and three dollar amounts that do not visibly reconcile. Someone who suspects an error
-              gets stuck twice: the document cannot confirm the suspicion, and its language makes the problem hard
-              to challenge.
-            </p>
-            <p>
-              Claimly closes both gaps in one pass, through four core functions: bill analysis, EOB comparison, code
-              explanation, and appeal support. It reads the bill, compares it with the EOB, marks the lines that do not
-              match, explains the codes behind them, and turns the finding into a script the person can read aloud. A
-              model does the reading and drafting, so that someone who suspects a bill is wrong can say why.
-            </p>
+          <div className="case-framing">
+            <div>
+              <h3 className="case-framing__label">Problem</h3>
+              <div className="case-body">
+                <p>
+                  When patients receive a medical bill, they see charges, billing codes, and insurance decisions without
+                  a clear explanation of how they connect. It can be difficult to understand why insurance covers some
+                  services, pays only part of others, or denies a claim altogether.
+                </p>
+                <p>
+                  Patients are often left unsure how these decisions determine their final out-of-pocket cost, whether
+                  the bill is correct, or what to do when something looks wrong. Many spend hours trying to get answers,
+                  and some end up paying more than they owe.
+                </p>
+              </div>
+            </div>
+            <div>
+              <h3 className="case-framing__label">Design goal</h3>
+              <div className="case-body">
+                <p className="case-goal">
+                  How might we help patients understand how medical charges, insurance decisions, and out-of-pocket
+                  costs connect, while helping them take action when a billing issue occurs?
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="case-framing__approach">
+            <h3 className="case-framing__label">Approach</h3>
+            <div className="case-body claimly-centered-body">
+              <p>
+                Claimly addresses the goal through four core functions: bill analysis, EOB comparison, code explanation,
+                and appeal support. It reads the bill, compares it with the EOB, marks the lines that do not match,
+                explains the codes behind them, and turns the finding into a script the user can read aloud.
+              </p>
+            </div>
           </div>
         </section>
 
@@ -206,7 +282,7 @@ export function ClaimlyPage() {
               <li key={finding.title}>
                 <span className="finding-index">0{index + 1}</span>
                 <h3>{finding.title}</h3>
-                <p>{finding.note}</p>
+                <EvidenceChainList chain={finding.chain} />
               </li>
             ))}
           </ol>
