@@ -4,7 +4,7 @@
 // Every sticker fills one slot of a fixed frame:
 //   who   → "Jiani is a UX designer and an oil painter"
 //   does  → "… who turns medical bills into plain language"
-//   about → "…, based in Ann Arbor, with a cat never far away"
+//   about → "…, based in Ann Arbor, with four cats never far away"
 //   mark  → changes punctuation or adds a footnote, never words of its own
 // Stickers are read left to right, so moving one changes the word order.
 

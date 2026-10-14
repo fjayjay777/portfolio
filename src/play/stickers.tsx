@@ -29,10 +29,6 @@ export type InkName = Exclude<keyof typeof ink, 'black' | 'paper'>
 
 const { blue: B, sky: S, pink: P, coral: C, orange: O, yellow: Y, mint: M, lavender: L, black: K, paper: W } = ink
 
-const confetti: [number, number, number, string][] = [
-  [26, 30, 12, C], [64, 20, 9, Y], [98, 34, 13, M], [42, 68, 10, L],
-  [82, 74, 14, P], [20, 100, 8, S], [108, 98, 9, O], [60, 104, 7, B],
-]
 
 /* One pass of ink. `offset` nudges the black plate out of register. */
 function Ink({ children, offset = false }: { children: ReactNode; offset?: boolean }) {
@@ -71,6 +67,25 @@ function burstPath(points: number, outer: number, inner: number, cx = 60, cy = 6
 const asteriskArms = [0, 60, 120]
 const frameShape = 'M12 6 H128 Q134 6 134 12 V108 Q134 114 128 114 H12 Q6 114 6 108 V12 Q6 6 12 6 Z M30 30 V90 H110 V30 Z'
 const sparkle = 'M60 6 C64 44 76 56 114 60 C76 64 64 76 60 114 C56 76 44 64 6 60 C44 56 56 44 60 6 Z'
+
+/* A pen scribble: small loops whose center wanders slowly over the shape,
+   so the line fills it the way a doodle fills a margin. */
+function scribble(cx: number, cy: number, rx: number, ry: number, length = 64) {
+  const loop = Math.min(rx, ry) * 0.3
+  const points: string[] = []
+  for (let t = 0; t <= length; t += 0.22) {
+    const x = cx + rx * 0.72 * Math.sin(0.37 * t) + loop * Math.cos(t)
+    const y = cy + ry * 0.72 * Math.sin(0.23 * t + 1) + loop * Math.sin(t)
+    points.push(`${points.length ? 'L' : 'M'}${x.toFixed(1)} ${y.toFixed(1)}`)
+  }
+  return points.join(' ')
+}
+
+const washi = 'M6 10 L14 6 L20 12 L28 6 H132 L140 12 L146 6 L154 10 L150 18 L156 28 L150 38 L154 48 L146 50 L140 44 L132 50 H28 L20 44 L14 50 L6 46 L10 38 L4 28 L10 18 Z'
+
+/* Torn-ish notebook scraps for bits that sit on paper. */
+const scrapWide = 'M6 24 L60 18 L114 14 L116 58 L113 102 L60 106 L8 108 L10 64 Z'
+const scrapTall = 'M14 8 L64 12 L108 6 L112 60 L106 114 L60 110 L10 114 L14 62 Z'
 
 export const stickers: StickerDef[] = [
   /* Work ---------------------------------------------------------------- */
@@ -252,8 +267,8 @@ export const stickers: StickerDef[] = [
   /* Life ---------------------------------------------------------------- */
   {
     // A tabby/calico: warm coat, a darker patch, and striped markings.
-    id: 'cat', label: 'My cat', group: 'life', tint: 'orange', cut: true,
-    fragment: { slot: 'about', text: 'with a cat never far away' },
+    id: 'cat', label: 'My cats', group: 'life', tint: 'orange', cut: true,
+    fragment: { slot: 'about', text: 'with four cats never far away' },
     art: (
       <>
         <Ink>
@@ -281,6 +296,9 @@ export const stickers: StickerDef[] = [
             <path d="M60 56 V59 C57 63 53 62 52 60 M60 59 C63 63 67 62 68 60" />
           </g>
         </Ink>
+        {/* There are four of them. */}
+        <Ink><circle cx="96" cy="22" r="15" fill={C} /></Ink>
+        <text x="96" y="27.5" textAnchor="middle" fill={W} fontFamily="Poppins, sans-serif" fontWeight="700" fontSize="15">×4</text>
       </>
     ),
   },
@@ -454,6 +472,26 @@ export const stickers: StickerDef[] = [
     ),
   },
   {
+    id: 'movie', label: 'Movies', group: 'life', tint: 'coral', cut: true,
+    fragment: { slot: 'does', text: 'loves watching movies' },
+    art: (
+      <>
+        <Ink><rect x="14" y="48" width="92" height="60" rx="6" fill={S} /></Ink>
+        <Ink offset><path d="M26 68 H72 M26 82 H88 M26 96 H58" stroke={K} strokeWidth="3" strokeLinecap="round" /></Ink>
+        {/* The clapper arm, lifted open on its hinge. */}
+        <g transform="rotate(-14 16 44)">
+          <rect x="14" y="28" width="92" height="16" fill={W} />
+          <Ink>
+            {[14, 34, 54, 74, 94].map((x) => <path key={x} d={`M${x + 8} 28 H${x + 18} L${x + 10} 44 H${x} Z`} fill={C} />)}
+          </Ink>
+          <Ink offset><rect x="14" y="28" width="92" height="16" fill="none" stroke={K} strokeWidth="2.5" /></Ink>
+        </g>
+        <Ink offset><circle cx="17" cy="45" r="4.5" fill={K} /></Ink>
+        <Ink><path d={burstPath(5, 9, 4, 94, 86)} fill={Y} /></Ink>
+      </>
+    ),
+  },
+  {
     id: 'lang', label: 'Languages', group: 'life', tint: 'yellow', cut: true,
     fragment: { slot: 'does', text: 'speaks Chinese and English' },
     art: (
@@ -523,20 +561,11 @@ export const stickers: StickerDef[] = [
   {
     id: 'tape', label: 'Tape', group: 'bits', tint: 'mint', size: 22, viewBox: '0 0 160 56',
     fragment: { slot: 'none', text: '' },
+    // Washi tape: thin enough that whatever it sits on shows through.
     art: (
       <Ink>
-        <path d="M6 10 L14 6 L20 12 L28 6 H132 L140 12 L146 6 L154 10 L150 18 L156 28 L150 38 L154 48 L146 50 L140 44 L132 50 H28 L20 44 L14 50 L6 46 L10 38 L4 28 L10 18 Z" fill={M} fillOpacity=".7" />
-        <path d="M30 6 V50 M70 6 V50 M110 6 V50" stroke={W} strokeOpacity=".35" strokeWidth="10" />
-      </Ink>
-    ),
-  },
-  {
-    id: 'dots', label: 'Dot screen', group: 'bits', tint: 'pink',
-    fragment: { slot: 'none', text: '' },
-    art: (
-      <Ink>
-        <circle cx="60" cy="60" r="50" fill="url(#riso-dots-pink)" />
-        <circle cx="66" cy="54" r="30" fill="url(#riso-dots-yellow)" />
+        <path d={washi} fill={M} fillOpacity=".38" />
+        <path d={washi} fill="url(#riso-washi)" />
       </Ink>
     ),
   },
@@ -567,15 +596,6 @@ export const stickers: StickerDef[] = [
     art: <path d="M60 106 C20 80 8 58 14 38 C20 20 44 14 60 34 C76 14 100 20 106 38 C112 58 100 80 60 106 Z" fill="url(#riso-gingham)" />,
   },
   {
-    id: 'confetti', label: 'Color dots', group: 'bits', tint: 'yellow', cut: true,
-    fragment: { slot: 'none', text: '' },
-    art: (
-      <Ink>
-        {confetti.map(([cx, cy, r, color]) => <circle key={`${cx}-${cy}`} cx={cx} cy={cy} r={r} fill={color} />)}
-      </Ink>
-    ),
-  },
-  {
     id: 'frame', label: 'Picture frame', group: 'bits', tint: 'yellow', cut: true, size: 26, viewBox: '0 0 140 120',
     fragment: { slot: 'none', text: '' },
     art: (
@@ -592,17 +612,18 @@ export const stickers: StickerDef[] = [
     ),
   },
   {
-    id: 'daisy', label: 'Daisy', group: 'bits', tint: 'pink', cut: true,
+    id: 'daisy', label: 'Daisy', group: 'bits', tint: 'yellow', cut: true,
     fragment: { slot: 'none', text: '' },
     art: (
       <>
+        {/* Yellow petals around a coral middle. */}
         <Ink>
-          <g fill={P}>
+          <g fill={Y}>
             {[0, 45, 90, 135, 180, 225, 270, 315].map((angle) => <ellipse key={angle} cx="60" cy="32" rx="11" ry="22" transform={`rotate(${angle} 60 60)`} />)}
           </g>
         </Ink>
         <circle cx="60" cy="60" r="17" fill={W} />
-        <Ink><circle cx="60" cy="60" r="17" fill={Y} /></Ink>
+        <Ink><circle cx="60" cy="60" r="17" fill={C} /></Ink>
         <Ink offset><g fill={K}><circle cx="55" cy="56" r="2.4" /><circle cx="65" cy="57" r="2.4" /><circle cx="60" cy="65" r="2.4" /></g></Ink>
       </>
     ),
@@ -644,6 +665,113 @@ export const stickers: StickerDef[] = [
         <Ink><path d={sparkle} fill={Y} /></Ink>
         <Ink><path d={sparkle} fill={S} transform="translate(80 4) scale(.32)" /></Ink>
         <Ink><path d={sparkle} fill={P} transform="translate(8 82) scale(.24)" /></Ink>
+      </>
+    ),
+  },
+  {
+    id: 'bolt', label: 'Lightning', group: 'bits', tint: 'yellow', cut: true,
+    fragment: { slot: 'none', text: '' },
+    art: (
+      <>
+        <Ink><path d="M66 6 L24 66 H54 L40 114 L96 46 H66 L82 6 Z" fill={Y} /></Ink>
+        <Ink><path d="M70 14 L36 60 H58 L50 96 L86 52 H62 Z" fill="url(#riso-dots-pink)" /></Ink>
+        <Ink offset><path d="M60 26 L50 42 M58 70 L52 84 M78 54 L70 64" stroke={K} strokeWidth="2.5" strokeLinecap="round" /></Ink>
+      </>
+    ),
+  },
+  {
+    id: 'heart', label: 'Heart', group: 'bits', tint: 'coral', cut: true,
+    fragment: { slot: 'none', text: '' },
+    art: (
+      <>
+        <Ink><path d="M60 102 C24 80 10 60 16 40 C22 20 46 18 60 38 C74 18 98 20 104 40 C110 60 96 80 60 102 Z" fill={C} /></Ink>
+        <Ink><path d="M32 44 L36 54 M42 38 L46 48 M74 72 L80 62 M84 64 L90 54 M60 84 L64 76" stroke={P} strokeWidth="3.5" strokeLinecap="round" /></Ink>
+        <Ink offset><path d="M30 34 C34 28 40 27 44 30" stroke={W} strokeWidth="4" fill="none" strokeLinecap="round" /></Ink>
+      </>
+    ),
+  },
+  {
+    id: 'star', label: 'Spiky star', group: 'bits', tint: 'yellow', cut: true,
+    fragment: { slot: 'none', text: '' },
+    art: (
+      <>
+        <Ink><path d={burstPath(8, 56, 24)} fill={Y} /></Ink>
+        <Ink><path d={burstPath(8, 28, 12)} fill={O} /></Ink>
+        <Ink offset><path d="M60 22 V40 M90 36 L78 48 M98 66 H82 M38 92 L48 80" stroke={K} strokeWidth="2.5" strokeLinecap="round" /></Ink>
+      </>
+    ),
+  },
+  {
+    id: 'crown', label: 'Crown', group: 'bits', tint: 'yellow', cut: true, size: 17,
+    fragment: { slot: 'none', text: '' },
+    art: (
+      <>
+        <path d={scrapWide} fill="url(#riso-lined)" />
+        <Ink><path d="M18 90 L22 38 L42 62 L60 26 L78 62 L98 38 L102 90 Z" fill={Y} /></Ink>
+        <Ink><circle cx="22" cy="36" r="5" fill={C} /><circle cx="60" cy="24" r="6" fill={C} /><circle cx="98" cy="36" r="5" fill={C} /></Ink>
+        <Ink offset>
+          <path d="M18 90 H102" stroke={K} strokeWidth="3" strokeLinecap="round" />
+          <path d="M34 74 L38 84 M56 70 L58 82 M78 72 L76 84" stroke={O} strokeWidth="3" strokeLinecap="round" />
+        </Ink>
+      </>
+    ),
+  },
+  {
+    id: 'tangle', label: 'Scribble', group: 'bits', tint: 'blue', cut: true, size: 16,
+    fragment: { slot: 'none', text: '' },
+    art: (
+      <>
+        <path d={scrapWide} fill="url(#riso-lined)" />
+        <Ink><ellipse cx="60" cy="60" rx="40" ry="32" fill={B} /></Ink>
+        <Ink offset><path d={scribble(60, 60, 36, 28)} stroke={K} strokeWidth="1.6" fill="none" strokeLinejoin="round" /></Ink>
+      </>
+    ),
+  },
+  {
+    id: 'arrow', label: 'Arrow', group: 'bits', tint: 'orange', cut: true, size: 18, viewBox: '0 0 140 100',
+    fragment: { slot: 'none', text: '' },
+    art: (
+      <>
+        <Ink><path d="M8 38 H80 V14 L132 50 L80 86 V62 H8 Z" fill={O} /></Ink>
+        <Ink><path d="M8 38 H80 V14 L132 50 L80 86 V62 H8 Z" fill="url(#riso-dots-yellow)" /></Ink>
+        <Ink offset><path d="M18 50 H70 M28 44 H56 M96 38 L112 50" stroke={K} strokeWidth="2.5" strokeLinecap="round" /></Ink>
+      </>
+    ),
+  },
+  {
+    id: 'egg', label: 'Spotty egg', group: 'bits', tint: 'blue', cut: true,
+    fragment: { slot: 'none', text: '' },
+    art: (
+      <>
+        <path d={scrapTall} fill="url(#riso-grid)" />
+        <Ink><ellipse cx="60" cy="62" rx="32" ry="42" fill={B} /></Ink>
+        <Ink>
+          {[[48, 36], [72, 44], [56, 58], [78, 70], [44, 76], [64, 90]].map(([cx, cy]) => <circle key={`${cx}-${cy}`} cx={cx} cy={cy} r="5.5" fill={P} />)}
+        </Ink>
+      </>
+    ),
+  },
+  {
+    id: 'question', label: 'Question', group: 'bits', tint: 'coral', cut: true,
+    fragment: { slot: 'none', text: '' },
+    art: (
+      <>
+        <Ink>
+          <path d="M36 40 C36 16 84 12 86 38 C88 58 60 58 60 80" stroke={C} strokeWidth="17" fill="none" strokeLinecap="round" />
+          <circle cx="60" cy="104" r="10" fill={C} />
+        </Ink>
+        <Ink offset><path d="M46 34 C50 26 62 24 70 28" stroke={W} strokeWidth="3.5" fill="none" strokeLinecap="round" /></Ink>
+      </>
+    ),
+  },
+  {
+    id: 'diamond', label: 'Diamond', group: 'bits', tint: 'mint', cut: true,
+    fragment: { slot: 'none', text: '' },
+    art: (
+      <>
+        <path d={scrapTall} fill="url(#riso-lined)" />
+        <Ink><path d="M60 10 L104 60 L60 110 L16 60 Z" fill={M} /></Ink>
+        <Ink offset><path d={scribble(60, 60, 22, 26, 48)} stroke={K} strokeWidth="1.6" fill="none" strokeLinejoin="round" /></Ink>
       </>
     ),
   },
@@ -695,6 +823,20 @@ export function RisoDefs() {
             <circle cx="2.5" cy="2.5" r="1.7" fill={color} />
           </pattern>
         ))}
+
+        {/* Notebook paper for the scrap-backed bits. */}
+        <pattern id="riso-lined" width="12" height="11" patternUnits="userSpaceOnUse">
+          <rect width="12" height="11" fill="#fffaf0" />
+          <path d="M0 10.5 H12" stroke={S} strokeOpacity=".6" />
+        </pattern>
+        <pattern id="riso-grid" width="10" height="10" patternUnits="userSpaceOnUse">
+          <rect width="10" height="10" fill="#fffaf0" />
+          <path d="M0 9.5 H10 M9.5 0 V10" stroke={S} strokeOpacity=".4" />
+        </pattern>
+
+        <pattern id="riso-washi" width="9" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+          <rect width="3.5" height="9" fill={M} fillOpacity=".35" />
+        </pattern>
 
         {/* Gingham, for the heart. */}
         <pattern id="riso-gingham" width="12" height="12" patternUnits="userSpaceOnUse">

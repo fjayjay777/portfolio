@@ -24,7 +24,7 @@ test('starts with a collage that already reads as a sentence', () => {
   const board = renderPage()
   expect(screen.getByRole('link', { name: 'Playground' })).toHaveAttribute('aria-current', 'page')
   expect(within(board).getByRole('button', { name: 'UX designer sticker' })).toBeInTheDocument()
-  expect(said()).toBe('Jiani is a UX designer, based in Ann Arbor, with a cat never far away.')
+  expect(said()).toBe('Jiani is a UX designer, based in Ann Arbor, with four cats never far away.')
 })
 
 test('adding and removing stickers rewrites the sentence', () => {

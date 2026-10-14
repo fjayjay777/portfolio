@@ -1,5 +1,6 @@
-import { useEffect, useLayoutEffect, useMemo, useRef, useState, type KeyboardEvent, type PointerEvent } from 'react'
-import { composeSentence, sentenceText, type Token } from './sentence'
+import { useEffect, useLayoutEffect, useMemo, useRef, useState, type KeyboardEvent, type PointerEvent, type ReactNode } from 'react'
+import { composeSentence, sentenceText } from './sentence'
+import { SentenceView } from './SentenceView'
 import { RisoDefs, StickerArt, ink, isRepeatable, stickerById, stickers, type Group, type StickerDef } from './stickers'
 
 type Item = { uid: string; id: string; x: number; y: number; rot: number; scale: number; z: number }
@@ -27,35 +28,109 @@ const randomTilt = () => randomBetween(-14, 14)
 let uidCounter = 0
 const nextUid = () => `s${++uidCounter}`
 
+// The starter collage frames the sentence instead of covering it.
 const starter: Item[] = [
-  { uid: nextUid(), id: 'ux', x: 0.2, y: 0.38, rot: -8, scale: 1.1, z: 1 },
-  { uid: nextUid(), id: 'annarbor', x: 0.5, y: 0.6, rot: 6, scale: 1, z: 2 },
-  { uid: nextUid(), id: 'cat', x: 0.79, y: 0.4, rot: -4, scale: 1.05, z: 3 },
-  { uid: nextUid(), id: 'tape', x: 0.36, y: 0.2, rot: -18, scale: 0.9, z: 4 },
+  { uid: nextUid(), id: 'ux', x: 0.13, y: 0.34, rot: -8, scale: 1.1, z: 1 },
+  { uid: nextUid(), id: 'tape', x: 0.27, y: 0.12, rot: -14, scale: 0.9, z: 2 },
+  { uid: nextUid(), id: 'annarbor', x: 0.85, y: 0.28, rot: 6, scale: 1, z: 3 },
+  { uid: nextUid(), id: 'cat', x: 0.87, y: 0.74, rot: -4, scale: 1.05, z: 4 },
+  { uid: nextUid(), id: 'blossom-pink', x: 0.2, y: 0.8, rot: 10, scale: 1, z: 5 },
 ]
 
-function hash(text: string) {
-  let value = 0
-  for (const char of text) value = (value * 31 + char.charCodeAt(0)) | 0
-  return Math.abs(value)
-}
+const stickerWidth = (sticker: StickerDef, boardWidth: number) => clamp((boardWidth * (sticker.size ?? 15)) / 100, 68, 190)
 
-/* Keys survive edits elsewhere in the sentence, so only words that are new
-   play the paste-in animation. */
-function keyTokens(tokens: Token[]) {
-  const seen = new Map<string, number>()
-  return tokens.map((token) => {
-    const base = `${token.source ?? 'glue'}:${token.text}`
-    const count = seen.get(base) ?? 0
-    seen.set(base, count + 1)
-    return { ...token, key: `${base}:${count}` }
+// Shuffle: a couple of each kind of sticker, spaced evenly around a ring so
+// the pieces frame the words.
+function randomCollage(): Item[] {
+  const pickFrom = (pool: StickerDef[], count: number) => [...pool].sort(() => Math.random() - 0.5).slice(0, count)
+  const bySlot = (slot: string) => stickers.filter((sticker) => sticker.fragment.slot === slot)
+  const chosen = [
+    ...pickFrom(bySlot('who'), 2),
+    ...pickFrom(bySlot('does'), 1 + Math.round(Math.random())),
+    ...pickFrom(bySlot('about'), 1 + Math.round(Math.random())),
+    ...pickFrom(stickers.filter(isRepeatable), 2),
+  ].sort(() => Math.random() - 0.5)
+
+  const turn = Math.random() * Math.PI * 2
+  return chosen.map((sticker, index) => {
+    const angle = turn + (index / chosen.length) * Math.PI * 2 + randomBetween(-0.2, 0.2)
+    return {
+      uid: nextUid(), id: sticker.id,
+      x: clamp(0.5 + Math.cos(angle) * 0.4, 0.08, 0.92),
+      y: clamp(0.5 + Math.sin(angle) * 0.38, 0.1, 0.9),
+      rot: randomTilt(), scale: randomBetween(0.9, 1.15), z: index + 1,
+    }
   })
 }
 
-export function Collage() {
+/* Stickers frame the sentence -------------------------------------------- */
+
+type TextArea = { l: number; t: number; r: number; b: number; width: number; height: number }
+
+// The words' box, in board fractions. Offsets rather than client rects, so the
+// words' own entrance animation doesn't skew the measurement.
+function measureText(board: HTMLElement, box: HTMLElement): TextArea | null {
+  const width = board.clientWidth
+  const height = board.clientHeight
+  if (!width || !height || !box.offsetWidth) return null
+  return {
+    l: box.offsetLeft / width, r: (box.offsetLeft + box.offsetWidth) / width,
+    t: box.offsetTop / height, b: (box.offsetTop + box.offsetHeight) / height,
+    width, height,
+  }
+}
+
+// Any sticker sitting on the words slides out to the nearest open side. A
+// little overlap is allowed so stickers can tuck against the text.
+function clearOfText(items: Item[], area: TextArea | null, held?: string): Item[] {
+  if (!area) return items
+  let moved = false
+  const next = items.map((item) => {
+    if (item.uid === held) return item
+    const sticker = stickerById.get(item.id)!
+    const [, , boxW, boxH] = (sticker.viewBox ?? '0 0 120 120').split(' ').map(Number)
+    const px = stickerWidth(sticker, area.width) * item.scale * 0.4
+    const halfW = px / area.width
+    const halfH = (px * boxH) / boxW / area.height
+    const l = area.l - halfW, r = area.r + halfW, t = area.t - halfH, b = area.b + halfH
+    if (item.x <= l || item.x >= r || item.y <= t || item.y >= b) return item
+
+    const spots = [{ x: l, y: item.y }, { x: r, y: item.y }, { x: item.x, y: t }, { x: item.x, y: b }]
+      .filter((spot) => spot.x >= 0.03 && spot.x <= 0.97 && spot.y >= 0.04 && spot.y <= 0.96)
+    if (!spots.length) return item
+    const nearest = spots.reduce((best, spot) =>
+      Math.hypot(spot.x - item.x, spot.y - item.y) < Math.hypot(best.x - item.x, best.y - item.y) ? spot : best)
+    moved = true
+    return { ...item, ...nearest }
+  })
+  return moved ? next : items
+}
+
+// A free spot on a loose ring around the words, as far from other stickers
+// as a few tries can find.
+function openSpot(existing: Item[]) {
+  let best = { x: 0.5, y: 0.12 }
+  let bestGap = -1
+  for (let attempt = 0; attempt < 18; attempt++) {
+    const angle = Math.random() * Math.PI * 2
+    const x = clamp(0.5 + Math.cos(angle) * randomBetween(0.36, 0.44), 0.08, 0.92)
+    const y = clamp(0.5 + Math.sin(angle) * randomBetween(0.34, 0.42), 0.1, 0.9)
+    const gap = Math.min(1, ...existing.map((item) => Math.hypot(item.x - x, (item.y - y) * 0.6)))
+    if (gap > bestGap) {
+      best = { x, y }
+      bestGap = gap
+    }
+  }
+  return best
+}
+
+// `intro` (the page title and description) shares a row with the board's
+// buttons, so the header stays one quiet line above the collage.
+export function Collage({ intro }: { intro?: ReactNode }) {
   const boardRef = useRef<HTMLDivElement>(null)
   const frameRef = useRef<HTMLDivElement>(null)
   const trayRef = useRef<HTMLDivElement>(null)
+  const wordsRef = useRef<HTMLDivElement>(null)
   const dragRef = useRef<Drag | null>(null)
   const pickupRef = useRef<Pickup | null>(null)
   const suppressClick = useRef(false)
@@ -78,13 +153,25 @@ export function Collage() {
     return () => observer.disconnect()
   }, [])
 
+  // Whenever the sentence grows or shrinks, it nudges stickers off itself.
+  useLayoutEffect(() => {
+    const board = boardRef.current
+    const box = wordsRef.current
+    if (!board || !box) return
+    const observer = new ResizeObserver(() => {
+      setItems((current) => clearOfText(current, measureText(board, box), dragRef.current?.uid))
+    })
+    observer.observe(box)
+    return () => observer.disconnect()
+  }, [])
+
   useEffect(() => {
     if (!wiggle) return
     const timer = window.setTimeout(() => setWiggle(null), 600)
     return () => window.clearTimeout(timer)
   }, [wiggle])
 
-  const stickerPx = (sticker: StickerDef) => clamp((boardWidth * (sticker.size ?? 15)) / 100, 68, 190)
+  const stickerPx = (sticker: StickerDef) => stickerWidth(sticker, boardWidth)
 
   const sentence = useMemo(
     () => composeSentence(items.map((item) => ({ uid: item.uid, x: item.x, y: item.y, fragment: stickerById.get(item.id)!.fragment }))),
@@ -93,8 +180,6 @@ export function Collage() {
   const placedIds = new Set(items.map((item) => item.id))
   const topZ = () => items.reduce((max, item) => Math.max(max, item.z), 0) + 1
 
-  // Positions are measured against the board, but anywhere inside the frame
-  // (the sentence column included) counts as a drop; add() clamps it back in.
   function boardPoint(clientX: number, clientY: number) {
     const rect = boardRef.current!.getBoundingClientRect()
     const frame = frameRef.current!.getBoundingClientRect()
@@ -108,6 +193,12 @@ export function Collage() {
   function isOverTray(clientX: number, clientY: number) {
     const rect = trayRef.current?.getBoundingClientRect()
     return !!rect && clientX >= rect.left && clientX <= rect.right && clientY >= rect.top && clientY <= rect.bottom
+  }
+
+  function settle() {
+    const board = boardRef.current
+    const box = wordsRef.current
+    if (board && box) setItems((current) => clearOfText(current, measureText(board, box), dragRef.current?.uid))
   }
 
   function update(uid: string, patch: Partial<Item>) {
@@ -124,6 +215,7 @@ export function Collage() {
     const item: Item = { uid: nextUid(), id, x: clamp(x, 0.08, 0.9), y: clamp(y, 0.1, 0.9), rot: randomTilt(), scale: 1, z: topZ() }
     setItems((current) => [...current, item])
     setSelected(item.uid)
+    settle()
   }
 
   /* Board stickers ------------------------------------------------------ */
@@ -179,6 +271,7 @@ export function Collage() {
     setDragging(null)
     setOverTray(false)
     if (drag?.mode === 'move' && drag.moved && isOverTray(event.clientX, event.clientY)) remove(drag.uid)
+    else settle()
   }
 
   function onStickerKey(event: KeyboardEvent<HTMLDivElement>, item: Item) {
@@ -253,29 +346,16 @@ export function Collage() {
       update(existing.uid, { z: topZ() })
       return
     }
-    add(sticker.id, randomBetween(0.15, 0.85), randomBetween(0.2, 0.8))
+    const spot = openSpot(items)
+    add(sticker.id, spot.x, spot.y)
   }
 
   /* Whole-board actions ------------------------------------------------- */
 
   function shuffle() {
-    const pickFrom = (pool: StickerDef[], count: number) => [...pool].sort(() => Math.random() - 0.5).slice(0, count)
-    const bySlot = (slot: string) => stickers.filter((sticker) => sticker.fragment.slot === slot)
-    const chosen = [
-      ...pickFrom(bySlot('who'), 2),
-      ...pickFrom(bySlot('does'), 1 + Math.round(Math.random())),
-      ...pickFrom(bySlot('about'), 1 + Math.round(Math.random())),
-      ...pickFrom(stickers.filter(isRepeatable), 2),
-    ].sort(() => Math.random() - 0.5)
-
-    // Columns keep the pieces from piling up on one spot.
-    setItems(chosen.map((sticker, index) => ({
-      uid: nextUid(), id: sticker.id,
-      x: clamp((index + 0.5) / chosen.length + randomBetween(-0.04, 0.04), 0.08, 0.92),
-      y: index % 2 ? randomBetween(0.55, 0.78) : randomBetween(0.22, 0.45),
-      rot: randomTilt(), scale: randomBetween(0.9, 1.2), z: index + 1,
-    })))
+    setItems(randomCollage())
     setSelected(null)
+    settle()
   }
 
   function clear() {
@@ -293,7 +373,7 @@ export function Collage() {
 
       <div className="collage-stage">
         <div className="collage-toolbar">
-          <p className="collage-hint">Drag to move · pull the corner dot to turn and resize · drop back on the sheet to peel off</p>
+          <div className="collage-intro">{intro}</div>
           <div className="collage-actions">
             <button type="button" className="collage-button" onClick={shuffle}>Shuffle</button>
             <button type="button" className="collage-button" onClick={clear} disabled={!items.length}>Clear</button>
@@ -314,8 +394,6 @@ export function Collage() {
             tabIndex={-1}
             onPointerDown={(event) => { if (event.target === event.currentTarget) setSelected(null) }}
           >
-            {!items.length && <p className="collage-empty">Drop stickers here</p>}
-
             {items.map((item) => {
               const sticker = stickerById.get(item.id)!
               const isSelected = selected === item.uid
@@ -383,66 +461,48 @@ export function Collage() {
                 </div>
               )
             })}
+
+            <SentenceView
+              sentence={sentence}
+              emptyText={items.length ? 'Decorations don’t talk. Add a sticker from Work or Life.' : 'Nothing yet. Stick something down.'}
+              lit={lit}
+              onLight={setLit}
+              tintOf={(source) => {
+                const item = items.find((entry) => entry.uid === source)
+                return item && ink[stickerById.get(item.id)!.tint]
+              }}
+              boxRef={wordsRef}
+            />
           </div>
           <p id="collage-keys" className="visually-hidden">
             Select a sticker, then use arrow keys to move it, square brackets to turn it, plus and minus to resize, and Delete to remove it.
           </p>
+          <p className="visually-hidden" aria-live="polite">{sentence ? sentenceText(sentence) : ''}</p>
 
-          <section className="collage-sentence" aria-labelledby="collage-sentence-label">
-            <p id="collage-sentence-label" className="collage-sentence__label">The collage says</p>
-            {sentence ? (
-              <>
-                <p className="ransom" aria-hidden="true">
-                  {keyTokens(sentence.tokens).map((token) => {
-                    const source = token.source && items.find((item) => item.uid === token.source)
-                    const tint = source ? stickerById.get(source.id)!.tint : null
-                    const seed = hash(token.key)
-                    return (
-                      <span
-                        key={token.key}
-                        className={[
-                          'ransom-word',
-                          tint ? 'ransom-word--ink' : 'ransom-word--glue',
-                          `ransom-word--face-${seed % 4}`,
-                          token.source && lit === token.source && 'is-lit',
-                        ].filter(Boolean).join(' ')}
-                        style={{ ['--tilt' as string]: `${(seed % 7) - 3}deg`, ...(tint && { ['--chip' as string]: ink[tint] }) }}
-                        onPointerEnter={() => token.source && setLit(token.source)}
-                        onPointerLeave={() => setLit(null)}
-                      >
-                        {token.text}
-                      </span>
-                    )
-                  })}
-                </p>
-                {sentence.footnote && <p className="ransom-footnote" aria-hidden="true">{sentence.footnote}</p>}
-              </>
-            ) : (
-              <p className="ransom ransom--empty" aria-hidden="true">
-                {items.length ? 'Decorations don’t talk. Add a sticker from Work or Life.' : 'Nothing yet. Stick something down.'}
-              </p>
-            )}
-            <p className="visually-hidden" aria-live="polite">{sentence ? sentenceText(sentence) : ''}</p>
-          </section>
         </div>
       </div>
 
       <aside ref={trayRef} className={`sticker-sheet${overTray ? ' sticker-sheet--peel' : ''}`} aria-label="Sticker sheet">
-        <div className="sticker-tabs" role="tablist" aria-label="Sticker groups">
-          {groups.map((group) => (
-            <button
-              key={group.id}
-              type="button"
-              role="tab"
-              id={`sticker-tab-${group.id}`}
-              aria-selected={tab === group.id}
-              aria-controls="sticker-panel"
-              className="sticker-tab"
-              onClick={() => setTab(group.id)}
-            >
-              {group.label}
-            </button>
-          ))}
+        <div className="sticker-sheet__head">
+          <div className="sticker-tabs" role="tablist" aria-label="Sticker groups">
+            {groups.map((group) => (
+              <button
+                key={group.id}
+                type="button"
+                role="tab"
+                id={`sticker-tab-${group.id}`}
+                aria-selected={tab === group.id}
+                aria-controls="sticker-panel"
+                className="sticker-tab"
+                onClick={() => setTab(group.id)}
+              >
+                {group.label}
+              </button>
+            ))}
+          </div>
+          <p className="collage-hint">
+            {overTray ? 'Let go to peel it off' : 'Drag to move · pull the corner dot to turn and resize · drop back on the sheet to peel off'}
+          </p>
         </div>
 
         <div className="sticker-grid" id="sticker-panel" role="tabpanel" aria-labelledby={`sticker-tab-${tab}`}>
@@ -466,7 +526,6 @@ export function Collage() {
             )
           })}
         </div>
-        <p className="sticker-sheet__note">{overTray ? 'Let go to peel it off' : 'Drag onto the paper, or click to stick'}</p>
       </aside>
 
       {ghost && ghostSticker && (

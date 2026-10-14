@@ -1,9 +1,29 @@
+import { useEffect, useState } from 'react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
 
 const sectionLink = (section: string) => `/#${section}`
 
-export function SiteNav({ autoHide = false }: { autoHide?: boolean }) {
+// True while the page is scrolled to (or very near) the top.
+function useAtTop(enabled: boolean) {
+  const [atTop, setAtTop] = useState(() => typeof window === 'undefined' || window.scrollY < 8)
+
+  useEffect(() => {
+    if (!enabled) return
+    const check = () => setAtTop(window.scrollY < 8)
+    check()
+    window.addEventListener('scroll', check, { passive: true })
+    return () => window.removeEventListener('scroll', check)
+  }, [enabled])
+
+  return atTop
+}
+
+// `autoHide` keeps the bar tucked away until the pointer reaches the top edge.
+// `showAtTop` also shows it whenever the page is scrolled all the way up.
+export function SiteNav({ autoHide = false, showAtTop = false }: { autoHide?: boolean; showAtTop?: boolean }) {
   const location = useLocation()
+  const atTop = useAtTop(autoHide && showAtTop)
+  const classes = ['site-header', autoHide && 'site-header--auto-hide', autoHide && showAtTop && atTop && 'site-header--shown']
 
   function scrollOnHomepage(event: React.MouseEvent<HTMLAnchorElement>, section: string) {
     if (location.pathname !== '/') return
@@ -13,7 +33,7 @@ export function SiteNav({ autoHide = false }: { autoHide?: boolean }) {
   }
 
   return (
-    <header className={autoHide ? 'site-header site-header--auto-hide' : 'site-header'}>
+    <header className={classes.filter(Boolean).join(' ')}>
       <nav className="site-nav" aria-label="Primary navigation">
         <Link className="wordmark" aria-label="Jiani Huang home" to="/">
           <svg className="brand-mark" viewBox="0 0 44 44" fill="none" aria-hidden="true" focusable="false">

@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&display=swap');
+
 /* Playground ------------------------------------------------------------ */
 /* Kept out of styles.css: the page is self-contained and its riso palette
    doesn't belong to the case studies. */
@@ -5,15 +7,23 @@
   --riso-pink: #ff86c2;
   --riso-black: #2a2622;
   --paper: #fffcf5;
-  padding: clamp(52px, 8vw, 90px) 0 var(--gap);
+  /* The nav is fixed here, so the page clears it itself. */
+  padding: calc(var(--nav-height) + clamp(24px, 4vw, 48px)) 0 var(--gap);
+}
+/* Pairs with SiteNav's showAtTop: at the top of the page the hidden bar
+   stays down, and its hover catcher collapses so it never blocks clicks. */
+.site-header--auto-hide.site-header--shown { transform: none; }
+.site-header--auto-hide.site-header--shown::after { height: 0; }
+/* Touch screens keep the bar in the flow (see styles.css), so no clearance. */
+@media (hover: none) {
+  .playground-page { padding-top: clamp(24px, 4vw, 48px); }
 }
 /* Title with its caption underneath, all on the page's left edge. */
 .playground-head {
-  display: flex; flex-direction: column; align-items: flex-start; gap: 14px;
-  margin-bottom: clamp(28px, 4vw, 44px);
+  display: flex; flex-direction: column; align-items: flex-start; gap: 10px;
 }
-.playground-page h1 { flex-shrink: 0; margin: 0; color: var(--ink); font: 400 clamp(2.53rem, 5.98vw, 4.14rem)/1 var(--serif); letter-spacing: -.045em; }
-.playground-lead { max-width: 600px; margin: 0; color: var(--soft); font: 400 12px/1.5 var(--mono); letter-spacing: .02em; }
+.playground-page h1 { margin: 0; color: var(--ink); font: 400 clamp(1.9rem, 3.2vw, 2.5rem)/1 var(--serif); letter-spacing: -.03em; }
+.playground-lead { max-width: 520px; margin: 0; color: #a39c92; font: 400 12px/1.5 var(--mono); letter-spacing: .02em; }
 .playground-page .visually-hidden {
   position: absolute; width: 1px; height: 1px; overflow: hidden;
   clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap;
@@ -22,8 +32,8 @@
    board. The collage board is transparent so the same dots run through it. */
 .playground-shell {
   background-color: #fff;
-  background-image: radial-gradient(circle, #d4cec3 1.15px, transparent 1.4px);
-  background-size: 20px 20px;
+  background-image: radial-gradient(circle, #e8e4dd 1px, transparent 1.25px);
+  background-size: 22px 22px;
   background-position: 10px 10px;
 }
 .playground-shell .site-header { background: rgb(255 255 255 / .9); }
@@ -41,45 +51,49 @@
 .sticker-sheet { grid-area: sheet; }
 .collage--busy { user-select: none; -webkit-user-select: none; }
 
-.collage-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
-.collage-hint { margin: 0; color: var(--soft); font: 400 12px/1.5 var(--mono); letter-spacing: .02em; }
+.collage-toolbar { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; padding-bottom: 6px; }
+/* How-to caption, sharing a row with the sheet's tabs. */
+.collage-hint { margin: 0; color: #b8b1a7; font: 400 11px/1.5 var(--mono); letter-spacing: .02em; }
 .collage-actions { display: flex; flex-shrink: 0; gap: 8px; }
 .collage-button {
-  min-height: 36px; padding: 0 14px;
-  border: 1px solid var(--ink); border-radius: 999px;
-  background: #fff; color: var(--ink);
-  font: 500 12px/1 var(--mono); letter-spacing: .08em; text-transform: uppercase;
-  transition: background .2s var(--ease), color .2s var(--ease), transform .2s var(--ease);
+  min-height: 30px; padding: 0 12px;
+  border: 1px solid #dcd6cc; border-radius: 999px;
+  background: #fff; color: var(--soft);
+  font: 500 11px/1 var(--mono); letter-spacing: .08em; text-transform: uppercase;
+  transition: border-color .2s var(--ease), color .2s var(--ease), transform .2s var(--ease);
 }
-.collage-button:hover:not(:disabled) { background: var(--ink); color: var(--ground); }
+.collage-button:hover:not(:disabled) { border-color: var(--ink); color: var(--ink); }
 .collage-button:active:not(:disabled) { transform: translateY(1px); }
-.collage-button:disabled { border-color: var(--rule); color: var(--rule); cursor: default; }
+.collage-button:disabled { border-color: #ece8e1; color: #cfc9bf; cursor: default; }
 .collage-button:focus-visible, .sheet-sticker:focus-visible, .sticker-tab:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
-/* One dashed frame holds the board and the sentence it produces. The frame
-   clips, not the board, so a sticker can hang past the board's edge. */
+/* The dashed frame clips, not the board, so a sticker can hang past the
+   board's edge without spilling onto the page. */
 .collage-frame {
-  display: grid; grid-template-columns: minmax(0, 1fr) 270px;
+  /* Its own stacking context, so sticker and sentence z-indexes never climb
+     over the sticky nav. */
+  isolation: isolate;
   overflow: hidden;
-  border: 1.5px dashed #d9d3c8; border-radius: 18px;
+  border: 1px dashed #e3ded5; border-radius: 18px;
   transition: border-color .2s var(--ease), box-shadow .2s var(--ease);
 }
 .collage-frame--target { border-color: var(--accent); box-shadow: inset 0 0 0 2px rgb(65 111 148 / .16); }
 .collage-board {
   position: relative;
-  aspect-ratio: 16 / 10;
+  aspect-ratio: 16 / 9;
   touch-action: none;
 }
 .collage-board:focus-visible { outline: 2px solid var(--accent); outline-offset: -4px; }
-.collage-empty {
-  position: absolute; inset: 0; display: grid; place-items: center; margin: 0;
-  color: #b3ada2; font: 400 13px/1 var(--mono); letter-spacing: .14em; text-transform: uppercase;
-  pointer-events: none;
-}
 
 /* A placed sticker. The outer box carries position/rotation/scale; the art
    inside carries the paste animation, so the two transforms never fight. */
-.board-sticker { position: absolute; aspect-ratio: auto; }
+/* When the words push a sticker aside it springs there; while held it
+   follows the pointer exactly and rides above the words. */
+.board-sticker {
+  position: absolute; aspect-ratio: auto;
+  transition: left .55s cubic-bezier(.34, 1.4, .64, 1), top .55s cubic-bezier(.34, 1.4, .64, 1);
+}
+.board-sticker.is-dragging { z-index: 3000 !important; transition: none; }
 .board-sticker__body {
   display: block; cursor: grab; touch-action: none; outline: none;
   filter: drop-shadow(0 1px 1px rgb(42 38 34 / .16)) drop-shadow(0 3px 6px rgb(42 38 34 / .1));
@@ -128,44 +142,56 @@
 }
 .board-sticker__remove:hover { background: var(--riso-pink); }
 
-/* The sentence, pasted together from cut-out words ------------------- */
-.collage-sentence { padding: 26px 26px 26px 6px; }
-.collage-sentence__label { margin: 0 0 12px; color: var(--soft); font: 400 11px/1.5 var(--mono); letter-spacing: .16em; text-transform: uppercase; }
-.ransom { display: flex; flex-wrap: wrap; gap: 8px 6px; margin: 0; }
-.ransom--empty { color: var(--soft); font-size: 16px; }
-.ransom-word {
-  display: inline-block; padding: 4px 7px 5px;
-  background: var(--paper); color: var(--riso-black);
-  box-shadow: 0 1px 2px rgb(42 38 34 / .14);
-  transform: rotate(var(--tilt, 0deg));
-  font-size: clamp(17px, 2vw, 22px); line-height: 1.1;
-  animation: word-paste .38s var(--ease) both;
-  transition: transform .18s var(--ease), box-shadow .18s var(--ease);
+/* The sentence, centered on the board ------------------------------- */
+/* Above the stickers but click-through, apart from the words themselves. */
+.collage-sentence {
+  position: absolute; z-index: 2000; inset: 0;
+  display: grid; place-items: center;
+  pointer-events: none;
 }
-.ransom-word--face-0 { font-family: var(--serif); }
-.ransom-word--face-1 { font-family: Poppins, sans-serif; font-weight: 700; letter-spacing: -.01em; }
-.ransom-word--face-2 { font-family: var(--mono); font-size: clamp(15px, 1.7vw, 19px); text-transform: uppercase; }
-.ransom-word--face-3 { font-family: Inter, sans-serif; font-weight: 600; font-style: italic; }
-.ransom-word--glue { background: #fff; box-shadow: 0 1px 2px rgb(42 38 34 / .14), inset 0 0 0 1px #ece7de; }
-.ransom-word--ink { background: var(--chip); color: var(--riso-black); }
-.ransom-word.is-lit { box-shadow: 0 6px 12px rgb(42 38 34 / .2); transform: rotate(0deg) translateY(-3px); }
-.ransom-footnote { margin: 14px 0 0; color: var(--soft); font: 400 13px/1.5 var(--mono); }
+.collage-words {
+  --brown: #8a5a3a;
+  --charcoal: #2f2a26;
+  --mist: #b8b1a7;
+  --hand: Gaegu, 'Comic Sans MS', cursive;
+  max-width: 48%; padding: 8px 4px;
+  text-align: center;
+}
+.collage-words__label { margin: 0 0 14px; color: var(--mist); font: 400 11px/1.5 var(--mono); letter-spacing: .18em; text-transform: uppercase; }
+.collage-words__line { margin: 0; font: 700 clamp(15px, 1.5vw, 20px)/1.4 var(--hand); }
+.collage-words__empty { margin: 0; color: var(--mist); font: 400 clamp(14px, 1.35vw, 18px)/1.4 var(--hand); }
+.collage-words__note { margin: 16px 0 0; color: var(--mist); font: 400 12px/1.5 var(--mono); }
+
+.word {
+  display: inline-block; margin: 0 .13em;
+  pointer-events: auto;
+  text-decoration: underline wavy transparent; text-decoration-thickness: 2px; text-underline-offset: .2em;
+  transition: text-decoration-color .2s var(--ease);
+}
+.word--name { color: var(--brown); }
+.word--a { color: var(--charcoal); }
+.word--b { color: var(--brown); }
+/* Connecting words step back: lighter weight, light gray. */
+.word--glue { color: var(--mist); font-weight: 400; }
+/* Hovering a sticker underlines its words in that sticker's ink. */
+.word.is-lit { text-decoration-color: var(--chip, var(--brown)); }
 
 /* Sticker sheet -------------------------------------------------------- */
 .sticker-sheet {
   padding: 14px; border-radius: 14px;
-  background: #f1f4fa;
+  background: #f7f6f3;
   transition: background .2s var(--ease), border-color .2s var(--ease);
 }
 .sticker-sheet--peel { background: #fde3ef; }
-.sticker-tabs { display: flex; gap: 4px; max-width: 360px; margin-bottom: 12px; padding: 3px; border-radius: 999px; background: rgb(255 255 255 / .6); }
+.sticker-sheet__head { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 20px; margin-bottom: 12px; }
+.sticker-tabs { display: flex; flex: 0 1 360px; gap: 4px; padding: 3px; border-radius: 999px; background: rgb(255 255 255 / .45); }
 .sticker-tab {
   flex: 1; min-height: 32px; border: 0; border-radius: 999px;
   background: transparent; color: var(--soft);
   font: 500 12px/1 var(--mono); letter-spacing: .08em; text-transform: uppercase;
   transition: background .2s var(--ease), color .2s var(--ease);
 }
-.sticker-tab[aria-selected='true'] { background: var(--ink); color: #fff; }
+.sticker-tab[aria-selected='true'] { background: rgb(26 24 21 / .45); color: #fff; }
 .sticker-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(92px, 1fr)); gap: 8px; }
 .sheet-sticker {
   display: flex; flex-direction: column; align-items: center; gap: 4px;
@@ -175,13 +201,14 @@
 }
 .sheet-sticker:hover { background: rgb(255 255 255 / .55); }
 .sheet-sticker:active { cursor: grabbing; }
-.sheet-sticker__art { display: block; width: 58px; transition: transform .2s var(--ease); }
+/* A fixed square, art centered in it, so wide pieces (tape, arrow) don't
+   lift their labels above the rest of the row. */
+.sheet-sticker__art { display: flex; align-items: center; justify-content: center; width: 58px; height: 58px; transition: transform .2s var(--ease); }
 .sheet-sticker:hover .sheet-sticker__art { transform: rotate(-5deg) scale(1.06); }
 .sheet-sticker__label { color: var(--soft); font: 400 10px/1.25 var(--mono); letter-spacing: .02em; text-align: center; }
 /* Already on the board: the sheet shows the empty kiss-cut where it was. */
 .sheet-sticker.is-used { background: rgb(255 255 255 / .6); cursor: pointer; }
 .sheet-sticker.is-used .sheet-sticker__art { opacity: .28; filter: grayscale(1); }
-.sticker-sheet__note { margin: 12px 2px 0; color: var(--soft); font: 400 11px/1.4 var(--mono); }
 
 .sticker-ghost {
   position: fixed; z-index: 20;
@@ -202,21 +229,17 @@
   25% { transform: rotate(-8deg) scale(1.06); }
   60% { transform: rotate(6deg) scale(1.03); }
 }
-@keyframes word-paste {
-  0% { transform: rotate(calc(var(--tilt, 0deg) * -3)) scale(1.25); opacity: 0; }
-  100% { transform: rotate(var(--tilt, 0deg)); opacity: 1; }
-}
 
 @media (max-width: 900px) {
-  .collage-frame { grid-template-columns: minmax(0, 1fr); }
-  .collage-sentence { padding: 4px 20px 22px; }
   .sticker-grid { grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); }
 }
 @media (max-width: 680px) {
   .collage-board { aspect-ratio: 4 / 5; }
+  .collage-words { max-width: 76%; }
   .collage-toolbar { flex-direction: column; align-items: stretch; }
   .collage-actions .collage-button { flex: 1; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .board-sticker__art, .ransom-word { animation: none !important; }
+  .board-sticker__art { animation: none !important; }
+  .board-sticker { transition: none; }
 }
