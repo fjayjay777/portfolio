@@ -6,6 +6,7 @@ import { HomePage } from './pages/HomePage'
 import { MePage } from './pages/MePage'
 import { ClaimlyPage } from './pages/ClaimlyPage'
 import { MedisyncPage } from './pages/MedisyncPage'
+import { PlaygroundPage } from './pages/PlaygroundPage'
 import { SizzlePage } from './pages/SizzlePage'
 
 // three.js is only downloaded when someone opens Nighty.
@@ -25,6 +26,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/me" element={<MePage />} />
+        <Route path="/playground" element={<PlaygroundPage />} />
         <Route path="/work/claimly" element={<ClaimlyPage />} />
         <Route path="/work/medisync" element={<MedisyncPage />} />
         <Route path="/work/sizzle" element={<SizzlePage />} />

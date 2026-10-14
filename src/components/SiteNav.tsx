@@ -24,6 +24,7 @@ export function SiteNav({ autoHide = false }: { autoHide?: boolean }) {
         <div className="nav-links">
           <Link to={sectionLink('works')} onClick={(event) => scrollOnHomepage(event, 'works')}>Works</Link>
           <NavLink to="/me">ME</NavLink>
+          <NavLink to="/playground">Playground</NavLink>
           <Link to={sectionLink('contact')} onClick={(event) => scrollOnHomepage(event, 'contact')}>Contact</Link>
         </div>
       </nav>

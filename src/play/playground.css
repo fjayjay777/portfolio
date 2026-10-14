@@ -1,0 +1,222 @@
+/* Playground ------------------------------------------------------------ */
+/* Kept out of styles.css: the page is self-contained and its riso palette
+   doesn't belong to the case studies. */
+.playground-page {
+  --riso-pink: #ff86c2;
+  --riso-black: #2a2622;
+  --paper: #fffcf5;
+  padding: clamp(52px, 8vw, 90px) 0 var(--gap);
+}
+/* Title with its caption underneath, all on the page's left edge. */
+.playground-head {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 14px;
+  margin-bottom: clamp(28px, 4vw, 44px);
+}
+.playground-page h1 { flex-shrink: 0; margin: 0; color: var(--ink); font: 400 clamp(2.53rem, 5.98vw, 4.14rem)/1 var(--serif); letter-spacing: -.045em; }
+.playground-lead { max-width: 600px; margin: 0; color: var(--soft); font: 400 12px/1.5 var(--mono); letter-spacing: .02em; }
+.playground-page .visually-hidden {
+  position: absolute; width: 1px; height: 1px; overflow: hidden;
+  clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap;
+}
+/* The whole page is the canvas: white with a dot grid, like a design tool's
+   board. The collage board is transparent so the same dots run through it. */
+.playground-shell {
+  background-color: #fff;
+  background-image: radial-gradient(circle, #d4cec3 1.15px, transparent 1.4px);
+  background-size: 20px 20px;
+  background-position: 10px 10px;
+}
+.playground-shell .site-header { background: rgb(255 255 255 / .9); }
+.riso-defs { position: absolute; width: 0; height: 0; overflow: hidden; }
+
+/* Board with its sentence beside it, sticker sheet underneath. The stage
+   wrapper dissolves so its children sit directly on the grid. */
+.collage {
+  display: grid; grid-template-columns: minmax(0, 1fr); gap: 18px; align-items: start;
+  grid-template-areas: 'toolbar' 'frame' 'sheet';
+}
+.collage-stage { display: contents; }
+.collage-toolbar { grid-area: toolbar; }
+.collage-frame { grid-area: frame; }
+.sticker-sheet { grid-area: sheet; }
+.collage--busy { user-select: none; -webkit-user-select: none; }
+
+.collage-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.collage-hint { margin: 0; color: var(--soft); font: 400 12px/1.5 var(--mono); letter-spacing: .02em; }
+.collage-actions { display: flex; flex-shrink: 0; gap: 8px; }
+.collage-button {
+  min-height: 36px; padding: 0 14px;
+  border: 1px solid var(--ink); border-radius: 999px;
+  background: #fff; color: var(--ink);
+  font: 500 12px/1 var(--mono); letter-spacing: .08em; text-transform: uppercase;
+  transition: background .2s var(--ease), color .2s var(--ease), transform .2s var(--ease);
+}
+.collage-button:hover:not(:disabled) { background: var(--ink); color: var(--ground); }
+.collage-button:active:not(:disabled) { transform: translateY(1px); }
+.collage-button:disabled { border-color: var(--rule); color: var(--rule); cursor: default; }
+.collage-button:focus-visible, .sheet-sticker:focus-visible, .sticker-tab:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* One dashed frame holds the board and the sentence it produces. The frame
+   clips, not the board, so a sticker can hang past the board's edge. */
+.collage-frame {
+  display: grid; grid-template-columns: minmax(0, 1fr) 270px;
+  overflow: hidden;
+  border: 1.5px dashed #d9d3c8; border-radius: 18px;
+  transition: border-color .2s var(--ease), box-shadow .2s var(--ease);
+}
+.collage-frame--target { border-color: var(--accent); box-shadow: inset 0 0 0 2px rgb(65 111 148 / .16); }
+.collage-board {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  touch-action: none;
+}
+.collage-board:focus-visible { outline: 2px solid var(--accent); outline-offset: -4px; }
+.collage-empty {
+  position: absolute; inset: 0; display: grid; place-items: center; margin: 0;
+  color: #b3ada2; font: 400 13px/1 var(--mono); letter-spacing: .14em; text-transform: uppercase;
+  pointer-events: none;
+}
+
+/* A placed sticker. The outer box carries position/rotation/scale; the art
+   inside carries the paste animation, so the two transforms never fight. */
+.board-sticker { position: absolute; aspect-ratio: auto; }
+.board-sticker__body {
+  display: block; cursor: grab; touch-action: none; outline: none;
+  filter: drop-shadow(0 1px 1px rgb(42 38 34 / .16)) drop-shadow(0 3px 6px rgb(42 38 34 / .1));
+  transition: filter .2s var(--ease);
+}
+.board-sticker__art { animation: sticker-slap .42s var(--ease) both; }
+.board-sticker__art .sticker-svg, .sticker-ghost .sticker-svg, .sheet-sticker__art .sticker-svg { display: block; width: 100%; height: auto; overflow: visible; }
+.board-sticker.is-lit .board-sticker__body,
+.board-sticker__body:hover { filter: drop-shadow(0 2px 2px rgb(42 38 34 / .18)) drop-shadow(0 8px 14px rgb(42 38 34 / .14)); }
+.board-sticker.is-dragging .board-sticker__body {
+  cursor: grabbing;
+  filter: drop-shadow(0 4px 4px rgb(42 38 34 / .16)) drop-shadow(0 16px 24px rgb(42 38 34 / .18));
+}
+/* Individual transform properties stack on top of the paste animation
+   instead of replacing it, so lifting a sticker never replays the paste. */
+.board-sticker__art { transition: scale .15s var(--ease), translate .15s var(--ease), rotate .15s var(--ease), opacity .15s var(--ease); }
+.board-sticker.is-dragging .board-sticker__art { scale: 1.05; translate: 0 -3px; }
+.board-sticker.is-peeling .board-sticker__art { opacity: .45; scale: .85; rotate: -6deg; }
+.board-sticker.is-wiggling .board-sticker__body { animation: sticker-wiggle .5s var(--ease); }
+.board-sticker.is-selected::before {
+  position: absolute; inset: -8px;
+  border: 1.5px dashed var(--accent); border-radius: 10px;
+  pointer-events: none; content: '';
+}
+.board-sticker__body:focus-visible + .board-sticker__handle,
+.board-sticker__body:focus-visible ~ .board-sticker__remove { box-shadow: 0 0 0 3px rgb(59 93 171 / .25); }
+
+/* Handles counter the sticker's own scale so they stay finger-sized. */
+.board-sticker__handle, .board-sticker__remove {
+  position: absolute; display: grid; place-items: center;
+  width: 22px; height: 22px; padding: 0;
+  border-radius: 50%;
+  transform: translate(-50%, -50%) scale(var(--counter-scale, 1));
+  touch-action: none;
+}
+.board-sticker__handle {
+  top: calc(100% + 8px); left: calc(100% + 8px);
+  border: 2px solid var(--accent); background: #fff;
+  cursor: nwse-resize;
+}
+.board-sticker__handle::after { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); content: ''; }
+.board-sticker__remove {
+  top: -8px; left: calc(100% + 8px);
+  border: 0; background: var(--riso-black); color: #fff;
+  font: 500 15px/1 Inter, sans-serif;
+}
+.board-sticker__remove:hover { background: var(--riso-pink); }
+
+/* The sentence, pasted together from cut-out words ------------------- */
+.collage-sentence { padding: 26px 26px 26px 6px; }
+.collage-sentence__label { margin: 0 0 12px; color: var(--soft); font: 400 11px/1.5 var(--mono); letter-spacing: .16em; text-transform: uppercase; }
+.ransom { display: flex; flex-wrap: wrap; gap: 8px 6px; margin: 0; }
+.ransom--empty { color: var(--soft); font-size: 16px; }
+.ransom-word {
+  display: inline-block; padding: 4px 7px 5px;
+  background: var(--paper); color: var(--riso-black);
+  box-shadow: 0 1px 2px rgb(42 38 34 / .14);
+  transform: rotate(var(--tilt, 0deg));
+  font-size: clamp(17px, 2vw, 22px); line-height: 1.1;
+  animation: word-paste .38s var(--ease) both;
+  transition: transform .18s var(--ease), box-shadow .18s var(--ease);
+}
+.ransom-word--face-0 { font-family: var(--serif); }
+.ransom-word--face-1 { font-family: Poppins, sans-serif; font-weight: 700; letter-spacing: -.01em; }
+.ransom-word--face-2 { font-family: var(--mono); font-size: clamp(15px, 1.7vw, 19px); text-transform: uppercase; }
+.ransom-word--face-3 { font-family: Inter, sans-serif; font-weight: 600; font-style: italic; }
+.ransom-word--glue { background: #fff; box-shadow: 0 1px 2px rgb(42 38 34 / .14), inset 0 0 0 1px #ece7de; }
+.ransom-word--ink { background: var(--chip); color: var(--riso-black); }
+.ransom-word.is-lit { box-shadow: 0 6px 12px rgb(42 38 34 / .2); transform: rotate(0deg) translateY(-3px); }
+.ransom-footnote { margin: 14px 0 0; color: var(--soft); font: 400 13px/1.5 var(--mono); }
+
+/* Sticker sheet -------------------------------------------------------- */
+.sticker-sheet {
+  padding: 14px; border-radius: 14px;
+  background: #f1f4fa;
+  transition: background .2s var(--ease), border-color .2s var(--ease);
+}
+.sticker-sheet--peel { background: #fde3ef; }
+.sticker-tabs { display: flex; gap: 4px; max-width: 360px; margin-bottom: 12px; padding: 3px; border-radius: 999px; background: rgb(255 255 255 / .6); }
+.sticker-tab {
+  flex: 1; min-height: 32px; border: 0; border-radius: 999px;
+  background: transparent; color: var(--soft);
+  font: 500 12px/1 var(--mono); letter-spacing: .08em; text-transform: uppercase;
+  transition: background .2s var(--ease), color .2s var(--ease);
+}
+.sticker-tab[aria-selected='true'] { background: var(--ink); color: #fff; }
+.sticker-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(92px, 1fr)); gap: 8px; }
+.sheet-sticker {
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  padding: 10px 4px 8px; border: 0; border-radius: 10px;
+  background: transparent; cursor: grab; touch-action: pan-y;
+  transition: background .2s var(--ease), border-color .2s var(--ease);
+}
+.sheet-sticker:hover { background: rgb(255 255 255 / .55); }
+.sheet-sticker:active { cursor: grabbing; }
+.sheet-sticker__art { display: block; width: 58px; transition: transform .2s var(--ease); }
+.sheet-sticker:hover .sheet-sticker__art { transform: rotate(-5deg) scale(1.06); }
+.sheet-sticker__label { color: var(--soft); font: 400 10px/1.25 var(--mono); letter-spacing: .02em; text-align: center; }
+/* Already on the board: the sheet shows the empty kiss-cut where it was. */
+.sheet-sticker.is-used { background: rgb(255 255 255 / .6); cursor: pointer; }
+.sheet-sticker.is-used .sheet-sticker__art { opacity: .28; filter: grayscale(1); }
+.sticker-sheet__note { margin: 12px 2px 0; color: var(--soft); font: 400 11px/1.4 var(--mono); }
+
+.sticker-ghost {
+  position: fixed; z-index: 20;
+  transform: translate(-50%, -50%) rotate(-6deg) scale(.9);
+  opacity: .8; pointer-events: none;
+  filter: drop-shadow(0 14px 20px rgb(42 38 34 / .22));
+  transition: transform .15s var(--ease), opacity .15s var(--ease);
+}
+.sticker-ghost.is-over { transform: translate(-50%, -50%) rotate(-3deg) scale(1.04); opacity: 1; }
+
+@keyframes sticker-slap {
+  0% { transform: scale(1.35); opacity: 0; }
+  55% { transform: scale(.94); opacity: 1; }
+  100% { transform: scale(1); }
+}
+@keyframes sticker-wiggle {
+  0%, 100% { transform: rotate(0); }
+  25% { transform: rotate(-8deg) scale(1.06); }
+  60% { transform: rotate(6deg) scale(1.03); }
+}
+@keyframes word-paste {
+  0% { transform: rotate(calc(var(--tilt, 0deg) * -3)) scale(1.25); opacity: 0; }
+  100% { transform: rotate(var(--tilt, 0deg)); opacity: 1; }
+}
+
+@media (max-width: 900px) {
+  .collage-frame { grid-template-columns: minmax(0, 1fr); }
+  .collage-sentence { padding: 4px 20px 22px; }
+  .sticker-grid { grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); }
+}
+@media (max-width: 680px) {
+  .collage-board { aspect-ratio: 4 / 5; }
+  .collage-toolbar { flex-direction: column; align-items: stretch; }
+  .collage-actions .collage-button { flex: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .board-sticker__art, .ransom-word { animation: none !important; }
+}
