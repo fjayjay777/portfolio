@@ -3,27 +3,37 @@ import { Link, NavLink, useLocation } from 'react-router-dom'
 
 const sectionLink = (section: string) => `/#${section}`
 
-// True while the page is scrolled to (or very near) the top.
-function useAtTop(enabled: boolean) {
-  const [atTop, setAtTop] = useState(() => typeof window === 'undefined' || window.scrollY < 8)
+// Below this the bar is always shown: the reader is still at the top of the page.
+const REVEAL_ZONE = 80
+// Scroll movement smaller than this is jitter, not a change of direction.
+const DIRECTION_THRESHOLD = 6
+
+// True while the reader is scrolling down past the top of the page; any scroll back up clears it.
+function useHiddenOnScrollDown(enabled: boolean) {
+  const [hidden, setHidden] = useState(false)
 
   useEffect(() => {
     if (!enabled) return
-    const check = () => setAtTop(window.scrollY < 8)
-    check()
-    window.addEventListener('scroll', check, { passive: true })
-    return () => window.removeEventListener('scroll', check)
+    let last = window.scrollY
+    const update = () => {
+      const y = window.scrollY
+      const delta = y - last
+      if (Math.abs(delta) < DIRECTION_THRESHOLD && y > REVEAL_ZONE) return
+      setHidden(delta > 0 && y > REVEAL_ZONE)
+      last = y
+    }
+    window.addEventListener('scroll', update, { passive: true })
+    return () => window.removeEventListener('scroll', update)
   }, [enabled])
 
-  return atTop
+  return hidden
 }
 
-// `autoHide` keeps the bar tucked away until the pointer reaches the top edge.
-// `showAtTop` also shows it whenever the page is scrolled all the way up.
-export function SiteNav({ autoHide = false, showAtTop = false }: { autoHide?: boolean; showAtTop?: boolean }) {
+// `autoHide` slides the bar away while the reader scrolls down and brings it back on any scroll up.
+export function SiteNav({ autoHide = false }: { autoHide?: boolean }) {
   const location = useLocation()
-  const atTop = useAtTop(autoHide && showAtTop)
-  const classes = ['site-header', autoHide && 'site-header--auto-hide', autoHide && showAtTop && atTop && 'site-header--shown']
+  const hidden = useHiddenOnScrollDown(autoHide)
+  const classes = ['site-header', autoHide && 'site-header--auto-hide', hidden && 'site-header--hidden']
 
   function scrollOnHomepage(event: React.MouseEvent<HTMLAnchorElement>, section: string) {
     if (location.pathname !== '/') return

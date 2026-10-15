@@ -1,4 +1,4 @@
-import { cleanup, render, screen, within } from '@testing-library/react'
+import { act, cleanup, render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 import { afterEach, beforeEach, expect, test, vi } from 'vitest'
@@ -296,6 +296,51 @@ test('traces Sizzle scenarios across the app areas', async () => {
 
   await user.click(within(scenarios).getByRole('button', { name: 'Stock the fridge' }))
   expect(screen.getByText('04 / 04 · Added to fridge')).toBeInTheDocument()
+})
+
+test('slides the case study nav away on scroll down and back on scroll up', () => {
+  renderAt('/work/sizzle')
+  const header = screen.getByRole('navigation', { name: 'Primary navigation' }).closest('header') as HTMLElement
+  const scrollTo = (y: number) => {
+    Object.defineProperty(window, 'scrollY', { configurable: true, value: y })
+    act(() => {
+      window.dispatchEvent(new Event('scroll'))
+    })
+  }
+
+  expect(header).not.toHaveClass('site-header--hidden')
+  scrollTo(600)
+  expect(header).toHaveClass('site-header--hidden')
+  scrollTo(560)
+  expect(header).not.toHaveClass('site-header--hidden')
+  scrollTo(900)
+  expect(header).toHaveClass('site-header--hidden')
+  // Back at the top the bar always shows.
+  scrollTo(0)
+  expect(header).not.toHaveClass('site-header--hidden')
+})
+
+test('shows a back-to-top button on every case study once the reader scrolls', async () => {
+  const user = userEvent.setup()
+  const scrollTo = vi.spyOn(window, 'scrollTo').mockImplementation(() => undefined)
+
+  for (const path of ['/work/claimly', '/work/medisync', '/work/sizzle', '/work/nighty']) {
+    renderAt(path)
+    // Hidden at the top of the page, where the nav and hero are still in reach.
+    expect(screen.queryByRole('button', { name: 'Back to top' })).not.toBeInTheDocument()
+
+    Object.defineProperty(window, 'scrollY', { configurable: true, value: window.innerHeight * 2 })
+    window.dispatchEvent(new Event('scroll'))
+    const button = await screen.findByRole('button', { name: 'Back to top' })
+
+    scrollTo.mockClear()
+    await user.click(button)
+    expect(scrollTo).toHaveBeenCalledWith(expect.objectContaining({ top: 0 }))
+
+    Object.defineProperty(window, 'scrollY', { configurable: true, value: 0 })
+    cleanup()
+  }
+  scrollTo.mockRestore()
 })
 
 test('renders the Me page profile and preserves Contact navigation', () => {

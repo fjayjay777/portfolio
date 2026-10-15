@@ -5,7 +5,7 @@ import '../play/playground.css'
 export function PlaygroundPage() {
   return (
     <div className="site-shell playground-shell">
-      <SiteNav autoHide showAtTop />
+      <SiteNav autoHide />
       <main className="playground-page section-shell">
         <Collage
           intro={

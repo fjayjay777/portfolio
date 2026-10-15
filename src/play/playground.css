@@ -7,16 +7,7 @@
   --riso-pink: #ff86c2;
   --riso-black: #2a2622;
   --paper: #fffcf5;
-  /* The nav is fixed here, so the page clears it itself. */
-  padding: calc(var(--nav-height) + clamp(24px, 4vw, 48px)) 0 var(--gap);
-}
-/* Pairs with SiteNav's showAtTop: at the top of the page the hidden bar
-   stays down, and its hover catcher collapses so it never blocks clicks. */
-.site-header--auto-hide.site-header--shown { transform: none; }
-.site-header--auto-hide.site-header--shown::after { height: 0; }
-/* Touch screens keep the bar in the flow (see styles.css), so no clearance. */
-@media (hover: none) {
-  .playground-page { padding-top: clamp(24px, 4vw, 48px); }
+  padding: clamp(24px, 4vw, 48px) 0 var(--gap);
 }
 /* Title with its caption underneath, all on the page's left edge. */
 .playground-head {

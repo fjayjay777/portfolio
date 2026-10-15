@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { caseOrder, type CaseName } from '../data/caseOrder'
+import { BackToTop } from './BackToTop'
 
 /** Sends the reader to the next case rather than back to the index. */
 export function CaseFooter({ current }: { current: CaseName }) {
@@ -20,6 +21,8 @@ export function CaseFooter({ current }: { current: CaseName }) {
         <Link className="back-link" to="/#works">← All works</Link>
         <Link className="back-link" to="/#contact">Get in touch →</Link>
       </nav>
+      {/* Every case study ends here, so the floating button lives here too. */}
+      <BackToTop />
     </footer>
   )
 }

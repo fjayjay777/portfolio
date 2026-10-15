@@ -51,23 +51,13 @@ main { flex: 1; }
   height: var(--nav-height);
   background: var(--ground);
 }
-/* Case pages hide the bar until the pointer reaches the top edge. The ::after
-   strip is the catcher: while hidden it covers the nav strip at the top of
-   and it collapses once revealed so it never blocks clicks on the page. */
-.site-header--auto-hide {
-  position: fixed; top: 0; right: 0; left: 0;
-  transform: translateY(-100%);
-  transition: transform .32s var(--ease);
-}
-.site-header--auto-hide::after {
-  position: absolute; top: 100%; right: 0; left: 0;
-  height: var(--nav-height);
-  content: '';
-}
-.site-header--auto-hide:hover,
-.site-header--auto-hide:focus-within { transform: none; }
-.site-header--auto-hide:hover::after,
-.site-header--auto-hide:focus-within::after { height: 0; }
+/* Case pages and the playground slide the bar away while the reader scrolls
+   down and bring it back on any scroll up. It stays sticky, so at the top of
+   the page it holds its own space instead of covering the content. Keyboard
+   focus always brings it back. */
+.site-header--auto-hide { transition: transform .32s var(--ease); }
+.site-header--hidden { transform: translateY(-100%); }
+.site-header--hidden:focus-within { transform: none; }
 .site-nav { width: var(--content); display: flex; align-items: center; justify-content: space-between; gap: 20px; }
 .wordmark { color: var(--ink); font-weight: 500; letter-spacing: .1em; text-decoration: none; transition: color .2s var(--ease); }
 .wordmark:hover { color: var(--accent); }
@@ -656,6 +646,36 @@ section[id] { scroll-margin-top: 72px; }
 .case-next:hover .case-next__name { color: var(--accent); transform: translateX(6px); }
 .case-next:hover .case-next__arrow { color: var(--accent); transform: translate(4px, -4px); }
 
+/* Floating back-to-top: a circle whose ring fills with reading progress. */
+.back-to-top {
+  position: fixed; z-index: 4; right: clamp(16px, 3vw, 32px); bottom: clamp(16px, 3vw, 32px);
+  display: grid; place-items: center; width: 52px; height: 52px;
+  border: 0; border-radius: 50%; padding: 0;
+  background: rgb(250 248 244 / .92); color: var(--ink);
+  box-shadow: 0 1px 2px rgb(26 24 21 / .06), 0 6px 18px rgb(26 24 21 / .1);
+  backdrop-filter: blur(6px);
+  opacity: 0; transform: translateY(12px); pointer-events: none;
+  transition: opacity .3s var(--ease), transform .3s var(--ease), color .2s var(--ease);
+}
+.back-to-top.is-visible { opacity: 1; transform: none; pointer-events: auto; }
+.back-to-top:hover { color: var(--accent); }
+.back-to-top:hover .back-to-top__arrow { transform: translateY(-2px); }
+.back-to-top:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.back-to-top svg { width: 100%; height: 100%; overflow: visible; }
+.back-to-top__track,
+.back-to-top__progress { fill: none; stroke-width: 2; }
+.back-to-top__track { stroke: var(--rule); }
+/* Starts at twelve o'clock and fills clockwise. */
+.back-to-top__progress {
+  stroke: var(--accent); stroke-linecap: round;
+  transform: rotate(-90deg); transform-origin: 24px 24px;
+  transition: stroke-dashoffset .12s linear;
+}
+.back-to-top__arrow {
+  fill: none; stroke: currentColor; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round;
+  transition: transform .2s var(--ease);
+}
+
 .case-links {
   display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between;
   border-top: 1px solid var(--rule); padding-top: 20px;
@@ -901,10 +921,6 @@ section[id] { scroll-margin-top: 72px; }
 .cv-row h3 { font-family: Inter, sans-serif; font-size: 17px; font-weight: 500; line-height: 1.45; }
 .cv-when { font-size: 12px; letter-spacing: .04em; color: var(--accent); }
 .case-facts dt, .back-link, .case-next__label, .case-next__category, .mobile-demo__link { font-size: 12px; letter-spacing: .08em; }
-@media (hover: none) {
-  .site-header--auto-hide { position: sticky; transform: none; }
-  .site-header--auto-hide::after { display: none; }
-}
 @media (max-width: 680px) {
   :root { --content: calc(100% - 40px); --nav-height: 68px; }
   .meta-label, .location { font-size: 12px; letter-spacing: .04em; }
