@@ -100,7 +100,7 @@ export function NightyPage() {
   return (
     <div className="site-shell">
       <SiteNav autoHide />
-      <main className="case-page nighty-page">
+      <main className="case-page editorial-page nighty-page">
         <header className="case-hero section-shell">
           <Link className="back-link" to="/#works">← Selected works</Link>
           <p className="eyebrow">Sleep technology</p>
@@ -139,7 +139,7 @@ export function NightyPage() {
         </section>
 
         {/* Problem beside its design goal, with the approach underneath: the same opening as the other cases. */}
-        <section className="nighty-overview section-shell" aria-labelledby="overview-title">
+        <section className="case-section section-shell editorial-section" aria-labelledby="overview-title">
           <div className="section-label"><span>/</span><h2 id="overview-title">Overview</h2></div>
           <div className="case-framing">
             <div>
@@ -168,7 +168,7 @@ export function NightyPage() {
           </div>
           <div className="case-framing__approach">
             <h3 className="case-framing__label">Approach</h3>
-            <div className="case-body">
+            <div className="case-body editorial-body">
               <p>
                 Nighty builds temperature control, white noise, and sleep tracking into a contoured memory-foam pillow.
                 The exploded view below shows where each part sits.
@@ -177,9 +177,9 @@ export function NightyPage() {
           </div>
         </section>
 
-        <section className="nighty-section section-shell" aria-labelledby="research-title">
+        <section className="case-section section-shell editorial-section" aria-labelledby="research-title">
           <div className="section-label"><span>/</span><h2 id="research-title">Research</h2></div>
-          <div className="case-body">
+          <div className="case-body editorial-body">
             <p>
               The team interviewed and surveyed 25 people aged 20 to 70, including people with insomnia, ADHD, and
               disabilities, and compared three smart pillows on the market. Synthesis produced two personas: a student
@@ -190,7 +190,7 @@ export function NightyPage() {
           <FindingsList findings={findings} />
         </section>
 
-        <section className="nighty-exploded section-shell" aria-labelledby="exploded-title">
+        <section className="case-section section-shell nighty-exploded" aria-labelledby="exploded-title">
           <div className="section-label"><span>/</span><h2 id="exploded-title">Exploded view</h2></div>
           <div className="nighty-exploded-grid">
             <div className="nighty-stage nighty-stage--exploded">
@@ -254,26 +254,27 @@ export function NightyPage() {
           </div>
         </section>
 
-        <section className="nighty-section section-shell" aria-labelledby="decisions-title">
+        <section className="case-section section-shell editorial-section" aria-labelledby="decisions-title">
           <div className="section-label"><span>/</span><h2 id="decisions-title">Design decisions</h2></div>
-          <div className="decision-grid">
-            {decisions.map((decision) => (
-              <article className="decision-card" key={decision.title}>
+          <ol className="editorial-decisions">
+            {decisions.map((decision, index) => (
+              <li key={decision.title}>
+                <span className="decision-index">0{index + 1}</span>
                 <h3>{decision.title}</h3>
                 <p>{decision.note}</p>
-              </article>
+              </li>
             ))}
-          </div>
+          </ol>
         </section>
 
-        <section className="nighty-section section-shell" aria-labelledby="outcome-title">
+        <section className="case-section section-shell editorial-section" aria-labelledby="outcome-title">
           <div className="section-label"><span>/</span><h2 id="outcome-title">Outcome</h2></div>
-          <div className="case-body">
-            <div className="stat-row">
-              <div><strong>25</strong><span>Research participants</span></div>
-              <div><strong>3</strong><span>Functions in one pillow</span></div>
-              <div><strong>10</strong><span>Components modeled</span></div>
-            </div>
+          <div className="stat-row editorial-stat-row">
+            <div><strong>25</strong><span>Research participants</span></div>
+            <div><strong>3</strong><span>Functions in one pillow</span></div>
+            <div><strong>10</strong><span>Components modeled</span></div>
+          </div>
+          <div className="case-body editorial-body">
             <p>
               Nighty is a team concept, shown here as an interactive 3D model. The internal parts were modeled for this
               case study from the team’s research.
@@ -285,9 +286,9 @@ export function NightyPage() {
           </div>
         </section>
 
-        <section className="nighty-section section-shell" aria-labelledby="reflection-title">
+        <section className="case-section section-shell editorial-section" aria-labelledby="reflection-title">
           <div className="section-label"><span>/</span><h2 id="reflection-title">Reflection</h2></div>
-          <div className="case-body">
+          <div className="case-body editorial-body">
             <p>
               The strongest pain points were not about the room. Participants described anxiety about sleep, no one to
               talk to about it, and trouble getting an appointment with a psychologist. A pillow can improve the
