@@ -57,6 +57,34 @@ test('opens with the shared overview: problem beside the goal, approach beneath'
   expect(within(overview).getByText(/How might we help people with sleep difficulties/)).toHaveClass('case-goal')
 })
 
+test('follows the shared case study sections, with the exploded view after research', () => {
+  renderPage()
+
+  expect(screen.getAllByRole('heading', { level: 2 }).map((heading) => heading.textContent)).toEqual([
+    'The pillow',
+    'Overview',
+    'Research',
+    'Exploded view',
+    'Design decisions',
+    'Outcome',
+    'Reflection',
+  ])
+})
+
+test('backs every Nighty finding with an evidence chain', () => {
+  renderPage()
+
+  const findings = [...screen.getByRole('list', { name: 'Research findings' }).children] as HTMLElement[]
+  expect(findings.map((finding) => within(finding).getByRole('heading').textContent)).toEqual([
+    'Sleepers rely on remedies they do not trust.',
+    'Sound already helps, but it plays into the room.',
+    'Tracking has to cost nothing at bedtime.',
+  ])
+  for (const finding of findings) {
+    expect(within(finding).getByLabelText('Evidence chain')).toBeInTheDocument()
+  }
+})
+
 test('keeps the page up and explains itself when the renderer cannot start', () => {
   vi.spyOn(console, 'error').mockImplementation(() => undefined)
   createStage.mockImplementationOnce(() => {

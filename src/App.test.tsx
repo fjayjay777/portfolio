@@ -156,7 +156,7 @@ test('opens Claimly with one overview holding the problem, goal, and approach', 
 test('centers Claimly text sections without oversized pull quotes', () => {
   renderAt('/work/claimly')
 
-  expect(screen.getByRole('region', { name: 'Overview' })).toHaveClass('claimly-text-section')
+  expect(screen.getByRole('region', { name: 'Overview' })).toHaveClass('editorial-section')
   expect(screen.getByLabelText('Research findings')).toBeVisible()
   expect(screen.getByText('01', { selector: '.finding-index' })).toBeVisible()
   expect(screen.queryByText('The document creates the doubt. Claimly gives the user enough evidence to act on it.')).not.toBeInTheDocument()
@@ -191,6 +191,23 @@ test.each([
     'Approach',
   ])
   expect(within(overview).getByText(goal)).toHaveClass('case-goal')
+})
+
+test('backs every Medisync finding with an evidence chain', () => {
+  renderAt('/work/medisync')
+
+  // Direct children only: each chain's own evidence list nests further list items.
+  const findings = [...screen.getByRole('list', { name: 'Research findings' }).children] as HTMLElement[]
+  expect(findings.map((finding) => within(finding).getByRole('heading').textContent)).toEqual([
+    'Records live in too many places.',
+    'Privacy is the barrier to sharing records.',
+    'Care continues between visits and across a family.',
+  ])
+  for (const finding of findings) {
+    expect(within(finding).getByLabelText('Evidence chain')).toBeInTheDocument()
+  }
+  expect(within(findings[0]).getByText(/56 of 70 respondents/)).toBeInTheDocument()
+  expect(within(findings[1]).getByText(/59 of 70 respondents/)).toBeInTheDocument()
 })
 
 test('shows the Medisync swimlane flow on its case study page', () => {
@@ -241,6 +258,44 @@ test('embeds the Medisync prototype on its case study page', () => {
 
   expect(screen.getByTitle('Medisync interactive prototype')).toHaveAttribute('src', '/demos/medisync/')
   expect(screen.getByRole('link', { name: 'Open Medisync demo' })).toHaveAttribute('href', '/demos/medisync/')
+})
+
+test('backs every Sizzle finding with an evidence chain', () => {
+  renderAt('/work/sizzle')
+
+  const findings = [...screen.getByRole('list', { name: 'Research findings' }).children] as HTMLElement[]
+  expect(findings.map((finding) => within(finding).getByRole('heading').textContent)).toEqual([
+    'Recipes are hard to find, not scarce.',
+    'Cooking is planned around the week.',
+    'Cooks want to contribute, not only browse.',
+  ])
+  for (const finding of findings) {
+    expect(within(finding).getByLabelText('Evidence chain')).toBeInTheDocument()
+  }
+  expect(within(findings[1]).getByText(/85% found it within two minutes/)).toBeInTheDocument()
+})
+
+test('traces Sizzle scenarios across the app areas', async () => {
+  const user = userEvent.setup()
+  renderAt('/work/sizzle')
+
+  const flow = screen.getByRole('img', { name: 'Sizzle interaction flow' })
+  for (const lane of ['Explore', 'Recipe', 'Meal plans · History', 'Me · Kitchen']) {
+    expect(within(flow).getByText(lane)).toBeInTheDocument()
+  }
+
+  const scenarios = screen.getByRole('group', { name: 'Trace a scenario' })
+  expect(within(scenarios).getByRole('button', { name: 'Cook something new' })).toHaveAttribute('aria-pressed', 'true')
+  expect(screen.getByText('06 / 06 · Rate the recipe')).toBeInTheDocument()
+
+  await user.click(within(scenarios).getByRole('button', { name: 'Search and save' }))
+  expect(screen.getByText('05 / 05 · Saved')).toBeInTheDocument()
+
+  await user.click(within(scenarios).getByRole('button', { name: 'Plan the week' }))
+  expect(screen.getByText('04 / 04 · Shopping list')).toBeInTheDocument()
+
+  await user.click(within(scenarios).getByRole('button', { name: 'Stock the fridge' }))
+  expect(screen.getByText('04 / 04 · Added to fridge')).toBeInTheDocument()
 })
 
 test('renders the Me page profile and preserves Contact navigation', () => {

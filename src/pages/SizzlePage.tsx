@@ -2,10 +2,13 @@ import { Link } from 'react-router-dom'
 import recommendShot from '../assets/sizzle/sz-01-recommend.jpg'
 import fridgeShot from '../assets/sizzle/sz-02-fridge.jpg'
 import mealplansShot from '../assets/sizzle/sz-03-mealplans.jpg'
-import { MobileDemoFrame } from '../components/MobileDemoFrame'
 import { CaseFooter } from '../components/CaseFooter'
+import { type Finding, FindingsList } from '../components/Findings'
+import { FlowPlayer } from '../components/FlowPlayer'
+import { MobileDemoFrame } from '../components/MobileDemoFrame'
 import { PhoneShot } from '../components/PhoneShot'
 import { SiteNav } from '../components/SiteNav'
+import { sizzleFlow } from '../components/SizzleFlow'
 
 const facts = [
   { label: 'Role', value: 'UX/UI designer · research through UI' },
@@ -16,52 +19,113 @@ const facts = [
 
 const walkthrough = [
   {
-    title: 'Swipe to find something to cook',
+    title: 'One recommendation at a time',
     shot: recommendShot,
-    alt: 'The swipe-based recommendation home showing one recipe at a time',
-    note: 'The home screen recommends recipes one at a time, by swipe. It was the only interaction testers praised unprompted in the first round ("easy and creative," in their words), so it survived every later revision untouched.',
+    alt: 'The recommendation channel showing one recipe card at a time',
+    note: 'Recommendations lead with a single recipe. The swipe-based version was the only interaction testers praised unprompted, so it stayed through every revision.',
   },
   {
-    title: 'Cook from what is already in the fridge',
+    title: 'Know what is in the fridge',
     shot: fridgeShot,
     alt: 'The fridge screen listing ingredients already on hand, grouped by category',
-    note: 'The fridge holds what you have and matches recipes against it. Testers connected it to two things I had treated separately: fitting recipes to a daily routine and not wasting food. One tester could not find it, so the problem there was placement.',
+    note: 'The fridge lists what is on hand by category. Testers tied it to planning around their routine and to wasting less food.',
   },
   {
     title: 'Keep meal plans apart from saved recipes',
     shot: mealplansShot,
     alt: 'The meal plans screen, kept separate from saved recipes',
-    note: 'Saved recipes and meal plans live in separate places. A tester named this as the reason he did not mix them up, which settled a structure I had been unsure about. The same round showed that in-progress plans were still missing from the saved view.',
+    note: 'Meal plans and saved recipes live in separate places. A tester said this kept the two from getting mixed up; another asked why an in-progress plan was missing from the saved view.',
   },
 ]
 
 const decisions = [
   {
     title: 'Social model, library structure',
-    note: 'The competitor analysis split into two groups. Kitchen Stories, Yummly, and Tasty hold millions of professional recipes but have little user-generated content and weak feedback loops. TikTok and Instagram have the engagement and personalization but no recipe management. Sizzle takes the second group\'s social model and gives it the first group\'s structure.',
+    note: 'Recipe platforms have structure but no community; social apps have community but no structure. Sizzle takes the social model and gives it a library\'s organization.',
   },
   {
-    title: 'Icons carry the guidance, text gets shorter',
-    note: 'Round one found the directional copy too long and taking up real space. Icons tested well immediately, but they were spaced so tightly that people kept landing on the wrong screen, so the fix needed a second pass before it counted as one.',
+    title: 'Icons over long copy',
+    note: 'Round one found the directional copy too long. Icons replaced it and tested well, but were spaced so tightly that people landed on the wrong screen until round two.',
   },
   {
     title: 'Designed for beginners',
-    note: 'Two of the three personas were not confident cooks: a college student with a small budget and limited equipment, and a first-time cook who wanted to stop relying on takeout. "Rarely beginner-friendly" was one of the six pain points, so clear steps were a requirement.',
+    note: 'Two of three personas were not confident cooks: a student on a budget and a first-time cook moving off takeout. Clear steps with a photo for each were a requirement.',
+  },
+]
+
+// Each finding with the evidence behind it: interviews (25), the competitor analysis, and usability testing (15).
+const findings: Finding[] = [
+  {
+    title: 'Recipes are hard to find, not scarce.',
+    chain: {
+      evidence: [
+        {
+          source: 'Interview',
+          text: 'Participants described recipes as poorly tagged, with vague category boundaries and scattered cooking details.',
+        },
+        {
+          source: 'Competitor analysis',
+          text: 'Kitchen Stories, Yummly, and Tasty hold millions of professional recipes, but their interfaces are cluttered and not personalized.',
+        },
+      ],
+      insight: 'The problem is organization, not volume.',
+      decision: 'Discovery is split into channels (Trending, Recommendation, Followed, Category, Meal plans), and recommendations show one recipe at a time.',
+      open: 'Whether channels help people find a recipe faster than search.',
+    },
+  },
+  {
+    title: 'Cooking is planned around the week.',
+    chain: {
+      evidence: [
+        {
+          source: 'Interview',
+          text: 'Participants struggled to find recipes that fit their routine, and recipes offered no substitutes for missing ingredients.',
+        },
+        {
+          source: 'Usability test',
+          text: 'Testers linked the fridge to fitting recipes to their routine and wasting less food. 85% found it within two minutes; one called it hard to find.',
+        },
+      ],
+      insight: 'Planning starts from the week and from what is already in the kitchen, not from a single recipe.',
+      decision: 'Meal plans show today and every day and fill the shopping list, next to a fridge that records what is on hand.',
+      open: 'Whether the fridge changes what people cook. Testing measured only whether they could find it.',
+    },
+  },
+  {
+    title: 'Cooks want to contribute, not only browse.',
+    chain: {
+      evidence: [
+        {
+          source: 'Interview',
+          text: 'Most platforms gave participants no way to share their own recipes or talk to other cooks.',
+        },
+        {
+          source: 'Competitor analysis',
+          text: 'TikTok and Instagram have the audience and the personalization, but no way to manage a recipe.',
+        },
+        {
+          source: 'Usability test',
+          text: '55% of testers created and shared a recipe within 10 minutes; 38% took 10 to 20.',
+        },
+      ],
+      insight: 'The community already exists on apps that cannot organize a recipe. Sharing has to be easy before one forms here.',
+      decision: 'Cooks publish recipes to their profile, and every recipe carries ratings and feedback from other cooks.',
+      open: 'Whether groups and threads hold up. One tester found them overwhelming, and they were not simplified before v1.0.',
+    },
   },
 ]
 
 export function SizzlePage() {
   return (
-    <div className="site-shell case-study-layout">
+    <div className="site-shell">
       <SiteNav autoHide />
-      <main className="case-page">
+      <main className="case-page editorial-page">
         <header className="case-hero section-shell">
           <Link className="back-link" to="/#works">← Selected works</Link>
           <p className="eyebrow">Food discovery</p>
           <h1>Sizzle</h1>
           <p className="case-lead">
-            A recipe-sharing social platform where people share their own cooking and keep their fridge, meal plans, and
-            recipes in one place.
+            A recipe-sharing platform that keeps a cook's recipes, meal plans, and fridge in one place.
           </p>
           <dl className="case-facts">
             {facts.map((fact) => (
@@ -78,30 +142,26 @@ export function SizzlePage() {
             <div className="case-demo-copy">
               <div className="section-label"><span>/</span><h2 id="demo-title">Interactive demo</h2></div>
               <p>
-                The prototype runs live in the frame. Try the swipe home, the fridge, and how meal plans stay separate
-                from saved recipes, since those are the decisions testing turned on.
+                The prototype runs live in the frame. Open a recipe, a meal plan, and the fridge, the areas testing
+                turned on.
               </p>
-              <p>
-                Scope: front end only. Saving, liking, shopping-list additions, and fridge updates live in memory and
-                reset on reload, because there is no account or backend behind them.
-              </p>
+              <p>Scope: front end only. Saves, likes, the shopping list, and the fridge reset on reload.</p>
             </div>
             <MobileDemoFrame title="Sizzle" url="/demos/sizzle/" canvas="#fef9f0" />
           </div>
         </section>
 
         {/* Problem beside its design goal, with the approach underneath: the same opening as the other cases. */}
-        <section className="case-section section-shell" aria-labelledby="overview-title">
+        <section className="case-section section-shell editorial-section" aria-labelledby="overview-title">
           <div className="section-label"><span>/</span><h2 id="overview-title">Overview</h2></div>
           <div className="case-framing">
             <div>
               <h3 className="case-framing__label">Problem</h3>
               <div className="case-body">
                 <p>
-                  Recipe platforms are built as libraries. They hold enormous professional catalogues, but users cannot
-                  contribute to them, talk to each other, or find what fits their week. The interfaces are cluttered and
-                  the feedback loops are thin. Cooking has an active community, but it lives on social platforms that
-                  have no way to organize a recipe.
+                  Recipe platforms are built as libraries: large professional catalogues that users cannot add to or
+                  discuss, and that do not fit a cook's week. The cooking community lives on social apps instead, which
+                  cannot organize a recipe.
                 </p>
               </div>
             </div>
@@ -109,52 +169,46 @@ export function SizzlePage() {
               <h3 className="case-framing__label">Design goal</h3>
               <div className="case-body">
                 <p className="case-goal">
-                  How might we give home cooks a library’s organization and a social platform’s community in one place,
-                  so they can find, plan, and cook what fits their week?
+                  How might we give home cooks a library’s organization and a social platform’s community, so they can
+                  find, plan, and cook what fits their week?
                 </p>
               </div>
             </div>
           </div>
           <div className="case-framing__approach">
             <h3 className="case-framing__label">Approach</h3>
-            <div className="case-body">
+            <div className="case-body editorial-body">
               <p>
-                Sizzle sits between the two. People share their own recipes with other cooks and get a library's
-                organization along with the social side libraries lack. Design ran from December 2023 to April 2024
-                across three iterations, and a first edition shipped with developers.
+                Sizzle combines the two. Cooks share their own recipes, and the app organizes them alongside meal plans,
+                a shopping list, and a fridge. Design ran over three iterations, and v1.0 shipped with developers.
               </p>
             </div>
           </div>
         </section>
 
-        <section className="case-section section-shell" aria-labelledby="research-title">
+        <section className="case-section section-shell editorial-section" aria-labelledby="research-title">
           <div className="section-label"><span>/</span><h2 id="research-title">Research</h2></div>
-          <div className="case-body">
+          <div className="case-body editorial-body">
             <p>
-              Twenty-five interviews produced three personas and six pain points. A competitor analysis covered direct
-              platforms (Kitchen Stories, Yummly, Tasty) and the indirect ones people cook from (TikTok, Instagram).
-              Fifteen participants later took the designs through two rounds of usability testing.
+              Twenty-five interviews produced three personas and six pain points. A competitor analysis covered recipe
+              platforms (Kitchen Stories, Yummly, Tasty) and the social apps people cook from (TikTok, Instagram).
+              Fifteen participants then tested the designs over two rounds, including timed tasks.
             </p>
-            <ul className="finding-list">
-              <li>
-                <strong>The problem is organization before it is content.</strong> Recipes are poorly tagged and
-                category boundaries are vague, so a large catalogue does not help you find what you want.
-              </li>
-              <li>
-                <strong>Nothing adapts to how a week actually runs.</strong> All three personas asked for this from
-                different directions: family dinners for four, a student budget and one hotplate, a beginner who needs
-                the technique explained.
-              </li>
-              <li>
-                <strong>Ingredients fail silently.</strong> Recipes assume everything is available and offer no
-                substitutions when something is missing, which is where a home cook stops.
-              </li>
-              <li>
-                <strong>Community is the missing feature.</strong> Existing platforms leave users unable to contribute
-                or respond to each other, which is what draws cooking content onto social apps that cannot organize it.
-              </li>
-            </ul>
           </div>
+          <FindingsList findings={findings} />
+        </section>
+
+        <section className="case-section section-shell flow-section flow-section--sizzle" aria-labelledby="flow-title">
+          <div className="flow-section-copy">
+            <div className="section-label"><span>/</span><h2 id="flow-title">Interaction flow</h2></div>
+            <div className="case-body editorial-body">
+              <p>
+                The app's four areas, from the sitemap. Select a scenario to trace its path. Swiping and rating are
+                designed but not interactive in the demo.
+              </p>
+            </div>
+          </div>
+          <FlowPlayer spec={sizzleFlow} focusX={420} />
         </section>
 
         <section className="case-section section-shell" aria-labelledby="walkthrough-title">
@@ -178,54 +232,48 @@ export function SizzlePage() {
           </ol>
         </section>
 
-        <section className="case-section section-shell" aria-labelledby="decisions-title">
+        <section className="case-section section-shell editorial-section" aria-labelledby="decisions-title">
           <div className="section-label"><span>/</span><h2 id="decisions-title">Design decisions</h2></div>
-          <div className="decision-grid">
-            {decisions.map((decision) => (
-              <article className="decision-card" key={decision.title}>
+          <ol className="editorial-decisions">
+            {decisions.map((decision, index) => (
+              <li key={decision.title}>
+                <span className="decision-index">0{index + 1}</span>
                 <h3>{decision.title}</h3>
                 <p>{decision.note}</p>
-              </article>
+              </li>
             ))}
-          </div>
+          </ol>
         </section>
 
-        <section className="case-section section-shell" aria-labelledby="outcome-title">
+        <section className="case-section section-shell editorial-section" aria-labelledby="outcome-title">
           <div className="section-label"><span>/</span><h2 id="outcome-title">Outcome</h2></div>
-          <div className="case-body">
-            <div className="stat-row">
-              <div><strong>25</strong><span>Interviews</span></div>
-              <div><strong>15</strong><span>Usability test participants</span></div>
-              <div><strong>v1.0</strong><span>Shipped with developers</span></div>
-            </div>
+          <div className="stat-row editorial-stat-row">
+            <div><strong>25</strong><span>Interviews</span></div>
+            <div><strong>15</strong><span>Usability test participants</span></div>
+            <div><strong>v1.0</strong><span>Shipped with developers</span></div>
+          </div>
+          <div className="case-body editorial-body">
             <p>
-              Round one was mostly a list of problems: buttons too small to hit reliably, directional copy long enough
-              to crowd the screen, a rating section whose layout and wording raised questions, and icon spacing tight
-              enough to send people to the wrong screen. The swipe home was the exception: testers liked it unprompted.
+              Round one surfaced local problems: small tap targets, long directional copy, an unclear rating section,
+              and cramped icons. The swipe home was the exception; testers liked it unprompted.
             </p>
             <p>
-              Round two confirmed the repairs. Testers saw the repositioned icons and pinch-to-zoom on images as a clear
-              improvement, and tighter UX writing got first-time users oriented faster. Prioritizing the layout and
-              giving the app a consistent logic did more for the experience than any single screen fix, and that version
-              is what shipped.
+              Round two confirmed the fixes. Repositioned icons, pinch-to-zoom on images, and tighter copy got
+              first-time users oriented faster. That version shipped as v1.0.
             </p>
           </div>
         </section>
 
-        <section className="case-section section-shell" aria-labelledby="reflection-title">
+        <section className="case-section section-shell editorial-section" aria-labelledby="reflection-title">
           <div className="section-label"><span>/</span><h2 id="reflection-title">Reflection</h2></div>
-          <div className="case-body">
+          <div className="case-body editorial-body">
             <p>
-              Three notes from the last round did not make it into v1.0. One tester found the threads and groups
-              sections overwhelming, so the community half of the product, the part the premise depends on, read as too
-              complex. Another could not find the fridge, which two other testers had named as their reason to use the
-              app. A third asked why an in-progress meal plan does not appear alongside the saved ones, a fair question
-              I still do not have a good answer to.
+              Three issues did not make v1.0: groups and threads read as overwhelming, one tester could not find the
+              fridge, and in-progress meal plans were missing from the saved view.
             </p>
             <p>
-              Next time I would test whether people can find things before testing whether individual screens work. The
-              round-one fixes were nearly all local (button size, copy length, icon spacing), and the finding that
-              mattered most, about the app's overall logic, arrived last and would have been cheaper to learn first.
+              Next time I would test whether people can find features before testing individual screens. Most round-one
+              fixes were local, and the finding that mattered most, about the app's overall structure, arrived last.
             </p>
           </div>
         </section>

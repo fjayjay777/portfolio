@@ -392,20 +392,20 @@ section[id] { scroll-margin-top: 72px; }
 .stat-row strong { display: block; font: 400 clamp(1.66rem, 3.13vw, 2.21rem)/1 var(--serif); letter-spacing: -.03em; }
 .stat-row span { display: block; margin-top: 8px; color: var(--soft); font: 400 10px/1.4 var(--mono); letter-spacing: .14em; text-transform: uppercase; }
 
-/* Claimly editorial narrative ----------------------------------------- */
-.claimly-page .case-section { max-width: 940px; padding-top: clamp(72px, 8vw, 120px); }
-.claimly-text-section > .section-label,
-.claimly-page .claimly-centered-body { width: 100%; max-width: none; margin-inline: auto; }
-.claimly-page .case-section > .section-label { margin-bottom: 28px; }
-.claimly-findings,
-.claimly-decisions {
+/* Editorial case study (Claimly, Sizzle) ------------------------------ */
+.editorial-page .case-section { max-width: 940px; padding-top: clamp(72px, 8vw, 120px); }
+.editorial-section > .section-label,
+.editorial-page .editorial-body { width: 100%; max-width: none; margin-inline: auto; }
+.editorial-page .case-section > .section-label { margin-bottom: 28px; }
+.case-findings,
+.editorial-decisions {
   max-width: none;
   margin: 30px auto 0;
   padding: 0;
   list-style: none;
 }
-.claimly-findings > li,
-.claimly-decisions > li {
+.case-findings > li,
+.editorial-decisions > li {
   display: grid;
   grid-template-columns: 32px minmax(0, 1fr);
   gap: 8px 14px;
@@ -419,21 +419,21 @@ section[id] { scroll-margin-top: 72px; }
   font: 400 11px/1.5 var(--mono);
   letter-spacing: .14em;
 }
-.claimly-findings h3,
-.claimly-decisions h3 {
+.case-findings h3,
+.editorial-decisions h3 {
   margin: 0;
   font: 400 1.06rem/1.35 var(--serif);
   letter-spacing: -.02em;
 }
-.claimly-findings p,
-.claimly-decisions p {
+.case-findings p,
+.editorial-decisions p {
   grid-column: 2;
   margin: 0;
   color: #35312b;
   font-size: 15px;
   line-height: 1.7;
 }
-.claimly-stat-row { max-width: none; margin: 0 auto 30px; }
+.editorial-stat-row { max-width: none; margin: 0 auto 30px; }
 /* A case study's how-might-we. The page scope outranks each layout's own
    .case-body p sizes. */
 .case-page .case-body .case-goal {
@@ -443,24 +443,24 @@ section[id] { scroll-margin-top: 72px; }
   font: 400 20px/1.5 var(--serif);
   letter-spacing: -.015em;
 }
-.claimly-page .step {
+.editorial-page .step {
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 48px;
 }
-.claimly-page .step-list { gap: clamp(48px, 5vw, 72px); }
+.editorial-page .step-list { gap: clamp(48px, 5vw, 72px); }
 /* The phone sits on the outer edge of its column, so shrinking it widens the
    gutter to the copy instead of the margin. */
-.claimly-page .phone-shot { justify-self: end; width: min(100%, 300px); }
-.claimly-page .step:nth-child(even) .phone-shot { justify-self: start; }
-.claimly-page .phone-shot .mobile-demo__frame { width: 100%; }
-.claimly-page .case-body p,
-.claimly-page .step-copy p,
-.claimly-page .claimly-findings p,
-.claimly-page .claimly-decisions p { font-size: 17px; line-height: 1.75; }
-.claimly-page .case-body p:not(:last-child) { margin-bottom: 24px; }
-.claimly-page .step-copy h3,
-.claimly-page .claimly-findings h3,
-.claimly-page .claimly-decisions h3 { font-size: 20px; line-height: 1.4; }
+.editorial-page .phone-shot { justify-self: end; width: min(100%, 300px); }
+.editorial-page .step:nth-child(even) .phone-shot { justify-self: start; }
+.editorial-page .phone-shot .mobile-demo__frame { width: 100%; }
+.editorial-page .case-body p,
+.editorial-page .step-copy p,
+.editorial-page .case-findings p,
+.editorial-page .editorial-decisions p { font-size: 17px; line-height: 1.75; }
+.editorial-page .case-body p:not(:last-child) { margin-bottom: 24px; }
+.editorial-page .step-copy h3,
+.editorial-page .case-findings h3,
+.editorial-page .editorial-decisions h3 { font-size: 20px; line-height: 1.4; }
 /* Overview: the problem beside its design goal, with the approach underneath. */
 .case-framing {
   display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 40px clamp(32px, 5vw, 56px);
@@ -597,6 +597,7 @@ section[id] { scroll-margin-top: 72px; }
 /* The player sits outside the canvas, so it takes the board colours from here. */
 .flow-section { --flow-line: #3f85ff; }
 .flow-section--medisync { --flow-line: #7f9062; }
+.flow-section--sizzle { --flow-line: #b86a2c; }
 
 .flow-node,
 .flow-diagram .flow-edge,
@@ -632,6 +633,10 @@ section[id] { scroll-margin-top: 72px; }
 /* Medisync's olive, with a darker stop for anything that carries text. */
 .flow-section--medisync .flow-canvas {
   --flow-line: #7f9062; --flow-label: #5b6b40; --flow-strong: #5b6b40; --flow-tint: #eef1e6;
+}
+/* Sizzle's apricot, darkened to brown where it carries text. */
+.flow-section--sizzle .flow-canvas {
+  --flow-line: #b86a2c; --flow-label: #875332; --flow-strong: #875332; --flow-tint: #fde3cf;
 }
 
 .case-end { margin-top: var(--gap); }
@@ -839,10 +844,10 @@ section[id] { scroll-margin-top: 72px; }
   .case-facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .step { grid-template-columns: 1fr; gap: 22px; }
   .step:nth-child(even) .step-copy { order: 0; }
-  .claimly-page .step { grid-template-columns: 1fr; gap: 32px; }
+  .editorial-page .step { grid-template-columns: 1fr; gap: 32px; }
   .case-framing { grid-template-columns: minmax(0, 1fr); }
-  .claimly-page .phone-shot,
-  .claimly-page .step:nth-child(even) .phone-shot { justify-self: center; }
+  .editorial-page .phone-shot,
+  .editorial-page .step:nth-child(even) .phone-shot { justify-self: center; }
   .decision-grid { grid-template-columns: 1fr; }
 }
 @media (max-width: 680px) {
@@ -860,8 +865,8 @@ section[id] { scroll-margin-top: 72px; }
   .project-dialog { padding: 22px; }
   .project-dialog__content { grid-template-columns: 1fr; gap: 26px; }
   .mobile-demo__frame { width: min(100%, 270px); margin-inline: auto; }
-  .claimly-findings,
-  .claimly-decisions { margin-top: 28px; }
+  .case-findings,
+  .editorial-decisions { margin-top: 28px; }
   .me-hero { grid-template-columns: minmax(0, 1fr); padding-top: 32px; }
   .me-portrait { width: min(100%, 240px); }
   .cv-row { grid-template-columns: minmax(0, 1fr); gap: 8px; }
@@ -912,13 +917,13 @@ section[id] { scroll-margin-top: 72px; }
 }
 .case-study-layout .case-section { padding-top: clamp(64px, 8vw, 96px); }
 .case-study-layout .case-section .section-label { margin-bottom: 28px; }
-.claimly-page .case-demo .section-label { margin-bottom: 28px; }
+.editorial-page .case-demo .section-label { margin-bottom: 28px; }
 .case-study-layout .case-section .section-label h2 {
   font: 500 18px/1.3 Inter, sans-serif;
   letter-spacing: -.025em;
   text-transform: none;
 }
-.claimly-page .case-demo .section-label h2 {
+.editorial-page .case-demo .section-label h2 {
   font: 500 20px/1.3 Inter, sans-serif;
   letter-spacing: -.025em;
   text-transform: none;
@@ -931,12 +936,12 @@ section[id] { scroll-margin-top: 72px; }
   font-size: 16px;
   line-height: 1.65;
 }
-.claimly-page .case-demo-copy p { font-size: 17px; line-height: 1.7; }
+.editorial-page .case-demo-copy p { font-size: 17px; line-height: 1.7; }
 .case-study-layout .case-body p { margin-bottom: 22px; }
-.claimly-page .case-demo-copy p { margin-bottom: 22px; }
+.editorial-page .case-demo-copy p { margin-bottom: 22px; }
 .case-study-layout .finding-list { gap: 20px; margin-top: 30px; }
 .case-study-layout .finding-list li { padding-top: 18px; }
-.claimly-page .case-demo-copy p { max-width: 60ch; }
+.editorial-page .case-demo-copy p { max-width: 60ch; }
 .case-study-layout .step-list { gap: clamp(64px, 8vw, 104px); }
 .case-study-layout .step {
   grid-template-columns: minmax(0, 1fr) minmax(0, 280px);
@@ -945,7 +950,8 @@ section[id] { scroll-margin-top: 72px; }
 .case-study-layout .step:nth-child(even) { grid-template-columns: minmax(0, 280px) minmax(0, 1fr); }
 .case-study-layout .step-copy { min-width: 0; }
 .case-study-layout .step-copy h3,
-.case-study-layout .decision-card h3 {
+.case-study-layout .decision-card h3,
+.case-study-layout .case-findings h3 {
   font: 500 18px/1.35 Inter, sans-serif;
   letter-spacing: -.025em;
 }
@@ -1077,7 +1083,7 @@ section[id] { scroll-margin-top: 72px; }
    height is what sizes the render. */
 .nighty-model { border-block: 1px solid var(--rule); background: var(--raised); padding: var(--gap) 0; }
 .nighty-model-inner { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.9fr); gap: clamp(32px, 5vw, 64px); align-items: center; }
-.nighty-copy p, .nighty-intro, .nighty-note p { max-width: 44ch; margin: 0 0 16px; color: #35312b; font-size: 17px; line-height: 1.65; }
+.nighty-copy p, .nighty-intro { max-width: 44ch; margin: 0 0 16px; color: #35312b; font-size: 17px; line-height: 1.65; }
 .nighty-copy .nighty-hint { margin: 24px 0 0; color: var(--soft); font: 400 12px/1.5 var(--mono); letter-spacing: .08em; text-transform: uppercase; }
 .nighty-stage { position: relative; min-width: 0; }
 .nighty-stage--hero { height: clamp(320px, 42vw, 560px); }
@@ -1089,10 +1095,13 @@ section[id] { scroll-margin-top: 72px; }
   color: var(--soft); font: 400 12px/1.6 var(--mono); letter-spacing: .06em; text-align: center;
 }
 
-.nighty-overview { padding-top: var(--gap); }
+.nighty-overview,
+.nighty-section { padding-top: var(--gap); }
 /* Same columns as the exploded grid below, so the goal lines up over the parts list. */
 .nighty-overview .case-framing { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); column-gap: clamp(32px, 4vw, 56px); }
-.nighty-overview .case-body p { font-size: 17px; line-height: 1.7; }
+.nighty-overview .case-body p,
+.nighty-section .case-body p,
+.nighty-section .decision-card p { font-size: 17px; line-height: 1.7; }
 .nighty-exploded { padding-top: var(--gap); }
 .nighty-exploded-grid { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: clamp(32px, 4vw, 56px); align-items: start; }
 /* Stays in view while the parts list scrolls past it. */
@@ -1142,8 +1151,6 @@ section[id] { scroll-margin-top: 72px; }
 .nighty-part[aria-pressed='true'] .nighty-part__name { color: var(--accent); }
 .nighty-part__role { color: var(--soft); font: 400 11px/1.6 var(--mono); letter-spacing: .06em; text-align: right; text-transform: uppercase; }
 .nighty-part__description { grid-column: 2 / -1; color: #4a443d; font-size: 15px; line-height: 1.6; }
-.nighty-note { margin-top: 32px; border-top: 1px solid var(--rule); padding-top: 20px; }
-.nighty-note h3 { margin: 0 0 10px; font: 500 16px/1.4 Inter, sans-serif; }
 
 @media (max-width: 900px) {
   .nighty-model-inner, .nighty-exploded-grid, .nighty-overview .case-framing { grid-template-columns: minmax(0, 1fr); }

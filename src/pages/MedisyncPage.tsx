@@ -3,6 +3,7 @@ import searchShot from '../assets/medisync/md-01-search.jpg'
 import pricesShot from '../assets/medisync/md-02-prices.jpg'
 import confirmShot from '../assets/medisync/md-03-confirm.jpg'
 import { FlowCanvas } from '../components/FlowCanvas'
+import { type Finding, FindingsList } from '../components/Findings'
 import { FlowPlayer } from '../components/FlowPlayer'
 import { medisyncFlow } from '../components/MedisyncFlow'
 import { MedisyncIA, medisyncIASize } from '../components/MedisyncIA'
@@ -51,6 +52,72 @@ const decisions = [
   {
     title: 'The patient releases the data',
     note: 'In the wearable concept, an abnormal heart-rate reading alerts the patient first and asks permission before anything reaches the doctor. Testing showed the tension: people asked for remote monitoring of family, then named privacy as the reason they might never switch it on.',
+  },
+]
+
+// Each finding with the evidence behind it: interviews (15), the survey (70), and usability testing.
+const findings: Finding[] = [
+  {
+    title: 'Records live in too many places.',
+    chain: {
+      evidence: [
+        {
+          source: 'Interview',
+          text: '9 of 15 interviewees receive reports on paper and online but cannot keep them in one place, especially when they visit different hospitals.',
+        },
+        {
+          source: 'Interview',
+          text: '8 of 15 described managing records as chaotic: a separate account for each hospital and platform, plus paper copies.',
+        },
+        {
+          source: 'Survey',
+          text: '56 of 70 respondents reported the same difficulty keeping paper and electronic reports in one place.',
+        },
+      ],
+      insight: 'Records are not missing; they are fragmented. Each clinic and account holds part of the history, and the patient is the only link between them.',
+      decision: 'One shared record travels with each booking, and Files gathers lab results, visit summaries, forms, and insurance in one place.',
+      open: 'Whether clinics would contribute to a shared record, and whether patients can bring existing paper and portal records into it.',
+    },
+  },
+  {
+    title: 'Privacy is the barrier to sharing records.',
+    chain: {
+      evidence: [
+        {
+          source: 'Survey',
+          text: 'At least 59 of 70 respondents raised privacy concerns about sharing health records.',
+        },
+        {
+          source: 'Interview',
+          text: 'Retired clinicians and a medical student named privacy and regulations such as HIPAA as the main difficulty with referral records.',
+        },
+        {
+          source: 'Usability test',
+          text: 'Participants asked for remote monitoring of family members, then named privacy as a reason they might never switch it on.',
+        },
+      ],
+      insight: 'Records will move between clinics only if sharing is an explicit decision the patient makes, not a default the system assumes.',
+      decision: 'The patient releases the data: an abnormal reading alerts the patient first, and nothing reaches the doctor without consent. Member IDs stay masked when a booking attaches insurance.',
+      open: 'Whether patient-controlled sharing meets regulatory requirements such as HIPAA in practice.',
+    },
+  },
+  {
+    title: 'Care continues between visits and across a family.',
+    chain: {
+      evidence: [
+        {
+          source: 'Interview',
+          text: 'Interviewees included people managing chronic conditions and people coordinating care for family members.',
+        },
+        {
+          source: 'Usability test',
+          text: 'Family health monitoring was the feature participants asked to keep.',
+        },
+      ],
+      insight: 'A record that updates only on appointment day arrives too late for a chronic condition, and one account per person does not fit how families manage care.',
+      decision: 'A watch widget logs heart rate between visits, and family profiles let one account switch between members. Family profiles are designed in Figma but not built into the demo.',
+      open: 'Whether continuous data changes how patients manage a condition between visits.',
+    },
   },
 ]
 
@@ -144,27 +211,16 @@ export function MedisyncPage() {
           <div className="section-label"><span>/</span><h2 id="research-title">Research</h2></div>
           <div className="case-body">
             <p>
-              Market research and interviews produced three personas: a patient managing a chronic condition, a parent
-              tracking several children's records, and a nurse handling referrals. After the low-fidelity prototypes, 30
-              participants tested the work, first through questionnaires on the mobile app and the office system, then
-              in moderated sessions that measured task completion and time on task alongside what people said while
-              using it.
+              I interviewed 15 people and surveyed 70. Interviewees included patients managing chronic conditions,
+              family caregivers, and international students and immigrants, and on the provider side, retired
+              clinicians and a medical student. Synthesis produced three personas: a patient managing a chronic
+              condition, a parent tracking several children's records, and a nurse handling referrals. After the
+              low-fidelity prototypes, 30 participants tested the work, first through questionnaires on the mobile app
+              and the office system, then in moderated sessions that measured task completion and time on task
+              alongside what people said while using it.
             </p>
-            <ul className="finding-list">
-              <li>
-                <strong>Chronic conditions need daily visibility.</strong> For the patient persona, a record seen only
-                on appointment day, in a waiting room, arrives too late to act on. The wearable exists for this.
-              </li>
-              <li>
-                <strong>Records are disorganized across family members as well as clinics.</strong> The parent persona
-                cannot keep several children's histories straight, so the family is the unit of organization.
-              </li>
-              <li>
-                <strong>Providers lose time searching for records.</strong> The nurse persona described hunting for
-                referral patients' historical records as the main friction in her day.
-              </li>
-            </ul>
           </div>
+          <FindingsList findings={findings} />
         </section>
 
         <section className="case-section section-shell flow-section flow-section--medisync" aria-labelledby="ia-title">

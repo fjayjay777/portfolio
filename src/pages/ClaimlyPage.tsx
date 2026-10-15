@@ -3,6 +3,7 @@ import intakeShot from '../assets/claimly/01-intake.png'
 import reportShot from '../assets/claimly/02-report.png'
 import appealShot from '../assets/claimly/03-appeal.png'
 import { claimlyFlow } from '../components/ClaimlyFlow'
+import { type Finding, FindingsList } from '../components/Findings'
 import { FlowPlayer } from '../components/FlowPlayer'
 import { MobileDemoFrame } from '../components/MobileDemoFrame'
 import { PhoneShot } from '../components/PhoneShot'
@@ -51,16 +52,6 @@ const decisions = [
     note: 'Claimly never says you were overcharged. It reports one potential mistake, says in-network pricing may not have been applied, and suggests what to ask. A confident wrong answer would cost the user their credibility on the phone, so the hedging is deliberate.',
   },
 ]
-
-/** How a finding was reached: what was observed, what it means, what changed, and what is still unproven. */
-type EvidenceChain = {
-  evidence: { source: string; text: string }[]
-  insight: string
-  decision: string
-  open: string
-}
-
-type Finding = { title: string; chain: EvidenceChain }
 
 const findings: Finding[] = [
   {
@@ -152,43 +143,11 @@ const aiOpen = [
   },
 ]
 
-function EvidenceChainList({ chain }: { chain: EvidenceChain }) {
-  return (
-    <dl className="evidence-chain" aria-label="Evidence chain">
-      <div className="evidence-chain__step">
-        <dt>Evidence</dt>
-        <dd>
-          <ul>
-            {chain.evidence.map((item) => (
-              <li key={item.text}>
-                <span className="evidence-chain__source">{item.source}</span>
-                {item.text}
-              </li>
-            ))}
-          </ul>
-        </dd>
-      </div>
-      <div className="evidence-chain__step">
-        <dt>Insight</dt>
-        <dd>{chain.insight}</dd>
-      </div>
-      <div className="evidence-chain__step">
-        <dt>Product decision</dt>
-        <dd>{chain.decision}</dd>
-      </div>
-      <div className="evidence-chain__step evidence-chain__step--open">
-        <dt>Not yet validated</dt>
-        <dd>{chain.open}</dd>
-      </div>
-    </dl>
-  )
-}
-
 export function ClaimlyPage() {
   return (
     <div className="site-shell">
       <SiteNav autoHide />
-      <main className="case-page claimly-page">
+      <main className="case-page editorial-page">
         <header className="case-hero section-shell">
           <Link className="back-link" to="/#works">← Selected works</Link>
           <p className="eyebrow">Financial clarity</p>
@@ -228,7 +187,7 @@ export function ClaimlyPage() {
 
         {/* Problem, goal, and approach in one section: the goal answers the problem beside it, and the
             approach underneath names the four functions the later sections refer back to. */}
-        <section className="case-section section-shell claimly-text-section" aria-labelledby="overview-title">
+        <section className="case-section section-shell editorial-section" aria-labelledby="overview-title">
           <div className="section-label"><span>/</span><h2 id="overview-title">Overview</h2></div>
           <div className="case-framing">
             <div>
@@ -258,7 +217,7 @@ export function ClaimlyPage() {
           </div>
           <div className="case-framing__approach">
             <h3 className="case-framing__label">Approach</h3>
-            <div className="case-body claimly-centered-body">
+            <div className="case-body editorial-body">
               <p>
                 Claimly addresses the goal through four core functions: bill analysis, EOB comparison, code explanation,
                 and appeal support. It reads the bill, compares it with the EOB, marks the lines that do not match,
@@ -268,30 +227,22 @@ export function ClaimlyPage() {
           </div>
         </section>
 
-        <section className="case-section section-shell claimly-text-section" aria-labelledby="research-title">
+        <section className="case-section section-shell editorial-section" aria-labelledby="research-title">
           <div className="section-label"><span>/</span><h2 id="research-title">Research</h2></div>
-          <div className="case-body claimly-centered-body">
+          <div className="case-body editorial-body">
             <p>
               Before drawing a screen, I spoke with people about what they actually did with a medical bill they could
               not understand. Across 15+ survey responses and 4+ follow-up interviews, the problem extended beyond
               comprehension: people also lacked a safe next move.
             </p>
           </div>
-          <ol className="claimly-findings" aria-label="Research findings">
-            {findings.map((finding, index) => (
-              <li key={finding.title}>
-                <span className="finding-index">0{index + 1}</span>
-                <h3>{finding.title}</h3>
-                <EvidenceChainList chain={finding.chain} />
-              </li>
-            ))}
-          </ol>
+          <FindingsList findings={findings} />
         </section>
 
         <section className="case-section section-shell flow-section" aria-labelledby="flow-title">
           <div className="flow-section-copy">
             <div className="section-label"><span>/</span><h2 id="flow-title">Interaction flow</h2></div>
-            <div className="case-body claimly-centered-body">
+            <div className="case-body editorial-body">
               <p>
                 The full product flow, from bill intake to contacting the insurer. Select a scenario to trace its path.
                 The demo above covers the main path; the other branches are not in the prototype.
@@ -322,9 +273,9 @@ export function ClaimlyPage() {
           </ol>
         </section>
 
-        <section className="case-section section-shell claimly-text-section" aria-labelledby="decisions-title">
+        <section className="case-section section-shell editorial-section" aria-labelledby="decisions-title">
           <div className="section-label"><span>/</span><h2 id="decisions-title">Design decisions</h2></div>
-          <ol className="claimly-decisions">
+          <ol className="editorial-decisions">
             {decisions.map((decision, index) => (
               <li key={decision.title}>
                 <span className="decision-index">0{index + 1}</span>
@@ -335,9 +286,9 @@ export function ClaimlyPage() {
           </ol>
         </section>
 
-        <section className="case-section section-shell claimly-text-section" aria-labelledby="ai-title">
+        <section className="case-section section-shell editorial-section" aria-labelledby="ai-title">
           <div className="section-label"><span>/</span><h2 id="ai-title">AI design considerations</h2></div>
-          <div className="case-body claimly-centered-body">
+          <div className="case-body editorial-body">
             <p>
               Claimly applies AI to extraction, comparison, explanation, and drafting. Because errors carry direct
               financial consequences for users, each function keeps a human in the loop: the AI generates, and the user
@@ -378,14 +329,14 @@ export function ClaimlyPage() {
           </div>
         </section>
 
-        <section className="case-section section-shell claimly-text-section" aria-labelledby="outcome-title">
+        <section className="case-section section-shell editorial-section" aria-labelledby="outcome-title">
           <div className="section-label"><span>/</span><h2 id="outcome-title">Outcome</h2></div>
-          <div className="stat-row claimly-stat-row">
+          <div className="stat-row editorial-stat-row">
             <div><strong>15+</strong><span>Survey responses</span></div>
             <div><strong>4+</strong><span>Interviews</span></div>
             <div><strong>4</strong><span>Core functions</span></div>
           </div>
-          <div className="case-body claimly-centered-body">
+          <div className="case-body editorial-body">
             <p>
               Claimly went from problem framing to a working interface during the University of Michigan Tech
               Innovation Jam, between October and mid-November 2025. The concept, the design system, and the prototype
@@ -400,9 +351,9 @@ export function ClaimlyPage() {
           </div>
         </section>
 
-        <section className="case-section section-shell claimly-text-section" aria-labelledby="reflection-title">
+        <section className="case-section section-shell editorial-section" aria-labelledby="reflection-title">
           <div className="section-label"><span>/</span><h2 id="reflection-title">Reflection</h2></div>
-          <div className="case-body claimly-centered-body">
+          <div className="case-body editorial-body">
             <p>
               What surprised me was that many people already believed something was wrong, knew an appeal was possible,
               and paid anyway. The complexity of the process is what stopped them. Two of four interviewees had
