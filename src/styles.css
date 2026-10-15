@@ -1011,13 +1011,8 @@ section[id] { scroll-margin-top: 72px; }
 }
 
 /* Homepage: flat and minimal ------------------------------------------- */
-/* Scoped to the homepage. Flat colour, hairlines and type carry the page:
-   no gradients, glows, shadows or lifting cards. The accent tokens cascade
-   into the nav, so hovers pick up the warm terracotta too. */
-.portfolio-home {
-  --accent: #b4532a;
-  --accent-decoration: #b4532a;
-}
+/* Scoped to the homepage. Flat colour, hairlines and type carry the page,
+   in the same blue accent as the rest of the site. */
 
 /* Hero: typographic and compact rather than a full first screen */
 .portfolio-home .hero {
@@ -1033,34 +1028,58 @@ section[id] { scroll-margin-top: 72px; }
 .portfolio-home .hero-mark--lead { top: calc(clamp(88px, 12vw, 152px) + 12px); right: 0; width: clamp(52px, 5.5vw, 76px); color: var(--accent); stroke-width: 3; }
 .portfolio-home .hero-mark--echo, .portfolio-home .hero-mark--accent { display: none; }
 
-/* Works: one project per row, a flat colour panel beside its text */
+/* Works: a 2×2 grid of cards, each a panel in its project's colour with the
+   cover on top and the text beneath. */
 .portfolio-home .works { padding-top: 0; padding-bottom: clamp(80px, 10vw, 128px); }
 .portfolio-home .section-label { margin-bottom: 28px; padding-bottom: 14px; border-bottom: 1px solid var(--rule); }
-.portfolio-home .work-list { gap: clamp(48px, 6vw, 80px); }
+.portfolio-home .work-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(20px, 2.4vw, 32px); }
 .work-tile {
   --project-surface: #e9eff8;
-  display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); align-items: center; gap: clamp(28px, 4vw, 56px);
-  border: 0; padding: 0; background: none;
+  display: flex; flex-direction: column;
+  overflow: hidden; border: 0; border-radius: 18px; padding: 0;
+  background: var(--project-surface);
   color: var(--ink); text-align: left; text-decoration: none;
+  transition: transform .4s var(--ease), box-shadow .4s var(--ease);
 }
 .work-tile--medisync { --project-surface: #eef1e6; }
 .work-tile--sizzle { --project-surface: #fbe9da; }
-.work-tile--nighty { --project-surface: #e7eaf2; }
-.work-preview { position: relative; display: block; height: clamp(300px, 30vw, 380px); overflow: hidden; border-radius: 14px; background: var(--project-surface); }
+/* The same warm grey as the model band on the Nighty case page; the turntable clip is rendered on it. */
+.work-tile--nighty { --project-surface: var(--raised); }
+.work-tile:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 24px 48px -28px rgb(26 24 21 / .4), 0 0 0 1.5px color-mix(in srgb, var(--chip) 45%, transparent);
+}
+.work-tile:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+/* Same proportions as the cover art, so it fills the panel edge to edge. */
+.work-preview { position: relative; display: block; aspect-ratio: 560 / 330; overflow: hidden; }
 /* Branded concept art; the SVG's default "meet" scaling keeps it uncropped. */
-.project-cover { position: absolute; inset: 16px 12px; width: calc(100% - 24px); height: calc(100% - 32px); transition: transform .5s var(--ease); }
-.work-tile:hover .project-cover { transform: scale(1.02); }
+.project-cover { position: absolute; inset: 18px 14px 6px; width: calc(100% - 28px); height: calc(100% - 24px); transition: transform .6s var(--ease); }
+.work-tile:hover .project-cover { transform: translateY(-6px) scale(1.04); }
+/* The turntable clip is rendered on the card colour, so it fills the panel edge to edge.
+   Browsers draw video colours a shade off, so its lower edge fades into the card
+   rather than meeting it at a line. */
+.project-cover--video {
+  inset: 0; width: 100%; height: 100%; object-fit: cover;
+  -webkit-mask-image: linear-gradient(to bottom, #000 86%, transparent);
+  mask-image: linear-gradient(to bottom, #000 86%, transparent);
+}
+.work-tile:hover .project-cover--video { transform: scale(1.03); }
 
-.work-info { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; }
-/* The panel colour already tells the projects apart. */
-.portfolio-home .work-index, .portfolio-home .work-chip { display: none; }
-.portfolio-home .work-name { font-size: clamp(26px, 2.39vw, 33px); line-height: 1.05; letter-spacing: -.025em; }
-.portfolio-home .work-tile:hover .work-name { color: var(--ink); }
+.work-info {
+  display: flex; flex: 1; flex-direction: column; align-items: flex-start; gap: 10px;
+  padding: 6px clamp(22px, 2.4vw, 30px) clamp(24px, 2.6vw, 32px);
+}
 .portfolio-home .work-meta { gap: 10px; align-items: center; }
+.portfolio-home .work-index { color: var(--soft); font: 400 12px/1 var(--mono); letter-spacing: .08em; }
+.portfolio-home .work-chip { width: 8px; height: 8px; background: var(--chip); transition: transform .3s var(--ease); }
+.portfolio-home .work-tile:hover .work-chip { transform: scale(1.5); }
 .portfolio-home .work-category { font-size: 12px; letter-spacing: .06em; }
-.portfolio-home .work-tag { padding: 4px 8px; font-size: 11px; letter-spacing: .04em; }
-.work-summary { max-width: 40ch; color: #625b52; font-size: 15px; line-height: 1.6; }
-.work-cta { display: inline-flex; align-items: center; gap: 8px; margin-top: 4px; font-size: 13px; font-weight: 500; transition: color .25s var(--ease); }
+.portfolio-home .work-tag { border-color: rgb(26 24 21 / .14); padding: 4px 8px; font-size: 11px; letter-spacing: .04em; }
+.portfolio-home .work-name { margin-top: 4px; font-size: clamp(28px, 2.6vw, 36px); line-height: 1.05; letter-spacing: -.025em; }
+.portfolio-home .work-tile:hover .work-name { color: var(--ink); }
+.work-summary { max-width: 46ch; color: #574f46; font-size: 15px; line-height: 1.6; }
+/* Pinned to the bottom, so the links line up across a row of cards. */
+.work-cta { display: inline-flex; align-items: center; gap: 8px; margin-top: auto; padding-top: 8px; font-size: 13px; font-weight: 500; transition: color .25s var(--ease); }
 .portfolio-home .work-arrow { color: inherit; font-size: 15px; }
 .portfolio-home .work-tile:hover .work-cta { color: var(--accent); }
 .portfolio-home .work-tile:hover .work-arrow { color: var(--accent); transform: translate(3px, -3px); }
@@ -1076,8 +1095,6 @@ section[id] { scroll-margin-top: 72px; }
 .portfolio-home .footer-note { grid-column: 1 / -1; margin-top: 54px; font-size: 12px; letter-spacing: .04em; }
 
 @media (max-width: 900px) {
-  .work-tile { grid-template-columns: minmax(0, 1fr); gap: 22px; }
-  .work-preview { height: 300px; }
   .portfolio-home .contact-inner { grid-template-columns: minmax(0, 1fr); }
 }
 @media (max-width: 680px) {
@@ -1087,8 +1104,8 @@ section[id] { scroll-margin-top: 72px; }
   .portfolio-home .hero-detail { margin-top: 40px; }
   .portfolio-home .hero-mark--lead { top: 78px; width: 40px; }
   .portfolio-home .works { padding-bottom: 64px; }
-  .portfolio-home .work-list { gap: 44px; }
-  .work-preview { height: 240px; border-radius: 12px; }
+  .portfolio-home .work-list { grid-template-columns: minmax(0, 1fr); gap: 20px; }
+  .work-tile { border-radius: 14px; }
   .portfolio-home .work-name { font-size: 28px; }
   .portfolio-home .contact { padding: 48px 0 28px; }
   .portfolio-home .contact-list a { grid-template-columns: minmax(0, 1fr); gap: 8px; }

@@ -31,3 +31,25 @@ test('lists Nighty as the fourth work', () => {
   expect(screen.getByRole('link', { name: 'Nighty case study' })).toHaveAttribute('href', '/work/nighty')
   expect(screen.getByText('04', { selector: '.count' })).toBeInTheDocument()
 })
+
+test('shows the four works as cards, in order, each with its index and category', () => {
+  Element.prototype.scrollIntoView = vi.fn()
+
+  render(
+    <MemoryRouter>
+      <HomePage />
+    </MemoryRouter>,
+  )
+
+  const cards = screen.getAllByRole('link', { name: /case study$/ })
+  expect(cards.map((card) => card.getAttribute('aria-label'))).toEqual([
+    'Claimly case study',
+    'Medisync case study',
+    'Sizzle case study',
+    'Nighty case study',
+  ])
+  expect(cards[0]).toHaveTextContent('01')
+  expect(cards[0]).toHaveTextContent('Financial clarity')
+  expect(cards[3]).toHaveTextContent('04')
+  expect(cards[3]).toHaveTextContent('Sleep technology')
+})

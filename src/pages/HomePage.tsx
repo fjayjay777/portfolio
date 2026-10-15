@@ -86,15 +86,15 @@ export function HomePage() {
                     <Cover />
                   </span>
                   <span className="work-info">
-                  <span className="work-index">0{index + 1}</span>
-                  <span className="work-chip" style={{ '--chip': project.chip } as React.CSSProperties} />
-                  <span className="work-name">{project.name}</span>
-                  <span className="work-meta">
-                    <span className="work-category">{project.category}</span>
-                    {project.demo && <span className="work-tag">Interactive demo</span>}
-                  </span>
-                  <span className="work-summary">{project.summary}</span>
-                  <span className="work-cta">Explore case study <span className="work-arrow" aria-hidden="true">↗</span></span>
+                    <span className="work-meta">
+                      <span className="work-index">0{index + 1}</span>
+                      <span className="work-chip" aria-hidden="true" />
+                      <span className="work-category">{project.category}</span>
+                      {project.demo && <span className="work-tag">Interactive demo</span>}
+                    </span>
+                    <span className="work-name">{project.name}</span>
+                    <span className="work-summary">{project.summary}</span>
+                    <span className="work-cta">Explore case study <span className="work-arrow" aria-hidden="true">↗</span></span>
                   </span>
                 </>
               )
@@ -103,6 +103,7 @@ export function HomePage() {
                 <Link
                   className={`work-tile work-tile--${project.name.toLowerCase()}`}
                   key={project.name}
+                  style={{ '--chip': project.chip } as React.CSSProperties}
                   to={project.caseStudy}
                   aria-label={`${project.name} case study`}
                 >
@@ -112,6 +113,7 @@ export function HomePage() {
                 <button
                   className={`work-tile work-tile--${project.name.toLowerCase()}`}
                   key={project.name}
+                  style={{ '--chip': project.chip } as React.CSSProperties}
                   type="button"
                   aria-label={`${project.name} project`}
                   onClick={(event) => openProject(project, event.currentTarget)}
