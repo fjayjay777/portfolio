@@ -1,4 +1,4 @@
-import { cleanup, render, screen } from '@testing-library/react'
+import { cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { afterEach, expect, test, vi } from 'vitest'
 import { HomePage } from './HomePage'
@@ -52,4 +52,24 @@ test('shows the four works as cards, in order, each with its index and category'
   expect(cards[0]).toHaveTextContent('Financial clarity')
   expect(cards[3]).toHaveTextContent('04')
   expect(cards[3]).toHaveTextContent('Sleep technology')
+})
+
+test('copies the email from the contact section and confirms it', async () => {
+  Element.prototype.scrollIntoView = vi.fn()
+  const writeText = vi.fn(() => Promise.resolve())
+  Object.defineProperty(navigator, 'clipboard', { configurable: true, value: { writeText } })
+
+  render(
+    <MemoryRouter>
+      <HomePage />
+    </MemoryRouter>,
+  )
+
+  // The heading is split into letters for its animation but still reads as one name.
+  expect(screen.getByRole('heading', { name: 'Let’s Talk' })).toBeInTheDocument()
+  expect(screen.getByText(/Local time in Ann Arbor/)).toBeInTheDocument()
+
+  fireEvent.click(screen.getByRole('button', { name: 'Copy' }))
+  expect(writeText).toHaveBeenCalledWith('huangjn35@gmail.com')
+  expect(await screen.findByRole('button', { name: 'Copied ✓' })).toHaveClass('is-copied')
 })

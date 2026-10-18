@@ -298,6 +298,37 @@ test('traces Sizzle scenarios across the app areas', async () => {
   expect(screen.getByText('04 / 04 · Added to fridge')).toBeInTheDocument()
 })
 
+test('opens the phone menu, lists every section, and closes on Escape or a pick', async () => {
+  const user = userEvent.setup()
+  renderAt('/work/sizzle')
+
+  const toggle = screen.getByRole('button', { name: 'Open menu' })
+  expect(toggle).toHaveAttribute('aria-expanded', 'false')
+  expect(screen.queryByRole('navigation', { name: 'Menu' })).not.toBeInTheDocument()
+
+  await user.click(toggle)
+  const menu = screen.getByRole('navigation', { name: 'Menu' })
+  expect(within(menu).getAllByRole('link').map((link) => link.textContent)).toEqual([
+    '01Works↗',
+    '02Me↗',
+    '03Playground↗',
+    '04Contact↗',
+  ])
+  expect(screen.getByRole('button', { name: 'Close menu' })).toHaveAttribute('aria-expanded', 'true')
+  // The page behind the menu does not scroll.
+  expect(document.body.style.overflow).toBe('hidden')
+
+  await user.keyboard('{Escape}')
+  expect(screen.queryByRole('navigation', { name: 'Menu' })).not.toBeInTheDocument()
+  expect(screen.getByRole('button', { name: 'Open menu' })).toHaveFocus()
+  expect(document.body.style.overflow).toBe('')
+
+  await user.click(screen.getByRole('button', { name: 'Open menu' }))
+  await user.click(within(screen.getByRole('navigation', { name: 'Menu' })).getByRole('link', { name: /Me/ }))
+  expect(await screen.findByRole('heading', { level: 1 })).toBeInTheDocument()
+  expect(screen.queryByRole('navigation', { name: 'Menu' })).not.toBeInTheDocument()
+})
+
 test('slides the case study nav away on scroll down and back on scroll up', () => {
   renderAt('/work/sizzle')
   const header = screen.getByRole('navigation', { name: 'Primary navigation' }).closest('header') as HTMLElement

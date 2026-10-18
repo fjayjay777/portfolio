@@ -25,6 +25,22 @@
   --ease: cubic-bezier(.22, .61, .36, 1);
 }
 
+/* The dark surfaces (phone menu, homepage contact) redefine the tokens, so
+   everything inside that reads var(--ink), var(--rule) and so on follows. */
+.surface-dark {
+  /* A muted slate drawn from the site blue: deep enough for cream text, lighter than charcoal. */
+  --ground: #3a4550;
+  --raised: #44505c;
+  --ink: #f3efe8;
+  --soft: #bfc6cc;
+  --rule: rgb(243 239 232 / .16);
+  /* The site blue, lightened to hold its contrast on slate. */
+  --accent: #b9d0e4;
+  --accent-decoration: #b9d0e4;
+  background: var(--ground);
+  color: var(--ink);
+}
+
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
 body { margin: 0; min-width: 0; background: var(--ground); }
@@ -72,6 +88,72 @@ main { flex: 1; }
 .nav-links a:hover { color: var(--ink); }
 .nav-links a:hover::after, .nav-links a[aria-current='page']::after { transform: scaleX(1); }
 .nav-links a[aria-current='page'] { color: var(--ink); }
+
+/* Phone menu ------------------------------------------------------------ */
+/* Two bars that cross into an X; shown only where the inline links fold away. */
+.nav-toggle {
+  position: relative; display: none; width: 44px; height: 44px;
+  margin-right: -10px; border: 0; padding: 0; background: none; color: var(--ink);
+}
+.nav-toggle__bar {
+  position: absolute; left: 11px; width: 22px; height: 1.5px; border-radius: 1px; background: currentColor;
+  transition: transform .3s var(--ease), top .3s var(--ease);
+}
+.nav-toggle__bar:first-child { top: 17px; }
+.nav-toggle__bar:last-child { top: 25px; }
+.nav-toggle[aria-expanded='true'] .nav-toggle__bar { top: 21px; }
+.nav-toggle[aria-expanded='true'] .nav-toggle__bar:first-child { transform: rotate(45deg); }
+.nav-toggle[aria-expanded='true'] .nav-toggle__bar:last-child { transform: rotate(-45deg); }
+
+/* A full-screen list under the bar: numbered rows in the case studies' rhythm. */
+.nav-menu {
+  position: fixed; z-index: 3; inset: var(--nav-height) 0 0;
+  display: flex; flex-direction: column; justify-content: space-between;
+  overflow-y: auto; padding: 12px 20px max(28px, env(safe-area-inset-bottom));
+  background: var(--ground);
+  animation: nav-menu-in .3s var(--ease);
+}
+.nav-menu__list { margin: 0; padding: 0; list-style: none; }
+.nav-menu__list li {
+  border-bottom: 1px solid var(--rule);
+  animation: nav-item-in .5s var(--ease) both;
+  animation-delay: calc(var(--i) * 60ms + 60ms);
+}
+.nav-menu__link {
+  display: grid; grid-template-columns: 36px minmax(0, 1fr) auto; align-items: baseline;
+  padding: 22px 0; color: var(--ink); text-decoration: none;
+}
+.nav-menu__index { color: var(--soft); font: 400 12px/1 var(--mono); letter-spacing: .08em; }
+.nav-menu__label { font: 400 clamp(34px, 10vw, 44px)/1 var(--serif); letter-spacing: -.03em; }
+.nav-menu__arrow { color: var(--soft); font-size: 18px; transition: color .2s var(--ease), transform .25s var(--ease); }
+.nav-menu__link:hover .nav-menu__arrow,
+.nav-menu__link:focus-visible .nav-menu__arrow { color: var(--accent); transform: translate(3px, -3px); }
+.nav-menu__link[aria-current='page'] .nav-menu__index,
+.nav-menu__link[aria-current='page'] .nav-menu__arrow { color: var(--accent); }
+.nav-menu__email {
+  margin-top: 40px; color: var(--soft); font: 400 12px/1.5 var(--mono); letter-spacing: .06em; text-decoration: none;
+  animation: nav-item-in .5s var(--ease) .36s both;
+}
+/* While the menu is open the bar turns charcoal too, so bar and panel read as one surface.
+   The element selector outranks the playground's own header colour. */
+header.site-header.site-header--menu-open { background: #3a4550; backdrop-filter: none; }
+.site-header--menu-open .nav-toggle { color: #f3efe8; }
+.site-header--menu-open .brand-mark__j,
+.site-header--menu-open .brand-mark__h { stroke: #f3efe8; }
+@keyframes nav-menu-in { from { opacity: 0; } }
+@keyframes nav-item-in { from { opacity: 0; transform: translateY(14px); } }
+
+@media (max-width: 680px) {
+  .nav-links { display: none; }
+  .nav-toggle { display: block; }
+}
+/* Wider screens keep the inline links, so a menu left open from a phone-sized window never shows. */
+@media (min-width: 681px) {
+  .nav-menu { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .nav-menu, .nav-menu__list li, .nav-menu__email { animation: none; }
+}
 
 /* Hero ----------------------------------------------------------------- */
 /* The banner fills the first screen with its content anchored to the bottom, so
@@ -1093,6 +1175,117 @@ section[id] { scroll-margin-top: 72px; }
 .portfolio-home .contact-list a:hover { background: transparent; }
 .portfolio-home .contact-list span { font-size: 12px; letter-spacing: .06em; }
 .portfolio-home .footer-note { grid-column: 1 / -1; margin-top: 54px; font-size: 12px; letter-spacing: .04em; }
+
+/* Contact motion: an endless headline band above the rows, rows that answer
+   the pointer, and an email that copies in place. Homepage only; Me reuses
+   plain rows. */
+/* A full-screen panel with rounded shoulders, so it rises out of the page
+   instead of cutting across it. */
+.portfolio-home .home-contact {
+  flex-direction: column; align-items: stretch; justify-content: space-between; gap: clamp(40px, 6vw, 72px);
+  min-height: calc(100vh - var(--nav-height));
+  min-height: calc(100svh - var(--nav-height));
+  border-top: 0; border-radius: clamp(24px, 3vw, 40px) clamp(24px, 3vw, 40px) 0 0;
+  padding-top: clamp(40px, 6vw, 72px);
+  background: var(--ground);
+}
+/* Scoped past .contact h2, which would otherwise cap the band at 14 characters. */
+.home-contact .contact-marquee {
+  width: 100%; max-width: none; overflow: hidden;
+  margin: 0;
+  white-space: nowrap; cursor: default;
+  opacity: 0; transition: opacity .8s var(--ease);
+}
+.home-contact.is-visible .contact-marquee { opacity: 1; }
+.contact-marquee__track { display: inline-flex; will-change: transform; }
+.contact-marquee__group { display: inline-flex; flex-shrink: 0; }
+.contact-marquee__item { display: inline-flex; align-items: center; }
+.portfolio-home .contact-marquee__word {
+  color: var(--ink); font: 400 clamp(64px, 11vw, 168px)/1 var(--serif); letter-spacing: -.035em;
+  padding-inline: .14em;
+}
+/* Every other phrase is drawn in outline, so the band reads as a rhythm rather than a wall. */
+.portfolio-home .contact-marquee__word.is-outline { color: transparent; -webkit-text-stroke: 1.5px var(--ink); }
+.contact-marquee__star { padding-inline: .2em; color: var(--accent); font-size: clamp(28px, 4vw, 56px); line-height: 1; }
+
+.contact-time {
+  display: inline-flex; align-items: center; gap: 10px;
+  margin: 26px 0 0; color: var(--soft); font: 400 12px/1.5 var(--mono); letter-spacing: .06em;
+}
+.contact-time time { color: var(--ink); }
+.contact-time__dot { position: relative; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
+.contact-time__dot::after {
+  position: absolute; inset: 0; border-radius: 50%; background: var(--accent);
+  animation: contact-pulse 2.4s var(--ease) infinite; content: '';
+}
+@keyframes contact-pulse {
+  from { opacity: .5; transform: scale(1); }
+  to { opacity: 0; transform: scale(2.8); }
+}
+
+/* Rows: a pale accent wash sweeps in from the left, the value nudges over and an arrow arrives. */
+/* The list reaches 14px past the column so the wash has room around the text,
+   and its closing rule stays as long as the rows' rules. */
+.portfolio-home .home-contact .contact-list { margin-inline: -14px; }
+.portfolio-home .home-contact .contact-list a {
+  position: relative; isolation: isolate; overflow: hidden;
+  padding-inline: 14px;
+}
+.home-contact .contact-list a::before {
+  position: absolute; z-index: -1; inset: 0;
+  background: rgb(243 239 232 / .07);
+  transform: scaleX(0); transform-origin: left;
+  transition: transform .5s var(--ease);
+  content: '';
+}
+.home-contact .contact-list a:hover::before,
+.home-contact .contact-list a:focus-visible::before { transform: scaleX(1); }
+.home-contact .contact-list strong { transition: color .25s var(--ease), transform .35s var(--ease); }
+.home-contact .contact-list a:hover strong,
+.home-contact .contact-list a:focus-visible strong { transform: translateX(8px); }
+.home-contact .contact-arrow {
+  position: absolute; top: 50%; right: 18px;
+  color: var(--accent); font: 400 18px/1 Inter, sans-serif; letter-spacing: 0;
+  opacity: 0; transform: translate(-10px, calc(-50% + 10px));
+  transition: opacity .3s var(--ease), transform .4s var(--ease);
+}
+.home-contact .contact-list a:hover .contact-arrow,
+.home-contact .contact-list a:focus-visible .contact-arrow { opacity: 1; transform: translate(0, -50%); }
+
+/* The email row carries a copy button where the other rows show their arrow. */
+.contact-row { position: relative; }
+.portfolio-home .home-contact .contact-row a { padding-right: 112px; }
+.contact-copy {
+  position: absolute; top: 50%; right: 4px; z-index: 1;
+  min-height: 36px; border: 1px solid var(--rule); border-radius: 999px; padding: 0 14px;
+  background: var(--ground); color: var(--soft);
+  font: 400 11px/1 var(--mono); letter-spacing: .1em; text-transform: uppercase;
+  transform: translateY(-50%);
+  transition: color .2s var(--ease), border-color .2s var(--ease), background .2s var(--ease);
+}
+.contact-copy span { color: inherit; font: inherit; letter-spacing: inherit; }
+.contact-copy:hover { border-color: var(--accent); color: var(--accent); }
+.contact-copy.is-copied { border-color: var(--accent); background: var(--accent); color: var(--ground); animation: contact-pop .35s cubic-bezier(.2, 1.6, .4, 1); }
+@keyframes contact-pop {
+  from { transform: translateY(-50%) scale(.86); }
+  to { transform: translateY(-50%) scale(1); }
+}
+.contact-reveal .contact-copy { opacity: 0; transition: opacity .6s var(--ease) .2s, color .2s var(--ease), border-color .2s var(--ease), background .2s var(--ease); }
+.contact-reveal.is-visible .contact-copy { opacity: 1; }
+
+/* Phones have no room for the overhang: rows sit on the page margin, and the copy button on the row's edge. */
+@media (max-width: 680px) {
+  .portfolio-home .home-contact .contact-list { margin-inline: 0; }
+  .portfolio-home .home-contact .contact-list a { padding-inline: 0; }
+  .contact-copy { right: 0; }
+  .home-contact .contact-arrow { right: 4px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .contact-marquee { opacity: 1; }
+  .contact-time__dot::after,
+  .contact-copy.is-copied { animation: none; }
+}
 
 @media (max-width: 900px) {
   .portfolio-home .contact-inner { grid-template-columns: minmax(0, 1fr); }

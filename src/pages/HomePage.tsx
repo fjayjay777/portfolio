@@ -1,11 +1,11 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { HeroFigure } from '../components/HeroFigure'
+import { HomeContact } from '../components/HomeContact'
 import { ClaimlyCover, MedisyncCover, NightyCover, SizzleCover } from '../components/ProjectCovers'
 import { ProjectDialog, type Project } from '../components/ProjectDialog'
 import { SiteNav } from '../components/SiteNav'
 import { useHashScroll } from '../hooks/useHashScroll'
-import { useInView } from '../hooks/useInView'
 
 const covers = [ClaimlyCover, MedisyncCover, SizzleCover, NightyCover]
 
@@ -49,7 +49,6 @@ const projects: Project[] = [
 export function HomePage() {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null)
   const [lastTrigger, setLastTrigger] = useState<HTMLButtonElement | null>(null)
-  const [contactRef, contactInView] = useInView<HTMLElement>()
   useHashScroll()
 
   function openProject(project: Project, trigger: HTMLButtonElement) {
@@ -125,24 +124,7 @@ export function HomePage() {
           </div>
         </section>
 
-        <section
-          className={`contact contact-reveal${contactInView ? ' is-visible' : ''}`}
-          ref={contactRef}
-          id="contact"
-          aria-labelledby="contact-title"
-        >
-          <div className="contact-inner">
-            <div className="contact-head">
-              <h2 id="contact-title">Let’s Talk</h2>
-            </div>
-            <div className="contact-list">
-              <a href="mailto:huangjn35@gmail.com"><span>Email</span><strong>Huangjn35@gmail.com</strong></a>
-              <a href="tel:+13855284176"><span>Phone</span><strong>385-528-4176</strong></a>
-              <a href="https://www.linkedin.com/in/jiani-huang-b22515365/" target="_blank" rel="noreferrer"><span>LinkedIn</span><strong>Jiani Huang</strong></a>
-            </div>
-            <p className="footer-note">Designed and built by Jiani © 2026</p>
-          </div>
-        </section>
+        <HomeContact />
       </main>
 
       {selectedProject && (
