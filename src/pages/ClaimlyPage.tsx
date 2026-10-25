@@ -13,7 +13,7 @@ import { SiteNav } from '../components/SiteNav'
 const facts = [
   { label: 'Role', value: 'Founder · concept, design, front-end build' },
   { label: 'Timeline', value: 'Oct to mid-Nov 2025 · Tech Innovation Jam' },
-  { label: 'Team', value: 'Led a 5-person Jam team through research and pitch' },
+  { label: 'Team', value: 'Cassie (Siyan) Chen, Jiayi Lu, Shuzhou Li, Yumeng Fang' },
   { label: 'Scope', value: 'Bill intake, claim report, appeal guidance' },
 ]
 

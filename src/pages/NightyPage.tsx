@@ -10,7 +10,7 @@ import { hasWebGL } from '../nighty/stage'
 const facts = [
   { label: 'Role', value: 'Product design' },
   { label: 'Timeline', value: 'June 2024' },
-  { label: 'Team', value: 'Team of four' },
+  { label: 'Team', value: 'Jiekai Liu, Kevin Zhang' },
   { label: 'Scope', value: 'Temperature, sound, sleep tracking' },
 ]
 
