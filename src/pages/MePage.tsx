@@ -67,7 +67,7 @@ function CvList({ entries }: { entries: CvEntry[] }) {
    stays the main contact point. */
 function MeFooter() {
   return (
-    <footer className="me-end">
+    <footer className="me-end surface-dark">
       <div className="me-end-inner">
         <div className="me-end-grid">
           <section className="me-end-col" aria-labelledby="me-end-work-title">
