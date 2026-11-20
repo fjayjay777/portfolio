@@ -131,10 +131,6 @@ export function MePage() {
               understand. My projects have covered medical bills full of reason codes, clinic prices and insurance
               options, and bilingual biomedical lessons for middle school students.
             </p>
-            <p>
-              I’m looking for full-time roles starting in 2027, as a UX researcher, AI product manager, or product
-              designer.
-            </p>
             <ul className="skill-list" aria-label="Skills">
               <li>Product design</li>
               <li>UX research</li>
